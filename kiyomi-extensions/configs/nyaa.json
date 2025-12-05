@@ -1,0 +1,87 @@
+{
+  "name": "nyaa",
+  "displayName": "Nyaa (RSS Feed)",
+  "siteUrl": "https://nyaa.land",
+  "iconUrl": "https://nyaa.land/static/favicon.png",
+  "type": "RSS_XML",
+  "isAdult": false,
+  "isSecure": true,
+  "isPrivate": false,
+
+  // Maps your internal Category enum to Nyaa's primary category IDs
+  "categoryMap": {
+    "All": "0_0",
+    "Anime": "1_0",
+    "Music": "3_0",
+    "Software": "4_0",
+    "Other": "6_0"
+  },
+
+  // Full, absolute URL is required for the DynamicProviderEngine
+  "searchUrlTemplate": "https://nyaa.land/?page=rss&c={category}&f=0&q={query}",
+
+  "searchSteps": [
+    {
+      "stepType": "HTTP_REQUEST",
+      "method": "GET",
+      "urlKey": "searchUrlTemplate"
+    },
+    {
+      "stepType": "MAP_RESULTS_GENERIC",
+      "rootSelector": "item",
+      "isRootArray": false, // XML/RSS is not a JSON array
+
+      "fields": {
+        "title": { "accessor": "title::text", "accessorType": "XML_TAG" },
+        "torrentUrl": { "accessor": "link::text", "accessorType": "XML_TAG" },
+
+        // FIX: Escape the colon for the nyaa namespace tags
+        "infoHash": {
+          "accessor": "nyaa\\:infoHash::text", // <--- CRITICAL FIX
+          "accessorType": "XML_TAG"
+        },
+        "size_raw": {
+          "accessor": "nyaa\\:size::text",    // <--- CRITICAL FIX
+          "accessorType": "XML_TAG"
+        },
+        "seeds": {
+          "accessor": "nyaa\\:seeders::text", // <--- CRITICAL FIX
+          "accessorType": "XML_TAG"
+        },
+        "peers": {
+          "accessor": "nyaa\\:leechers::text",// <--- CRITICAL FIX
+          "accessorType": "XML_TAG"
+        },
+        "infoUrl": { "accessor": "guid::text", "accessorType": "XML_TAG" }
+      },
+
+      "postProcessors": [
+        // REQUIRED: Function call to assemble the final magnet link
+        {
+          "processorType": "FUNCTION_CALL",
+          "functionName": "BUILD_MAGNET_FROM_HASH",
+          "sourceKey": "infoHash",
+          "targetKey": "magnetUrl",
+          "extraSourceKey": "title"
+        },
+        // REQUIRED: Function call to convert human-readable size string to bytes (Long)
+        {
+          "processorType": "FUNCTION_CALL",
+          "functionName": "HUMAN_SIZE_TO_BYTES",
+          "sourceKey": "size_raw",
+          "targetKey": "size" // Target 'size' field in TorrentDescription
+        }
+      ],
+
+      "finalMapping": {
+        "title": "{title}",
+        "magnetUrl": "{magnetUrl}",
+        "hash": "{infoHash}",
+        "size": "{size}", // Mapped from the post-processor
+        "seeds": "{seeds}",
+        "peers": "{peers}",
+        "infoUrl": "{infoUrl}"
+      }
+    }
+  ]
+}

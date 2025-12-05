@@ -1,0 +1,94 @@
+{
+  "name": "thepiratebay",
+  "displayName": "The Pirate Bay (API)",
+  "siteUrl": "https://thepiratebay.org",
+  "iconUrl": "https://thepiratebay.org/static/favicon.ico",
+  "type": "JSON_API",
+  "isAdult": false,
+  "isSecure": false,
+  "isPrivate": false,
+
+  // The category logic is complex (index mapping), so we define the API mapping here.
+  // The 'categoryIndex' logic must be manually reflected in a post-processor later if needed.
+  "categoryMap": {
+    "All": "0",
+    "Movies": "200",
+    "Music": "101",
+    "Apps": "300"
+    // Add other categories as needed from the Kotlin categoryIndex function
+  },
+
+  // Uses the API endpoint which returns a JSON array of torrent objects directly.
+  "searchUrlTemplate": "https://apibay.org/q.php?q={query}&cat={category}",
+
+  "searchSteps": [
+    {
+      "stepType": "HTTP_REQUEST",
+      "method": "GET",
+      "urlKey": "searchUrlTemplate"
+    },
+    {
+      "stepType": "MAP_RESULTS_GENERIC",
+      "rootSelector": "$", // The entire JSON response is the array of torrent objects.
+      "isRootArray": true, // The response is a direct JSON array: [ {t1}, {t2}, ... ]
+
+      "fields": {
+        // --- Core Fields ---
+        "id_raw": { "accessor": "id", "accessorType": "JSON_PATH" },
+        "title": { "accessor": "name", "accessorType": "JSON_PATH" },
+        "hash": { "accessor": "info_hash", "accessorType": "JSON_PATH" },
+        "size_raw": {
+          "accessor": "size",
+          "accessorType": "JSON_PATH",
+          "conversionType": "LONG" // Size is provided as raw bytes string -> Long
+        },
+        "seeds": {
+          "accessor": "seeders",
+          "accessorType": "JSON_PATH",
+          "conversionType": "INT"
+        },
+        "peers": {
+          "accessor": "leechers",
+          "accessorType": "JSON_PATH",
+          "conversionType": "INT"
+        },
+        "added_epoch": {
+          "accessor": "added",
+          "accessorType": "JSON_PATH",
+          "conversionType": "LONG" // Epoch seconds are integers/strings
+        }
+      },
+
+      "postProcessors": [
+        // 1. Build the Magnet URI from InfoHash and Title
+        {
+          "processorType": "FUNCTION_CALL",
+          "functionName": "BUILD_MAGNET_FROM_HASH",
+          "sourceKey": "hash",
+          "targetKey": "magnetUrl",
+          "extraSourceKey": "title"
+        },
+        // 2. Format the Upload Date
+        {
+          "processorType": "FUNCTION_CALL",
+          "functionName": "EPOCH_TO_DATE_STRING",
+          "sourceKey": "added_epoch",
+          "targetKey": "publishDate"
+        }
+        // NOTE: The 'No results returned' check must be handled inside the engine's JSON parsing logic
+      ],
+
+      "finalMapping": {
+        "title": "{title}",
+        "magnetUrl": "{magnetUrl}",
+        "hash": "{hash}",
+        "size": "{size_raw}",
+        "seeds": "{seeds}",
+        "peers": "{peers}",
+        "publishDate": "{publishDate}",
+        // Construct the info URL using the raw ID
+        "infoUrl": "https://thepiratebay.org/description.php?id={id_raw}"
+      }
+    }
+  ]
+}

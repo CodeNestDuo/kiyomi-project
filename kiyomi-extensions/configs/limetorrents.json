@@ -1,0 +1,104 @@
+{
+  "name": "limetorrents",
+  "displayName": "LimeTorrents (RSS)",
+  "siteUrl": "https://www.limetorrents.lol",
+  "iconUrl": "https://www.limetorrents.lol/favicon.ico",
+  "type": "RSS_XML",
+  "isAdult": false,
+  "isSecure": true,
+  "isPrivate": false,
+
+  // Maps your internal Category enum to LimeTorrents' category strings
+  "categoryMap": {
+    // The key must match the string used in the URL path.
+    "All": "all",
+    "Anime": "Anime",
+    "Applications": "Applications",
+    "Games": "Games",
+    "Movies": "Movies",
+    "Music": "Music",
+    "TV shows": "TV shows",
+    "Other": "Other"
+  },
+
+  // CRITICAL FIX: The search URL template now places the category index as a path segment.
+  "searchUrlTemplate": "https://www.limetorrents.lol/searchrss/{query}/{category}/",
+
+  "searchSteps": [
+    // --- Step 1: Fetch Search Results Page (HTTP_REQUEST) ---
+    {
+      "stepType": "HTTP_REQUEST",
+      "method": "GET",
+      "urlKey": "searchUrlTemplate"
+    },
+
+    // --- Step 2: MAP_RESULTS_GENERIC (Scrape RSS Items) ---
+    {
+      "stepType": "MAP_RESULTS_GENERIC",
+      "rootSelector": "item",
+      "isRootArray": false,
+
+      "fields": {
+        "title": { "accessor": "title::text", "accessorType": "XML_TAG" },
+        "infoUrl": { "accessor": "link::text", "accessorType": "XML_TAG" },
+        "publishDate": {
+          "accessor": "pubDate::text",
+          "accessorType": "XML_TAG",
+          "conversionType": "DATE_STRING"
+        },
+        "size": {
+          "accessor": "size::text",
+          "accessorType": "XML_TAG",
+          "conversionType": "LONG" // Size is raw bytes
+        },
+        "infoHash": {
+          "accessor": "enclosure::attr(url)",
+          "accessorType": "XML_TAG",
+          "regex": "torrent/([A-Fa-f0-9]{40})\\.torrent", // Extract hash from URL
+          "extractGroup": 1
+        },
+        "torrentDownloadUrl": {
+          "accessor": "enclosure::attr(url)",
+          "accessorType": "XML_TAG"
+        },
+        "seeds": {
+          "accessor": "description::text",
+          "accessorType": "XML_TAG",
+          "regex": "Seeds:\\s*(\\d+)",
+          "extractGroup": 1,
+          "conversionType": "INT"
+        },
+        "peers": {
+          "accessor": "description::text",
+          "accessorType": "XML_TAG",
+          "regex": "Leechers\\s*(\\d+)",
+          "extractGroup": 1,
+          "conversionType": "INT"
+        }
+      },
+
+      "postProcessors": [
+        // Build the Magnet URL from the extracted InfoHash and Title
+        {
+          "processorType": "FUNCTION_CALL",
+          "functionName": "BUILD_MAGNET_FROM_HASH",
+          "sourceKey": "infoHash",
+          "targetKey": "magnetUrl",
+          "extraSourceKey": "title"
+        }
+      ],
+
+      "finalMapping": {
+        "title": "{title}",
+        "magnetUrl": "{magnetUrl}",
+        "hash": "{infoHash}",
+        "size": "{size}",
+        "seeds": "{seeds}",
+        "peers": "{peers}",
+        "infoUrl": "{infoUrl}",
+        "torrentDownloadUrl": "{torrentDownloadUrl}",
+        "publishDate": "{publishDate}"
+      }
+    }
+  ]
+}
