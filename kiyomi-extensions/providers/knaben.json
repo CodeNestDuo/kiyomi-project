@@ -1,0 +1,107 @@
+{
+  "name": "knaben",
+  "displayName": "Knaben (API)",
+  "siteUrl": "https://knaben.org",
+  "iconUrl": "https://knaben.org/favicon.ico",
+  "type": "JSON_API",
+  "isAdult": false,
+  "isSecure": true,
+  "isPrivate": false,
+
+  "categoryMap": {
+    "All": "",
+    "Music": "1000000",
+    "Series": "2000000",
+    "Movies": "3000000",
+    "Apps": "4000000",
+    "Porn": "5000000",
+    "Anime": "6000000",
+    "Games": "7000000",
+    "Books": "9000000",
+    "Other": "10000000"
+  },
+
+  "searchUrlTemplate": "https://api.knaben.org/v1",
+
+  "searchSteps": [
+    // --- Step 1: Execute POST Request with Dynamic JSON Payload ---
+    {
+      "stepType": "HTTP_REQUEST",
+      "method": "POST",
+      "urlKey": "searchUrlTemplate",
+      "bodyConstructor": {
+        "functionName": "BUILD_JSON_PAYLOAD", 
+        "payloadFields": {
+          "query": { "type": "STRING", "sourceKey": "{QUERY}" },
+          "size": { "type": "INT", "defaultValue": "300" },
+          "order_by": { "type": "STRING", "defaultValue": "seeders" },
+          "order_direction": { "type": "STRING", "defaultValue": "desc" },
+          "hide_unsafe": { "type": "BOOLEAN", "defaultValue": "true" },
+          "hide_xxx": { "type": "BOOLEAN", "defaultValue": "false" },
+          
+          // Maps the selected category ID string (e.g., "3000000") into a JSON array: [3000000]
+          "categories": { "type": "ARRAY_OF_INT", "sourceKey": "{CATEGORY}", "defaultValue": "" }
+        }
+      }
+    },
+
+    // --- Step 2: MAP_RESULTS_GENERIC (Scrape API Response) ---
+    {
+      "stepType": "MAP_RESULTS_GENERIC",
+      "rootSelector": "hits", // The array of results is nested under "hits"
+      "isRootArray": false, 
+
+      "fields": {
+        // --- Core Fields (Directly Mapped from JSON object) ---
+        "title": { "accessor": "title", "accessorType": "JSON_PATH" },
+        "magnetUrl": { "accessor": "magnetUrl", "accessorType": "JSON_PATH" },
+        "hash": { "accessor": "hash", "accessorType": "JSON_PATH" },
+        "infoUrl": { "accessor": "details", "accessorType": "JSON_PATH" },
+        
+        // Stats (Raw Numbers)
+        "size": { 
+          "accessor": "bytes", 
+          "accessorType": "JSON_PATH",
+          "conversionType": "LONG"
+        },
+        "seeds": { 
+          "accessor": "seeders", 
+          "accessorType": "JSON_PATH",
+          "conversionType": "INT"
+        },
+        "peers": { 
+          "accessor": "peers", 
+          "accessorType": "JSON_PATH",
+          "conversionType": "INT"
+        },
+        
+        // Dates and Categories
+        "publishDateIso": { 
+          "accessor": "date", 
+          "accessorType": "JSON_PATH"
+        }
+      },
+
+      "postProcessors": [
+        // 1. Format the ISO date string to a readable format
+        {
+          "processorType": "FUNCTION_CALL",
+          "functionName": "FORMAT_ISO_DATE",
+          "sourceKey": "publishDateIso",
+          "targetKey": "publishDate"
+        }
+      ],
+
+      "finalMapping": {
+        "title": "{title}",
+        "magnetUrl": "{magnetUrl}",
+        "hash": "{hash}",
+        "size": "{size}",
+        "seeds": "{seeds}",
+        "peers": "{peers}",
+        "infoUrl": "{infoUrl}",
+        "publishDate": "{publishDate}"
+      }
+    }
+  ]
+}

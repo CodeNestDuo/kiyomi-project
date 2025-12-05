@@ -1,0 +1,92 @@
+{
+  "name": "torrentscsv",
+  "displayName": "TorrentsCSV",
+  "siteUrl": "https://torrents-csv.com",
+  "iconUrl": "https://torrents-csv.com/favicon.ico",
+  "type": "JSON_API",
+  "isAdult": false,
+  "isSecure": true,
+  "isPrivate": false,
+
+  "categoryMap": {
+    "All": "" 
+  },
+
+  "searchUrlTemplate": "https://torrents-csv.com/service/search?q={query}",
+
+  "searchSteps": [
+    // --- Step 1: Execute GET Request ---
+    {
+      "stepType": "HTTP_REQUEST",
+      "method": "GET",
+      "urlKey": "searchUrlTemplate"
+    },
+
+    // --- Step 2: MAP_RESULTS_GENERIC (Scrape API Response) ---
+    {
+      "stepType": "MAP_RESULTS_GENERIC",
+      "rootSelector": "torrents", // The array of torrent objects is nested under "torrents"
+      "isRootArray": false, 
+
+      "fields": {
+        // --- Core Fields (Directly Mapped from JSON object) ---
+        "title": { "accessor": "name", "accessorType": "JSON_PATH" },
+        "hash": { "accessor": "infohash", "accessorType": "JSON_PATH" },
+        
+        // Stats (Raw Numbers)
+        "size": { 
+          "accessor": "size_bytes", 
+          "accessorType": "JSON_PATH",
+          "conversionType": "LONG" // Raw bytes in string/number format -> Long
+        },
+        "seeds": { 
+          "accessor": "seeders", 
+          "accessorType": "JSON_PATH",
+          "conversionType": "INT"
+        },
+        "peers": { 
+          "accessor": "leechers", 
+          "accessorType": "JSON_PATH",
+          "conversionType": "INT"
+        },
+        
+        // Date (Epoch seconds)
+        "created_unix": { 
+          "accessor": "created_unix", 
+          "accessorType": "JSON_PATH",
+          "conversionType": "LONG" // Raw epoch number -> Long
+        }
+      },
+
+      "postProcessors": [
+        // 1. Build the Magnet URI from InfoHash and Title
+        {
+          "processorType": "FUNCTION_CALL",
+          "functionName": "BUILD_MAGNET_FROM_HASH",
+          "sourceKey": "hash",
+          "targetKey": "magnetUrl",
+          "extraSourceKey": "title"
+        },
+        // 2. Format the Epoch Date
+        {
+          "processorType": "FUNCTION_CALL",
+          "functionName": "EPOCH_TO_DATE_STRING",
+          "sourceKey": "created_unix",
+          "targetKey": "publishDate"
+        }
+      ],
+
+      "finalMapping": {
+        "title": "{title}",
+        "magnetUrl": "{magnetUrl}",
+        "hash": "{hash}",
+        "size": "{size}",
+        "seeds": "{seeds}",
+        "peers": "{peers}",
+        "publishDate": "{publishDate}"
+        // Note: This API does not provide a separate info URL or download URL, 
+        // so infoUrl and torrentDownloadUrl will remain null.
+      }
+    }
+  ]
+}

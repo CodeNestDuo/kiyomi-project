@@ -1,16 +1,5 @@
 [
   {
-    "id": "limetorrents",
-    "name": "LimeTorrents (Public RSS)",
-    "author": "Kiyomi Community",
-    "configUrl": "https://kiyomi-extensions.pages.dev/providers/limetorrents.json",
-    "iconUrl": "https://www.limetorrents.fun/favicon.ico",
-    "description": "LimeTorrents is a General Torrents Download indexer with mostly Verified Torrents like Movies, Games, Music, TV Shows, Anime and more.",
-    "isAdult": false,
-    "isSecure": false,
-    "isPrivate": false
-  },
-  {
     "id": "thepiratebay",
     "name": "The Pirate Bay (API)",
     "author": "Kiyomi Community",
@@ -52,6 +41,39 @@
     "description": "ACG.RIP hosts Chinese and Japanese Anime, music and more that are otherwise not found elsewhere.",
     "isAdult": false,
     "isSecure": true,
+    "isPrivate": false
+  },
+  {
+    "id": "knaben",
+    "name": "Knaben (API)",
+    "author": "Knaben Developers",
+    "configUrl": "https://kiyomi-extensions.pages.dev/providers/knaben.json",
+    "iconUrl": "https://knaben.org/favicon.ico",
+    "description": "Knaben is a modern, fast search API that offers structured results, allowing for precise filtering and high-speed data retrieval.",
+    "isAdult": false,
+    "isSecure": true,
+    "isPrivate": false
+  },
+  {
+    "id": "torrentscsv",
+    "name": "TorrentsCSV (API)",
+    "author": "Kiyomi Community",
+    "configUrl": "https://kiyomi-extensions.pages.dev/providers/torrentscsv.json",
+    "iconUrl": "https://torrents-csv.com/favicon.ico",
+    "description": "TorrentsCSV provides simple, clean JSON API access to torrent data, listing torrent name, infohash, size (in raw bytes), and seeders.",
+    "isAdult": false,
+    "isSecure": true,
+    "isPrivate": false
+  },
+  {
+    "id": "limetorrents",
+    "name": "LimeTorrents (Public RSS)",
+    "author": "Kiyomi Community",
+    "configUrl": "https://kiyomi-extensions.pages.dev/providers/limetorrents.json",
+    "iconUrl": "https://www.limetorrents.fun/favicon.ico",
+    "description": "LimeTorrents is a General Torrents Download indexer with mostly Verified Torrents like Movies, Games, Music, TV Shows, Anime and more.",
+    "isAdult": false,
+    "isSecure": false,
     "isPrivate": false
   }
 ]
