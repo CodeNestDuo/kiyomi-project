@@ -1,0 +1,129 @@
+{
+  "name": "animetosho",
+  "displayName": "Anime Tosho (Torznab)",
+  "siteUrl": "https://animetosho.org",
+  "iconUrl": "https://animetosho.org/inc/favicon.ico",
+  "type": "RSS_XML",
+  "isAdult": false,
+  "isSecure": true,
+  "isPrivate": false,
+
+  "categoryMap": {
+    "All": ""
+  },
+
+  "searchUrlTemplate": "https://feed.animetosho.org/api?q={query}",
+
+  "searchSteps": [
+    {
+      "stepType": "HTTP_REQUEST",
+      "method": "GET",
+      "urlKey": "searchUrlTemplate"
+    },
+    {
+      "stepType": "MAP_RESULTS_GENERIC",
+      "rootSelector": "item",
+      "isRootArray": false,
+
+      "fields": {
+        // --- Core Fields ---
+        "title": {
+          "accessor": "title::text",
+          "accessorType": "XML_TAG"
+        },
+        "infoUrl": {
+          "accessor": "guid::text",
+          "accessorType": "XML_TAG"
+        },
+        "torrentDownloadUrl": {
+          "accessor": "enclosure::attr(url)",
+          "accessorType": "XML_TAG"
+        },
+        "magnetUrl": {
+          "accessor": "torznab\\:attr[name=magneturl]::attr(value)",
+          "accessorType": "XML_TAG"
+        },
+        "hash": {
+          "accessor": "torznab\\:attr[name=infohash]::attr(value)",
+          "accessorType": "XML_TAG"
+        },
+        "bannerImageUrl": {
+          "accessor": "torznab\\:attr[name=bannerurl]::attr(value)",
+          "accessorType": "XML_TAG"
+        },
+        "coverImageUrl": {
+          "accessor": "newznab\\:attr[name=coverurl]::attr(value)",
+          "accessorType": "XML_TAG"
+        },
+
+        // --- Core Statistics (Using New Conversion Fields) ---
+        "size": {
+          "accessor": "torznab\\:attr[name=size]::attr(value)",
+          "accessorType": "XML_TAG",
+          // The value is already in bytes, just need to convert string to Long
+          "conversionType": "LONG"
+        },
+        "seeds": {
+          "accessor": "torznab\\:attr[name=seeders]::attr(value)",
+          "accessorType": "XML_TAG",
+          "conversionType": "INT"
+        },
+        "peers": {
+          "accessor": "torznab\\:attr[name=leechers]::attr(value)",
+          "accessorType": "XML_TAG",
+          "conversionType": "INT"
+        },
+        "publishDate": {
+          "accessor": "pubDate::text",
+          "accessorType": "XML_TAG",
+          // NOTE: This requires engine logic to parse the RFC 822 date string
+          // For simplicity in this structure, we'll treat it as a string placeholder for now.
+          "conversionType": "DATE_STRING"
+        },
+
+        // --- External ID Attributes ---
+        "imdbId": {
+          "accessor": "torznab\\:attr[name=imdb]::attr(value)",
+          "accessorType": "XML_TAG"
+        },
+        "tvdbId": {
+          "accessor": "torznab\\:attr[name=tvdbid]::attr(value)",
+          "accessorType": "XML_TAG",
+          "conversionType": "INT"
+        },
+        "season": {
+          "accessor": "newznab\\:attr[name=season]::attr(value)",
+          "accessorType": "XML_TAG",
+          "conversionType": "INT"
+        },
+        "year": {
+          "accessor": "newznab\\:attr[name=year]::attr(value)",
+          "accessorType": "XML_TAG",
+          "conversionType": "INT"
+        }
+      },
+
+      "postProcessors": [],
+
+      "finalMapping": {
+        "title": "{title}",
+        "magnetUrl": "{magnetUrl}",
+        "torrentDownloadUrl": "{torrentDownloadUrl}",
+        "hash": "{hash}",
+        "size": "{size}",
+        "seeds": "{seeds}",
+        "peers": "{peers}",
+        "infoUrl": "{infoUrl}",
+        "coverImageUrl": "{coverImageUrl}",
+        "bannerImageUrl": "{bannerImageUrl}",
+
+        // --- Mapping External IDs/Properties ---
+        "imdbId": "{imdbId}",
+        "tvdbId": "{tvdbId}",
+        "season": "{season}",
+        "year": "{year}",
+        "publishDate": "{publishDate}"
+      }
+    }
+  ]
+}
