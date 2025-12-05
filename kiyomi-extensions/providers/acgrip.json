@@ -1,6 +1,6 @@
 {
   "name": "acgrip",
-  "displayName": "ACG.RIP (Chinese Anime)",
+  "displayName": "ACG.RIP (Chinese Anime RSS)",
   "siteUrl": "https://acg.rip",
   "iconUrl": "https://acg.rip/favicon.ico",
   "type": "RSS_XML",
@@ -8,46 +8,42 @@
   "isSecure": true,
   "isPrivate": false,
 
-  // ACG.RIP does not use categories in the URL, so the map is simple.
+  // Maps display name to the required numerical path segment (1, 2, 3, etc.)
   "categoryMap": {
-    "All": "",
-    "Anime": ""
+    "All": "",                       // Maps to blank path: https://acg.rip/.xml?term=
+    "Animation": "1",
+    "Japanese drama": "2",
+    "Variety Show": "3",
+    "Music": "4",
+    "Collection": "5",
+    "other": "9"
   },
 
-  // Full, absolute URL is required for the DynamicProviderEngine
-  "searchUrlTemplate": "https://acg.rip/.xml?term={query}",
+  // CRITICAL FIX: Use the category substitution in the path, and map "All" to ""
+  // The full URL construction logic must ensure a double slash doesn't result.
+  "searchUrlTemplate": "https://acg.rip/{category}.xml?term={query}",
 
   "searchSteps": [
+    // --- Step 1: Fetch Search Results Page (HTTP_REQUEST) ---
     {
       "stepType": "HTTP_REQUEST",
       "method": "GET",
       "urlKey": "searchUrlTemplate"
     },
+
+    // --- Step 2: MAP_RESULTS_GENERIC (Scrape RSS Items) ---
     {
       "stepType": "MAP_RESULTS_GENERIC",
-      "rootSelector": "item",
-      "isRootArray": false,
+      "rootSelector": "item", 
+      "isRootArray": false, 
 
       "fields": {
-        "title": {
-          "accessor": "title::text",
-          "accessorType": "XML_TAG"
-        },
-        "infoUrl": { // The GUID is the permanent link to the detail page
-          "accessor": "guid::text",
-          "accessorType": "XML_TAG"
-        },
-        // CRITICAL FIX: Use the full Jsoup selector syntax for the attribute
-        "torrentDownloadUrl": {
-          "accessor": "enclosure[url]::attr(url)", // Select <enclosure> that has a 'url' attribute, THEN get the attribute
-          "accessorType": "XML_TAG"
-        }
-        // NOTE: Size, seeds, and peers are missing from this RSS feed.
+        "title": { "accessor": "title::text", "accessorType": "XML_TAG" },
+        "infoUrl": { "accessor": "guid::text", "accessorType": "XML_TAG" },
+        "torrentDownloadUrl": { "accessor": "enclosure::attr(url)", "accessorType": "XML_TAG" }
       },
 
       "postProcessors": [
-        // Since the feed lacks InfoHash/Magnet, we will build a Magnet from the URL
-        // Your application must implement the BUILD_MAGNET_FROM_URL logic to resolve the InfoHash
         {
           "processorType": "FUNCTION_CALL",
           "functionName": "BUILD_MAGNET_FROM_URL",
@@ -60,7 +56,7 @@
       "finalMapping": {
         "title": "{title}",
         "torrentDownloadUrl": "{torrentDownloadUrl}",
-        "magnetUrl": "{magnetUrl}", // Will be populated by the post-processor
+        "magnetUrl": "{magnetUrl}",
         "infoUrl": "{infoUrl}"
       }
     }

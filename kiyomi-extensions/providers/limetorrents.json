@@ -13,11 +13,11 @@
     // The key must match the string used in the URL path.
     "All": "all",
     "Anime": "Anime",
-    "Applications": "Applications",
-    "Games": "Games",
     "Movies": "Movies",
     "Music": "Music",
     "TV shows": "TV shows",
+    "Applications": "Applications",
+    "Games": "Games",
     "Other": "Other"
   },
 

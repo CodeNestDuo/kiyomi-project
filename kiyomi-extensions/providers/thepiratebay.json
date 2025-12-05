@@ -11,10 +11,15 @@
   // The category logic is complex (index mapping), so we define the API mapping here.
   // The 'categoryIndex' logic must be manually reflected in a post-processor later if needed.
   "categoryMap": {
-    "All": "0",
+     "All": "0",
     "Movies": "200",
+    "Series": "200",
     "Music": "101",
-    "Apps": "300"
+    "Porn": "500",
+    "Apps": "300",
+    "Books": "601",
+    "Games": "400",
+    "Other": "600"
     // Add other categories as needed from the Kotlin categoryIndex function
   },
 
