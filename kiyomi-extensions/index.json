@@ -38,7 +38,7 @@
     {
       "id": "animetosho",
       "name": "Anime Tosho (Torznab API)",
-      "author": "Kiyomi Staff",
+      "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers/animetosho.json",
       "iconUrl": "https://animetosho.org/inc/favicon.ico",
       "description": "Automated service mirroring major anime torrents; provides structured Torznab data.",
@@ -66,7 +66,7 @@
     {
       "id": "acgrip",
       "name": "ACG.RIP (Chinese Anime RSS)",
-      "author": "Kiyomi Staff",
+      "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers/acgrip.json",
       "iconUrl": "https://acg.rip/favicon.ico",
       "description": "Indexes Chinese and broader Asian media collections.",
@@ -80,7 +80,7 @@
     {
       "id": "knaben",
       "name": "Knaben (API)",
-      "author": "Knaben Developers",
+      "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers/knaben.json",
       "iconUrl": "https://knaben.org/favicon.ico",
       "description": "Modern, fast search API that offers structured results.",
@@ -93,8 +93,8 @@
     },
     {
       "id": "eztv",
-      "name": "Knaben (API)",
-      "author": "Knaben Developers",
+      "name": "EZTV",
+      "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers/eztv.json",
       "iconUrl": "https://eztvx.to/favicon.ico",
       "description": "EZTV is a TV torrent distribution group and they provide reliable BitTorrent site and feeds service to download TV shows and movies.",

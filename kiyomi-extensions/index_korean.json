@@ -38,7 +38,7 @@
     {
       "id": "knaben",
       "name": "Knaben (API)",
-      "author": "Knaben Developers",
+      "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers/knaben.json",
       "iconUrl": "https://knaben.org/favicon.ico",
       "description": "Modern, fast search API offering structured results, including many East Asian releases.",
