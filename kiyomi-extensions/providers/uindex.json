@@ -56,10 +56,9 @@
           "accessorType": "CSS_SELECTOR"
         },
         // Size (td:nth-child(3))
-        "size": {
+        "size_raw": {
           "accessor": "td:nth-child(3)::text",
           "accessorType": "CSS_SELECTOR",
-          "conversionType": "HUMAN_SIZE_TO_BYTES" // e.g., "1.4 GiB" to bytes
         },
         // Seeders (td:nth-child(4) > span) - Needs cleaning of commas
         "seeds": {
@@ -94,6 +93,13 @@
           "sourceKey": "detailsPath",
           "targetKey": "infoUrl",
           "extraSourceKey": "siteUrl"
+        },
+        // REQUIRED: Function call to convert human-readable size string to bytes (Long)
+        {
+          "processorType": "FUNCTION_CALL",
+          "functionName": "HUMAN_SIZE_TO_BYTES",
+          "sourceKey": "size_raw",
+          "targetKey": "size" // Target 'size' field in TorrentDescription
         }
         // No hash extraction is needed since the magnet link is available directly
       ],
