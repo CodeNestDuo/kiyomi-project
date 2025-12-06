@@ -9,7 +9,7 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.1
+      "version": 1.1,
 
   // Maps your internal Category enum to Nyaa's primary category IDs
   "categoryMap": {

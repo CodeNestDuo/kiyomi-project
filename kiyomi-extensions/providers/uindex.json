@@ -9,7 +9,7 @@
       "cautionReason": "Search results are often unverified and may contain malicious files.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1.0,
 
   "categoryMap": {
     "All": "0",

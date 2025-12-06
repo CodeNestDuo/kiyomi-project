@@ -9,7 +9,7 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1.0,
 
   // Maps display name to the required numerical path segment (1, 2, 3, etc.)
   "categoryMap": {

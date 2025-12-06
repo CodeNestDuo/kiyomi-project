@@ -64,7 +64,7 @@
           "accessor": "enclosure::attr(url)",
           "accessorType": "XML_TAG"
         },
-        "publishDate": { "accessor": "pubDate", "accessorType": "XML_TAG" }
+        "publishDate": { "accessor": "pubDate", "accessorType": "XML_TAG" },
         "seeds": {
           "accessor": "description::text",
           "accessorType": "XML_TAG",
