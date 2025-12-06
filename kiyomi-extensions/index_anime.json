@@ -1,0 +1,81 @@
+{
+  "indexVersion": 1.1,
+  "dateGenerated": "2025-12-06T13:00:00Z",
+  "name": "Anime & Asian Media Hub",
+  "description": "Curated sources specializing in Anime, Manga, Raw media, and broader Asian content (Chinese/Japanese).",
+  "author": "Kiyomi Anime Curators",
+  "iconUrl": "https://kiyomi-app.com/icons/anime_icon.png",
+  
+  "providers": [
+    {
+      "id": "nyaa",
+      "name": "Nyaa (Anime/Asian Media)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/nyaa.json", 
+      "iconUrl": "https://nyaa.land/static/favicon.png",
+      "description": "Primary source for Eastern Asian media, often featuring raw or fan-subbed content.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.1
+    },
+    {
+      "id": "animetosho",
+      "name": "Anime Tosho (Torznab API)",
+      "author": "Kiyomi Staff",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/animetosho.json",
+      "iconUrl": "https://animetosho.org/inc/favicon.ico",
+      "description": "Automated service mirroring major anime torrents; provides structured Torznab data.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": true,
+      "isApiKeyRequired": true,
+      "version": 1.0
+    },
+    {
+      "id": "acgrip",
+      "name": "ACG.RIP (Chinese Anime RSS)",
+      "author": "Kiyomi Staff",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/acgrip.json",
+      "iconUrl": "https://acg.rip/favicon.ico",
+      "description": "Indexes Chinese and broader Asian media collections.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    },
+    {
+      "id": "knaben",
+      "name": "Knaben (API)",
+      "author": "Knaben Developers",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/knaben.json",
+      "iconUrl": "https://knaben.org/favicon.ico",
+      "description": "Modern, fast search API that offers structured results.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": true,
+      "isApiKeyRequired": true,
+      "version": 0.9
+    },
+    {
+      "id": "nekobt",
+      "name": "NekoBT (Private Torznab)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/nekobt.json",
+      "iconUrl": "https://nekobt.to/favicon.ico",
+      "description": "Specialized private anime indexer providing high-quality torrents via a Torznab API.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": true,
+      "isApiKeyRequired": true,
+      "version": 1.0
+    }
+  ]
+}

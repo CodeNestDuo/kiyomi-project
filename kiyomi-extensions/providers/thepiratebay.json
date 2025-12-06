@@ -1,12 +1,15 @@
 {
-  "name": "thepiratebay",
+  "id": "thepiratebay",
   "displayName": "The Pirate Bay (API)",
   "siteUrl": "https://thepiratebay.org",
-  "iconUrl": "https://thepiratebay.org/static/favicon.ico",
+  "iconUrl": "https://torrindex.net/images/tpb.jpg",
   "type": "JSON_API",
   "isAdult": false,
-  "isSecure": false,
-  "isPrivate": false,
+      "isSecure": false,
+      "cautionReason": "Search results are often unverified and may contain malicious files.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.1
 
   // The category logic is complex (index mapping), so we define the API mapping here.
   // The 'categoryIndex' logic must be manually reflected in a post-processor later if needed.
@@ -42,6 +45,7 @@
         "id_raw": { "accessor": "id", "accessorType": "JSON_PATH" },
         "title": { "accessor": "name", "accessorType": "JSON_PATH" },
         "hash": { "accessor": "info_hash", "accessorType": "JSON_PATH" },
+        "imdbId": {"accessor": "imdb","accessorType": "JSON_PATH" },
         "size_raw": {
           "accessor": "size",
           "accessorType": "JSON_PATH",
@@ -61,7 +65,7 @@
           "accessor": "added",
           "accessorType": "JSON_PATH",
           "conversionType": "LONG" // Epoch seconds are integers/strings
-        }
+        },
       },
 
       "postProcessors": [
@@ -91,6 +95,7 @@
         "seeds": "{seeds}",
         "peers": "{peers}",
         "publishDate": "{publishDate}",
+        "imdbId": "{imdbId}",
         // Construct the info URL using the raw ID
         "infoUrl": "https://thepiratebay.org/description.php?id={id_raw}"
       }

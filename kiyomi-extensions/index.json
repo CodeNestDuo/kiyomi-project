@@ -1,79 +1,137 @@
-[
-  {
-    "id": "thepiratebay",
-    "name": "The Pirate Bay (API)",
-    "author": "Kiyomi Community",
-    "configUrl": "https://kiyomi-extensions.pages.dev/providers/thepiratebay.json",
-    "iconUrl": "https://torrindex.net/images/tpb.jpg",
-    "description": "The Pirate Bay (TPB) is a free searchable online index of movies, music, video games, and software.",
-    "isAdult": false,
-    "isSecure": false,
-    "isPrivate": false
-  },
-  {
-    "id": "nyaa",
-    "name": "Nyaa (Anime/Asian Media)",
-    "author": "Kiyomi Community",
-    "configUrl": "https://kiyomi-extensions.pages.dev/providers/nyaa.json", 
-    "iconUrl": "https://nyaa.land/static/favicon.png",
-    "description": "Nyaa is a BitTorrent community focused on Eastern Asian media including anime, manga, music, and more.",
-    "isAdult": false,
-    "isSecure": true,
-    "isPrivate": false
-  },
-  {
-    "id": "animetosho",
-    "name": "Anime Tosho (Torznab API)",
-    "author": "Kiyomi Staff",
-    "configUrl": "https://kiyomi-extensions.pages.dev/providers/animetosho.json",
-    "iconUrl": "https://animetosho.org/inc/favicon.ico",
-    "description": "Anime Tosho is a free, automated service which mirrors most torrents posted on TokyoTosho's anime category and Nyaa.si's English translated anime category onto various DDL services, as well as Usenet.",
-    "isAdult": false,
-    "isSecure": true,
-    "isPrivate": false
-  },
-  {
-    "id": "acgrip",
-    "name": "ACG.RIP (Chinese Anime RSS)",
-    "author": "Kiyomi Staff",
-    "configUrl": "https://kiyomi-extensions.pages.dev/providers/acgrip.json",
-    "iconUrl": "https://acg.rip/favicon.ico",
-    "description": "ACG.RIP hosts Chinese and Japanese Anime, music and more that are otherwise not found elsewhere.",
-    "isAdult": false,
-    "isSecure": true,
-    "isPrivate": false
-  },
-  {
-    "id": "knaben",
-    "name": "Knaben (API)",
-    "author": "Knaben Developers",
-    "configUrl": "https://kiyomi-extensions.pages.dev/providers/knaben.json",
-    "iconUrl": "https://knaben.org/favicon.ico",
-    "description": "Knaben is a modern, fast search API that offers structured results, allowing for precise filtering and high-speed data retrieval.",
-    "isAdult": false,
-    "isSecure": true,
-    "isPrivate": false
-  },
-  {
-    "id": "torrentscsv",
-    "name": "TorrentsCSV (API)",
-    "author": "Kiyomi Community",
-    "configUrl": "https://kiyomi-extensions.pages.dev/providers/torrentscsv.json",
-    "iconUrl": "https://torrents-csv.com/favicon.ico",
-    "description": "TorrentsCSV provides simple, clean JSON API access to torrent data, listing torrent name, infohash, size (in raw bytes), and seeders.",
-    "isAdult": false,
-    "isSecure": true,
-    "isPrivate": false
-  },
-  {
-    "id": "limetorrents",
-    "name": "LimeTorrents (Public RSS)",
-    "author": "Kiyomi Community",
-    "configUrl": "https://kiyomi-extensions.pages.dev/providers/limetorrents.json",
-    "iconUrl": "https://www.limetorrents.fun/favicon.ico",
-    "description": "LimeTorrents is a General Torrents Download indexer with mostly Verified Torrents like Movies, Games, Music, TV Shows, Anime and more.",
-    "isAdult": false,
-    "isSecure": false,
-    "isPrivate": false
-  }
-]
+{
+  "indexVersion": 1.0,
+  "dateGenerated": "2025-12-06T12:00:00Z",
+  "name": "Kiyomi Main Index (General)",
+  "description": "The official, comprehensive index covering general media, movies, music, and international providers.",
+  "author": "Kiyomi Core Team",
+  "iconUrl": "https://kiyomi-app.com/icons/kiyomi-logo.png",
+  
+  "providers": [
+    {
+      "id": "thepiratebay",
+      "name": "The Pirate Bay (API)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/thepiratebay.json",
+      "iconUrl": "https://torrindex.net/images/tpb.jpg",
+      "description": "The Pirate Bay (TPB) is a free searchable online index of movies, music, video games, and software.",
+      "isAdult": false,
+      "isSecure": false,
+      "cautionReason": "Search results are often unverified and may contain malicious files.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.1
+    },
+    {
+      "id": "nyaa",
+      "name": "Nyaa (Anime/Asian Media)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/nyaa.json",
+      "iconUrl": "https://nyaa.land/static/favicon.png",
+      "description": "Nyaa is a BitTorrent community focused on Eastern Asian media including anime, manga, music, and more.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.1
+    },
+    {
+      "id": "animetosho",
+      "name": "Anime Tosho (Torznab API)",
+      "author": "Kiyomi Staff",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/animetosho.json",
+      "iconUrl": "https://animetosho.org/inc/favicon.ico",
+      "description": "Automated service mirroring major anime torrents; provides structured Torznab data.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": true, // Often requires registration/API key
+      "isApiKeyRequired": true,
+      "version": 1.0
+    },
+     {
+      "id": "nekobt",
+      "name": "NekoBT (Private Torznab)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/nekobt.json",
+      "iconUrl": "https://nekobt.to/favicon.ico",
+      "description": "Specialized private anime indexer providing high-quality torrents via a Torznab API.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": true,
+      "isApiKeyRequired": true,
+      "version": 1.0
+    },
+    {
+      "id": "acgrip",
+      "name": "ACG.RIP (Chinese Anime RSS)",
+      "author": "Kiyomi Staff",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/acgrip.json",
+      "iconUrl": "https://acg.rip/favicon.ico",
+      "description": "Indexes Chinese and broader Asian media collections.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    },
+    {
+      "id": "knaben",
+      "name": "Knaben (API)",
+      "author": "Knaben Developers",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/knaben.json",
+      "iconUrl": "https://knaben.org/favicon.ico",
+      "description": "Modern, fast search API that offers structured results.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": true, 
+      "isApiKeyRequired": true,
+      "version": 0.9
+    },
+    {
+      "id": "torrentscsv",
+      "name": "TorrentsCSV (API)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/torrentscsv.json",
+      "iconUrl": "https://torrents-csv.com/favicon.ico",
+      "description": "Provides simple, clean JSON API access to torrent data, listing torrent name, infohash, size, and seeders.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    },
+    {
+      "id": "limetorrents",
+      "name": "LimeTorrents (Public RSS)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/limetorrents.json",
+      "iconUrl": "https://www.limetorrents.fun/favicon.ico",
+      "description": "General Torrents Download indexer with mostly Verified Torrents.",
+      "isAdult": false,
+      "isSecure": false,
+      "cautionReason": "Unverified public indexer. Contains potentially harmful/mislabelled torrents.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    },
+    {
+      "id": "uindex",
+      "name": "UIndex",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/uindex.json",
+      "iconUrl": "https://uindex.org/favicon.ico",
+      "description": "UIndex is primarily a BitTorrent tracker site, similar to Russian tracker RuTracker.org. You can find the latest Asian drama content here!",
+      "isAdult": false,
+      "isSecure": false,
+      "cautionReason": "Search results are often unverified and may contain malicious files.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    }
+  ]
+}

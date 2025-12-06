@@ -1,12 +1,15 @@
 {
-  "name": "torrentscsv",
+  "id": "torrentscsv",
   "displayName": "TorrentsCSV",
   "siteUrl": "https://torrents-csv.com",
   "iconUrl": "https://torrents-csv.com/favicon.ico",
   "type": "JSON_API",
   "isAdult": false,
   "isSecure": true,
-  "isPrivate": false,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
 
   "categoryMap": {
     "All": "" 
@@ -73,7 +76,7 @@
           "functionName": "EPOCH_TO_DATE_STRING",
           "sourceKey": "created_unix",
           "targetKey": "publishDate"
-        }
+        },
       ],
 
       "finalMapping": {

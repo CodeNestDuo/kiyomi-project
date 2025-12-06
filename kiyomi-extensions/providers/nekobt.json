@@ -1,0 +1,98 @@
+{
+  "id": "nekobt",
+  "displayName": "NekoBT (Torznab Anime)",
+  "siteUrl": "https://nekobt.to",
+  "iconUrl": "https://nekobt.to/favicon.ico",
+  "type": "RSS_XML",
+  "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": true,
+      "isApiKeyRequired": true,
+      "version": 1.0
+
+  "categoryMap": {
+    "All": "0",
+    "Anime": "5070",
+    "Series": "5000",
+    "Movies": "2000"
+    // Use the Torznab categories required by the site
+  },
+
+  // The Torznab endpoint includes the API path structure specific to the indexer
+  "searchUrlTemplate": "https://nekobt.to/api/torznab/api?t=search&q={query}&cat={category}&apikey={API_KEY}",
+
+  "searchSteps": [
+    // --- Step 1: Execute HTTP Request ---
+    {
+      "stepType": "HTTP_REQUEST",
+      "method": "GET",
+      "urlKey": "searchUrlTemplate"
+    },
+
+    // --- Step 2: MAP_RESULTS_GENERIC (Scrape XML Items) ---
+    {
+      "stepType": "MAP_RESULTS_GENERIC",
+      "rootSelector": "channel > item", // Targets all result items
+      "isRootArray": false,
+
+      "fields": {
+        // Core RSS Fields
+        "title": { "accessor": "title::text", "accessorType": "XML_TAG" },
+        "infoUrl": { "accessor": "comments::text", "accessorType": "XML_TAG" },
+        "torrentDownloadUrl": { 
+          "accessor": "enclosure::attr(url)", // Magnet URL is provided here directly
+          "accessorType": "XML_TAG"
+        },
+        
+        // Date (RFC 822 format)
+        "publishDate": { 
+          "accessor": "pubDate::text", 
+          "accessorType": "XML_TAG",
+          "conversionType": "DATE_STRING" 
+        },
+
+        // Torznab Attributes (Use escaped namespace and attribute selector)
+        "hash": { 
+          "accessor": "torznab\\:attr[name=infohash]::attr(value)", 
+          "accessorType": "XML_TAG"
+        },
+        "magnetUrl": { 
+          "accessor": "torznab\\:attr[name=magneturl]::attr(value)",
+          "accessorType": "XML_TAG"
+        },
+        "size": { 
+          "accessor": "torznab\\:attr[name=size]::attr(value)",
+          "accessorType": "XML_TAG",
+          "conversionType": "LONG" // Size is raw bytes string
+        },
+        "seeds": { 
+          "accessor": "torznab\\:attr[name=seeders]::attr(value)",
+          "accessorType": "XML_TAG",
+          "conversionType": "INT"
+        },
+        "peers": { 
+          "accessor": "torznab\\:attr[name=peers]::attr(value)",
+          "accessorType": "XML_TAG",
+          "conversionType": "INT"
+        }
+      },
+
+      "postProcessors": [
+        // No post-processors needed, as hash, magnet, and size are all provided directly by torznab:attr
+      ],
+
+      "finalMapping": {
+        "title": "{title}",
+        "magnetUrl": "{magnetUrl}",
+        "hash": "{hash}",
+        "size": "{size}",
+        "seeds": "{seeds}",
+        "peers": "{peers}",
+        "infoUrl": "{infoUrl}",
+        "publishDate": "{publishDate}",
+        "torrentDownloadUrl": "{torrentDownloadUrl}"
+      }
+    }
+  ]
+}

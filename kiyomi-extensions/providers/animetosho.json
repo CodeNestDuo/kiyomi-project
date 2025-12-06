@@ -1,12 +1,15 @@
 {
-  "name": "animetosho",
+  "id": "animetosho",
   "displayName": "Anime Tosho (Torznab)",
   "siteUrl": "https://animetosho.org",
   "iconUrl": "https://animetosho.org/inc/favicon.ico",
   "type": "RSS_XML",
   "isAdult": false,
-  "isSecure": true,
-  "isPrivate": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": true, // Often requires registration/API key
+      "isApiKeyRequired": true,
+      "version": 1.0
 
   "categoryMap": {
     "All": ""

@@ -1,12 +1,15 @@
 {
-  "name": "knaben",
+  "id": "knaben",
   "displayName": "Knaben (API)",
   "siteUrl": "https://knaben.org",
   "iconUrl": "https://knaben.org/favicon.ico",
   "type": "JSON_API",
   "isAdult": false,
-  "isSecure": true,
-  "isPrivate": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": true, 
+      "isApiKeyRequired": true,
+      "version": 0.9
 
   "categoryMap": {
     "All": "",

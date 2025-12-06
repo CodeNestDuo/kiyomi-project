@@ -1,0 +1,81 @@
+{
+  "indexVersion": 1.0,
+  "dateGenerated": "2025-12-06T13:00:00Z",
+  "name": "K-Drama & Asian Series Index",
+  "description": "Curated sources specializing in high-quality Korean and international dramas and TV shows.",
+  "author": "Kiyomi Community Content",
+  "iconUrl": "https://kiyomi-app.com/icons/korea.png",
+  
+  "providers": [
+    {
+      "id": "nyaa",
+      "name": "Nyaa (Asian Series)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/nyaa.json",
+      "iconUrl": "https://nyaa.land/static/favicon.png",
+      "description": "Excellent for fan-subbed, raw, and niche Asian series and documentaries.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.1
+    },
+    {
+      "id": "thepiratebay",
+      "name": "The Pirate Bay (General/Archival)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/thepiratebay.json",
+      "iconUrl": "https://torrindex.net/images/tpb.jpg",
+      "description": "A general index useful for finding established or internationally popular K-Dramas.",
+      "isAdult": false,
+      "isSecure": false,
+      "cautionReason": "Search results are often unverified and may contain malicious files.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    },
+    {
+      "id": "knaben",
+      "name": "Knaben (API)",
+      "author": "Knaben Developers",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/knaben.json",
+      "iconUrl": "https://knaben.org/favicon.ico",
+      "description": "Modern, fast search API offering structured results, including many East Asian releases.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": true,
+      "isApiKeyRequired": true,
+      "version": 0.9
+    },
+    {
+      "id": "torrentscsv",
+      "name": "TorrentsCSV (Aggregated Data)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/torrentscsv.json",
+      "iconUrl": "https://torrents-csv.com/favicon.ico",
+      "description": "Aggregates data from diverse sources, helping locate obscure or older niche K-Drama files.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    },
+    {
+      "id": "uindex",
+      "name": "UIndex",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/uindex.json",
+      "iconUrl": "https://uindex.org/favicon.ico",
+      "description": "UIndex is primarily a BitTorrent tracker site, similar to Russian tracker RuTracker.org. You can find the latest Asian drama content here!",
+      "isAdult": false,
+      "isSecure": false,
+      "cautionReason": "Search results are often unverified and may contain malicious files.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    }
+  ]
+}

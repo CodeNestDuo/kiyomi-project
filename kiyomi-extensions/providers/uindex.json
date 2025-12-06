@@ -1,0 +1,112 @@
+{
+  "id": "uindex",
+  "displayName": "UIndex",
+  "siteUrl": "https://uindex.org",
+  "iconUrl": "https://uindex.org/favicon.ico",
+  "type": "HTML_SCRAPE",
+  "isAdult": false,
+    "isSecure": false,
+      "cautionReason": "Search results are often unverified and may contain malicious files.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+
+  "categoryMap": {
+    "All": "0",
+    "Anime": "7",
+    "Apps": "5",
+    "Games": "3",
+    "Movies": "1",
+    "Music": "4",
+    "Porn": "6",
+    "Series": "2",
+    "Other": "8"
+  },
+
+  "searchUrlTemplate": "https://uindex.org/search.php?search={query}&c={category}",
+
+  "searchSteps": [
+    // --- Step 1: Fetch Search Results Page (HTTP_REQUEST) ---
+    {
+      "stepType": "HTTP_REQUEST",
+      "method": "GET",
+      "urlKey": "searchUrlTemplate"
+    },
+
+    // --- Step 2: MAP_RESULTS_GENERIC (Scrape Initial Data) ---
+    {
+      "stepType": "MAP_RESULTS_GENERIC",
+      "rootSelector": "table.maintable > tbody > tr", // Target the result rows
+      "isRootArray": false,
+
+      "fields": {
+        // Magnet Link (td:nth-child(2) > a:nth-child(1))
+        "magnetUrl": {
+          "accessor": "td:nth-child(2) > a:nth-child(1)::attr(href)",
+          "accessorType": "CSS_SELECTOR"
+        },
+        // Title (td:nth-child(2) > a:nth-child(2))
+        "title": {
+          "accessor": "td:nth-child(2) > a:nth-child(2)::text",
+          "accessorType": "CSS_SELECTOR"
+        },
+        // Info URL (Description Page)
+        "detailsPath": {
+          "accessor": "td:nth-child(2) > a:nth-child(2)::attr(href)",
+          "accessorType": "CSS_SELECTOR"
+        },
+        // Size (td:nth-child(3))
+        "size": {
+          "accessor": "td:nth-child(3)::text",
+          "accessorType": "CSS_SELECTOR",
+          "conversionType": "HUMAN_SIZE_TO_BYTES" // e.g., "1.4 GiB" to bytes
+        },
+        // Seeders (td:nth-child(4) > span) - Needs cleaning of commas
+        "seeds": {
+          "accessor": "td:nth-child(4) > span::text",
+          "accessorType": "CSS_SELECTOR",
+          "conversionType": "INT"
+        },
+        // Peers (td:nth-child(5) > span) - Needs cleaning of commas
+        "peers": {
+          "accessor": "td:nth-child(5) > span::text",
+          "accessorType": "CSS_SELECTOR",
+          "conversionType": "INT"
+        },
+        // Upload Date (Embedded in td:nth-child(2) > div)
+        "publishDate": {
+          "accessor": "td:nth-child(2) > div::text",
+          "accessorType": "CSS_SELECTOR",
+          "conversionType": "DATE_STRING" // e.g., "4 days ago" (relies on helper parsing relative date)
+        },
+        // Category Name (td:nth-child(1) > a)
+        "category_name": {
+          "accessor": "td:nth-child(1) > a::text",
+          "accessorType": "CSS_SELECTOR"
+        }
+      },
+
+      "postProcessors": [
+        // Construct the full absolute URL for the detail page link
+        {
+          "processorType": "FUNCTION_CALL",
+          "functionName": "CONSTRUCT_URL",
+          "sourceKey": "detailsPath",
+          "targetKey": "infoUrl",
+          "extraSourceKey": "siteUrl"
+        }
+        // No hash extraction is needed since the magnet link is available directly
+      ],
+
+      "finalMapping": {
+        "title": "{title}",
+        "magnetUrl": "{magnetUrl}",
+        "size": "{size}",
+        "seeds": "{seeds}",
+        "peers": "{peers}",
+        "infoUrl": "{infoUrl}",
+        "publishDate": "{publishDate}"
+      }
+    }
+  ]
+}

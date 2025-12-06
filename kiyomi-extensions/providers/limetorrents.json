@@ -1,12 +1,15 @@
 {
-  "name": "limetorrents",
+  "id": "limetorrents",
   "displayName": "LimeTorrents (RSS)",
   "siteUrl": "https://www.limetorrents.lol",
   "iconUrl": "https://www.limetorrents.lol/favicon.ico",
   "type": "RSS_XML",
   "isAdult": false,
-  "isSecure": true,
-  "isPrivate": false,
+      "isSecure": false,
+      "cautionReason": "Unverified public indexer. Contains potentially harmful/mislabelled torrents.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
 
   // Maps your internal Category enum to LimeTorrents' category strings
   "categoryMap": {
@@ -61,6 +64,7 @@
           "accessor": "enclosure::attr(url)",
           "accessorType": "XML_TAG"
         },
+        "publishDate": { "accessor": "pubDate", "accessorType": "XML_TAG" }
         "seeds": {
           "accessor": "description::text",
           "accessorType": "XML_TAG",

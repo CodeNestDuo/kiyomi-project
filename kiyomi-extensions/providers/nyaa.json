@@ -1,12 +1,15 @@
 {
-  "name": "nyaa",
+  "id": "nyaa",
   "displayName": "Nyaa (RSS Feed)",
   "siteUrl": "https://nyaa.land",
   "iconUrl": "https://nyaa.land/static/favicon.png",
   "type": "RSS_XML",
   "isAdult": false,
-  "isSecure": true,
-  "isPrivate": false,
+     "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.1
 
   // Maps your internal Category enum to Nyaa's primary category IDs
   "categoryMap": {
@@ -52,7 +55,8 @@
           "accessor": "nyaa\\:leechers::text",// <--- CRITICAL FIX
           "accessorType": "XML_TAG"
         },
-        "infoUrl": { "accessor": "guid::text", "accessorType": "XML_TAG" }
+        "infoUrl": { "accessor": "guid::text", "accessorType": "XML_TAG" },
+        "publishDate": { "accessor": "pubDate", "accessorType": "XML_TAG" }
       },
 
       "postProcessors": [
@@ -80,7 +84,9 @@
         "size": "{size}", // Mapped from the post-processor
         "seeds": "{seeds}",
         "peers": "{peers}",
-        "infoUrl": "{infoUrl}"
+        "infoUrl": "{infoUrl}",
+        "publishDate": "{publishDate}",
+        
       }
     }
   ]
