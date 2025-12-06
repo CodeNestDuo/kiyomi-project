@@ -9,7 +9,7 @@
       "cautionReason": "Unverified public indexer. Contains potentially harmful/mislabelled torrents.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1.0,
 
   // Maps your internal Category enum to LimeTorrents' category strings
   "categoryMap": {
