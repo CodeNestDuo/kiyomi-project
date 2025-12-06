@@ -4,12 +4,12 @@
   "siteUrl": "https://knaben.org",
   "iconUrl": "https://knaben.org/favicon.ico",
   "type": "JSON_API",
-  "isAdult": false,
-      "isSecure": true,
-      "cautionReason": "",
-      "isPrivate": true, 
-      "isApiKeyRequired": true,
-      "version": 0.9,
+  "isAdult": true,
+  "isSecure": true,
+  "cautionReason": "",
+  "isPrivate": true, 
+  "isApiKeyRequired": true,
+  "version": 1.0,
 
   "categoryMap": {
     "All": "",

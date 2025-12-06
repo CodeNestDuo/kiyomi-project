@@ -1,15 +1,16 @@
 {
-  "name": "eztvx",
+  "id": "eztv",
   "displayName": "EZTV",
   "siteUrl": "https://eztvx.to",
   "iconUrl": "https://eztvx.to/favicon.ico",
   "type": "HTML_SCRAPE",
   "isAdult": false,
   "isSecure": true,
+  "cautionReason": "",
   "isPrivate": false,
   "isApiKeyRequired": false,
   "version": 1.0,
-  "cautionReason": "",
+
 
   "categoryMap": {
     "All": "",

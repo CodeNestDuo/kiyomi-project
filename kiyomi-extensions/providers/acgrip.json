@@ -5,11 +5,11 @@
   "iconUrl": "https://acg.rip/favicon.ico",
   "type": "RSS_XML",
   "isAdult": false,
-      "isSecure": true,
-      "cautionReason": "",
-      "isPrivate": false,
-      "isApiKeyRequired": false,
-      "version": 1.0,
+  "isSecure": true,
+  "cautionReason": "",
+  "isPrivate": false,
+  "isApiKeyRequired": false,
+  "version": 1.0,
 
   // Maps display name to the required numerical path segment (1, 2, 3, etc.)
   "categoryMap": {

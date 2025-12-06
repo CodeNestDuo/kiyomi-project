@@ -5,11 +5,11 @@
   "iconUrl": "https://nyaa.land/static/favicon.png",
   "type": "RSS_XML",
   "isAdult": false,
-     "isSecure": true,
-      "cautionReason": "",
-      "isPrivate": false,
-      "isApiKeyRequired": false,
-      "version": 1.1,
+  "isSecure": true,
+  "cautionReason": "",
+  "isPrivate": false,
+  "isApiKeyRequired": false,
+  "version": 1.0,
 
   // Maps your internal Category enum to Nyaa's primary category IDs
   "categoryMap": {

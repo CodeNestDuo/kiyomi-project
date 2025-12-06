@@ -5,11 +5,11 @@
   "iconUrl": "https://animetosho.org/inc/favicon.ico",
   "type": "RSS_XML",
   "isAdult": false,
-      "isSecure": true,
-      "cautionReason": "",
-      "isPrivate": true, // Often requires registration/API key
-      "isApiKeyRequired": true,
-      "version": 1.0,
+  "isSecure": true,
+  "cautionReason": "",
+  "isPrivate": true, // Often requires registration/API key
+  "isApiKeyRequired": true,
+  "version": 1.0,
 
   "categoryMap": {
     "All": ""

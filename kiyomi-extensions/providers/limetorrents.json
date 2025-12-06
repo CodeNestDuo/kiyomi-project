@@ -5,11 +5,11 @@
   "iconUrl": "https://www.limetorrents.lol/favicon.ico",
   "type": "RSS_XML",
   "isAdult": false,
-      "isSecure": false,
-      "cautionReason": "Unverified public indexer. Contains potentially harmful/mislabelled torrents.",
-      "isPrivate": false,
-      "isApiKeyRequired": false,
-      "version": 1.0,
+  "isSecure": false,
+  "cautionReason": "Unverified public indexer. Contains potentially harmful/mislabelled torrents.",
+  "isPrivate": false,
+  "isApiKeyRequired": false,
+  "version": 1.0,
 
   // Maps your internal Category enum to LimeTorrents' category strings
   "categoryMap": {

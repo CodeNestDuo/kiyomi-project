@@ -14,12 +14,12 @@
       "configUrl": "https://kiyomi-extensions.pages.dev/providers/thepiratebay.json",
       "iconUrl": "https://torrindex.net/images/tpb.jpg",
       "description": "The Pirate Bay (TPB) is a free searchable online index of movies, music, video games, and software.",
-      "isAdult": false,
+      "isAdult": true,
       "isSecure": false,
       "cautionReason": "Search results are often unverified and may contain malicious files.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.1
+      "version": 1.0
     },
     {
       "id": "nyaa",
@@ -33,7 +33,7 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.1
+      "version": 1.0
     },
     {
       "id": "animetosho",
@@ -89,7 +89,21 @@
       "cautionReason": "",
       "isPrivate": true, 
       "isApiKeyRequired": true,
-      "version": 0.9
+      "version": 1.0
+    },
+    {
+      "id": "eztv",
+      "name": "Knaben (API)",
+      "author": "Knaben Developers",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/eztv.json",
+      "iconUrl": "https://eztvx.to/favicon.ico",
+      "description": "EZTV is a TV torrent distribution group and they provide reliable BitTorrent site and feeds service to download TV shows and movies.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false, 
+      "isApiKeyRequired": false,
+      "version": 1.0
     },
     {
       "id": "torrentscsv",

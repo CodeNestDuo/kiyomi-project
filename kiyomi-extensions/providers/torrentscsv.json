@@ -6,10 +6,10 @@
   "type": "JSON_API",
   "isAdult": false,
   "isSecure": true,
-      "cautionReason": "",
-      "isPrivate": false,
-      "isApiKeyRequired": false,
-      "version": 1.0,
+  "cautionReason": "",
+  "isPrivate": false,
+  "isApiKeyRequired": false,
+  "version": 1.0,
 
   "categoryMap": {
     "All": "" 
