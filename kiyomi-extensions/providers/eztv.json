@@ -1,0 +1,99 @@
+{
+  "name": "eztvx",
+  "displayName": "EZTV",
+  "siteUrl": "https://eztvx.to",
+  "iconUrl": "https://eztvx.to/favicon.ico",
+  "type": "HTML_SCRAPE",
+  "isAdult": false,
+  "isSecure": true,
+  "isPrivate": false,
+  "isApiKeyRequired": false,
+  "version": 1.0,
+  "cautionReason": "",
+
+  "categoryMap": {
+    "All": "",
+    //"Series": ""  EZTV is series-only, category is implicitly handled by the site structure
+  },
+
+  // The request URL is simple: siteUrl/search/query
+  "searchUrlTemplate": "https://eztvx.to/search/{query}",
+
+  "searchSteps": [
+    // --- Step 1: Fetch Search Results Page (HTTP_REQUEST) ---
+    {
+      "stepType": "HTTP_REQUEST",
+      "method": "GET",
+      "urlKey": "searchUrlTemplate",
+      // CRITICAL: Simulate the cookie requirement to force magnet links in the response
+      "headers": {
+        "Cookie": "layout=def_wlinks" 
+      }
+    },
+
+    // --- Step 2: MAP_RESULTS_GENERIC (Scrape Initial Data) ---
+    {
+      "stepType": "MAP_RESULTS_GENERIC",
+      // Target the last table body (where results are located) and skip the header rows (tr:nth-child(n+3))
+      "rootSelector": "table.forum_header_border:last-of-type > tbody > tr:nth-child(n+3)", 
+      "isRootArray": false,
+
+      "fields": {
+        // Title (a.epinfo - contains name and relative details path)
+        "title": { 
+          "accessor": "a.epinfo::text", 
+          "accessorType": "CSS_SELECTOR" 
+        },
+        // Magnet Link (a.magnet)
+        "magnetUrl": {
+          "accessor": "a.magnet::attr(href)",
+          "accessorType": "CSS_SELECTOR"
+        },
+        // Info URL (a.epinfo href attribute)
+        "detailsPath": { 
+          "accessor": "a.epinfo::attr(href)", 
+          "accessorType": "CSS_SELECTOR" 
+        },
+        // Size (td:nth-child(4))
+        "size_raw": { 
+          "accessor": "td:nth-child(4)::text", 
+          "accessorType": "CSS_SELECTOR"
+        },
+        // Released (Upload Date, td:nth-child(5))
+        "publishDate": { 
+          "accessor": "td:nth-child(5)::text", 
+          "accessorType": "CSS_SELECTOR",
+          "conversionType": "DATE_STRING" 
+        },
+        // Seeds (td:nth-child(6) > font) - Note: The seeds value needs cleaning (commas, font tag)
+        "seeds": { 
+          "accessor": "td:nth-child(6) font::text", 
+          "accessorType": "CSS_SELECTOR",
+          "conversionType": "INT" // Engine will clean commas and convert to Int
+        }
+        // Peers field is intentionally omitted as the source code marked it as always 0 (unreliable)
+      },
+
+      "postProcessors": [
+        // Construct the full absolute URL for the detail page link
+        {
+          "processorType": "FUNCTION_CALL",
+          "functionName": "CONSTRUCT_URL",
+          "sourceKey": "detailsPath",
+          "targetKey": "infoUrl",
+          "extraSourceKey": "siteUrl"
+        }
+      ],
+
+      "finalMapping": {
+        "title": "{title}",
+        "magnetUrl": "{magnetUrl}",
+        "size": "{size_raw}",
+        "seeds": "{seeds}",
+        "peers": "0", // Hardcoded zero peer count, as the original provider did
+        "infoUrl": "{infoUrl}",
+        "publishDate": "{publishDate}"
+      }
+    }
+  ]
+}

@@ -46,10 +46,10 @@
         "title": { "accessor": "name", "accessorType": "JSON_PATH" },
         "hash": { "accessor": "info_hash", "accessorType": "JSON_PATH" },
         "imdbId": {"accessor": "imdb","accessorType": "JSON_PATH" },
-        "size_raw": {
+        "size_raw_bytes": {
           "accessor": "size",
           "accessorType": "JSON_PATH",
-          "conversionType": "LONG" // Size is provided as raw bytes string -> Long
+	   // REMOVE conversionType: "LONG"
         },
         "seeds": {
           "accessor": "seeders",
@@ -63,8 +63,7 @@
         },
         "added_epoch": {
           "accessor": "added",
-          "accessorType": "JSON_PATH",
-          "conversionType": "LONG" // Epoch seconds are integers/strings
+          "accessorType": "JSON_PATH"
         },
       },
 
@@ -83,6 +82,13 @@
           "functionName": "EPOCH_TO_DATE_STRING",
           "sourceKey": "added_epoch",
           "targetKey": "publishDate"
+        },
+        // 3. CRITICAL NEW STEP: Convert Raw Bytes String to Long
+        {
+          "processorType": "FUNCTION_CALL",
+          "functionName": "RAW_BYTES_TO_LONG",
+          "sourceKey": "size_raw_bytes", 
+          "targetKey": "size" // Overwrite the size field with the converted Long
         }
         // NOTE: The 'No results returned' check must be handled inside the engine's JSON parsing logic
       ],
@@ -91,7 +97,7 @@
         "title": "{title}",
         "magnetUrl": "{magnetUrl}",
         "hash": "{hash}",
-        "size": "{size_raw}",
+        "size": "{size}",
         "seeds": "{seeds}",
         "peers": "{peers}",
         "publishDate": "{publishDate}",
