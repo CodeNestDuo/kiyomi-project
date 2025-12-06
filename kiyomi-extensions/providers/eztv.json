@@ -12,46 +12,31 @@
   "version": 1.0,
 
   "categoryMap": {
-    "All": "",
-    "Series": "" // EZTV is series-only, so the category map is minimal
+    "All": ""
   },
 
   "searchUrlTemplate": "https://eztvx.to/search/{query}",
 
   "searchSteps": [
-    // --- Step 1: Fetch Search Results Page (CRITICAL COOKIE HEADER) ---
     {
       "stepType": "HTTP_REQUEST",
       "method": "GET",
       "urlKey": "searchUrlTemplate",
       "headers": {
-        "Cookie": "layout=def_wlinks" // Required to make magnet links appear
+        "Cookie": "layout=def_wlinks"
       }
     },
-
-    // --- Step 2: MAP_RESULTS_GENERIC (Scrape Initial Data) ---
     {
       "stepType": "MAP_RESULTS_GENERIC",
-      // Targets the last table body and skips the first two header rows (tr:nth-child(n+3))
-      "rootSelector": "table.forum_header_border:last-of-type > tbody > tr:nth-child(n+3)", 
+      "rootSelector": "table.forum_header_border:last-of-type > tbody > tr:nth-child(n+3)",
       "isRootArray": false,
 
       "fields": {
         // Title (td:nth-child(2) > a.epinfo)
-        "title": { 
-          "accessor": "td:nth-child(2) a.epinfo::text", 
-          "accessorType": "CSS_SELECTOR" 
-        },
-        // Magnet Link (a.magnet)
-        "magnetUrl": {
-          "accessor": "td:nth-child(3) a.magnet::attr(href)", // Column 3 (Dload) contains the magnet link
-          "accessorType": "CSS_SELECTOR"
-        },
-        // Info URL (a.epinfo href attribute)
-        "detailsPath": { 
-          "accessor": "td:nth-child(2) a.epinfo::attr(href)", 
-          "accessorType": "CSS_SELECTOR" 
-        },
+        "title": { "accessor": "td:nth-child(2) a.epinfo::text", "accessorType": "CSS_SELECTOR" },
+        "magnetUrl": { "accessor": "td:nth-child(3) a.magnet::attr(href)", "accessorType": "CSS_SELECTOR" },
+        "detailsPath": { "accessor": "td:nth-child(2) a.epinfo::attr(href)", "accessorType": "CSS_SELECTOR" },
+        
         // Size (td:nth-child(4)) - e.g., "715 MB"
         "size_raw": { 
           "accessor": "td:nth-child(4)::text", 
@@ -61,31 +46,28 @@
         "publishDate": { 
           "accessor": "td:nth-child(5)::text", 
           "accessorType": "CSS_SELECTOR",
-          "conversionType": "DATE_STRING" // Relative date format
+          "conversionType": "DATE_STRING"
         },
-        // Seeds (td:nth-child(6) > font) - Note the font tag is inside the TD
+        // SEEDS FIX: Target the TD and rely on the INT conversion to clean the number.
         "seeds": { 
-          "accessor": "td:nth-child(6) font::text", 
+          "accessor": "td:nth-child(6)::text", 
           "accessorType": "CSS_SELECTOR",
-          "conversionType": "INT" // Engine will clean commas and convert
+          "conversionType": "INT" 
         }
-        // Peers field is intentionally omitted (hardcoded to 0 in final mapping)
       },
 
       "postProcessors": [
-        // 1. Convert Human Readable Size (e.g., 715 MB) to Bytes (Long)
         {
           "processorType": "FUNCTION_CALL",
           "functionName": "HUMAN_SIZE_TO_BYTES",
           "sourceKey": "size_raw",
-          "targetKey": "size" // Overwrite the 'size' field with the converted Long
+          "targetKey": "size"
         },
-        // 2. Construct the full absolute URL for the detail page
         {
           "processorType": "FUNCTION_CALL",
           "functionName": "CONSTRUCT_URL",
           "sourceKey": "detailsPath",
-          "targetKey": "infoUrl", 
+          "targetKey": "infoUrl",
           "extraSourceKey": "siteUrl"
         }
       ],
