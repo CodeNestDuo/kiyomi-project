@@ -92,12 +92,12 @@
       "version": 1.0
     },
     {
-      "id": "eztv",
-      "name": "EZTV",
+      "id": "sukebei_nyaa",
+      "name": "Sukebei Nyaa (Adult)",
       "author": "Kiyomi Community",
-      "configUrl": "https://kiyomi-extensions.pages.dev/providers/eztv.json",
-      "iconUrl": "https://eztvx.to/favicon.ico",
-      "description": "EZTV is a TV torrent distribution group and they provide reliable BitTorrent site and feeds service to download TV shows and movies.",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers/sukebei_nyaa.json",
+      "iconUrl": "https://sukebei.nyaa.si/static/favicon.png",
+      "description": "Sukebei Nyaa is the adults-only sister site of the Nyaa torrent index, focused on non-work-safe Japanese, Chinese, and Korean media such as 18+ anime, doujinshi, games, and real-life photos or videos",
       "isAdult": true,
       "isSecure": true,
       "cautionReason": "",
