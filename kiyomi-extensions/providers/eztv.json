@@ -6,69 +6,86 @@
   "type": "HTML_SCRAPE",
   "isAdult": false,
   "isSecure": true,
+  "cautionReason": "",
   "isPrivate": false,
   "isApiKeyRequired": false,
   "version": 1.0,
-  "cautionReason": "",
 
   "categoryMap": {
-    "All": ""
+    "All": "",
+    "Series": "" // EZTV is series-only, so the category map is minimal
   },
 
   "searchUrlTemplate": "https://eztvx.to/search/{query}",
 
   "searchSteps": [
-    // --- Step 1: Fetch Search Results Page (HTTP_REQUEST) ---
+    // --- Step 1: Fetch Search Results Page (CRITICAL COOKIE HEADER) ---
     {
       "stepType": "HTTP_REQUEST",
       "method": "GET",
       "urlKey": "searchUrlTemplate",
       "headers": {
-        "Cookie": "layout=def_wlinks"
+        "Cookie": "layout=def_wlinks" // Required to make magnet links appear
       }
     },
 
     // --- Step 2: MAP_RESULTS_GENERIC (Scrape Initial Data) ---
     {
       "stepType": "MAP_RESULTS_GENERIC",
-      "rootSelector": "table.forum_header_border:last-of-type > tbody > tr:nth-child(n+3)",
+      // Targets the last table body and skips the first two header rows (tr:nth-child(n+3))
+      "rootSelector": "table.forum_header_border:last-of-type > tbody > tr:nth-child(n+3)", 
       "isRootArray": false,
 
       "fields": {
-        // ... (Title, Magnet, Info URL fields remain the same) ...
-        
+        // Title (td:nth-child(2) > a.epinfo)
+        "title": { 
+          "accessor": "td:nth-child(2) a.epinfo::text", 
+          "accessorType": "CSS_SELECTOR" 
+        },
+        // Magnet Link (a.magnet)
+        "magnetUrl": {
+          "accessor": "td:nth-child(3) a.magnet::attr(href)", // Column 3 (Dload) contains the magnet link
+          "accessorType": "CSS_SELECTOR"
+        },
+        // Info URL (a.epinfo href attribute)
+        "detailsPath": { 
+          "accessor": "td:nth-child(2) a.epinfo::attr(href)", 
+          "accessorType": "CSS_SELECTOR" 
+        },
+        // Size (td:nth-child(4)) - e.g., "715 MB"
         "size_raw": { 
           "accessor": "td:nth-child(4)::text", 
           "accessorType": "CSS_SELECTOR"
         },
-        // Seeds (td:nth-child(6) > font)
-        "seeds": { 
-          "accessor": "td:nth-child(6) font::text", 
-          "accessorType": "CSS_SELECTOR",
-          "conversionType": "INT" 
-        },
-        // Peers is hardcoded to 0 in the final mapping, so we skip extraction here.
+        // Released Date (td:nth-child(5)) - e.g., "1 week"
         "publishDate": { 
           "accessor": "td:nth-child(5)::text", 
           "accessorType": "CSS_SELECTOR",
-          "conversionType": "DATE_STRING"
+          "conversionType": "DATE_STRING" // Relative date format
+        },
+        // Seeds (td:nth-child(6) > font) - Note the font tag is inside the TD
+        "seeds": { 
+          "accessor": "td:nth-child(6) font::text", 
+          "accessorType": "CSS_SELECTOR",
+          "conversionType": "INT" // Engine will clean commas and convert
         }
+        // Peers field is intentionally omitted (hardcoded to 0 in final mapping)
       },
 
       "postProcessors": [
-        // CRITICAL FIX: Convert Human Readable Size to Bytes (Long)
+        // 1. Convert Human Readable Size (e.g., 715 MB) to Bytes (Long)
         {
           "processorType": "FUNCTION_CALL",
           "functionName": "HUMAN_SIZE_TO_BYTES",
           "sourceKey": "size_raw",
           "targetKey": "size" // Overwrite the 'size' field with the converted Long
         },
-        // Construct the full absolute URL
+        // 2. Construct the full absolute URL for the detail page
         {
           "processorType": "FUNCTION_CALL",
           "functionName": "CONSTRUCT_URL",
           "sourceKey": "detailsPath",
-          "targetKey": "infoUrl",
+          "targetKey": "infoUrl", 
           "extraSourceKey": "siteUrl"
         }
       ],
@@ -76,10 +93,11 @@
       "finalMapping": {
         "title": "{title}",
         "magnetUrl": "{magnetUrl}",
-        "size": "{size}", // Mapped from the post-processor
+        "size": "{size}",
         "seeds": "{seeds}",
         "peers": "0", // Hardcoded zero peer count
-        "infoUrl": "{infoUrl}"
+        "infoUrl": "{infoUrl}",
+        "publishDate": "{publishDate}"
       }
     }
   ]
