@@ -42,6 +42,18 @@ const CATEGORY_MAP = {
 // Full URL template (same idea as JSON)
 const SEARCH_URL_TEMPLATE = "https://nyaa.land/?page=rss&c={category}&f=0&q={query}";
 
+
+/**
+ * Helper to extract tags (supports nyaa:xyz too).
+ */
+function extractTag(xml, tagName) {
+    // build the pattern as a string, so we only have to escape backslashes once
+    const pattern = "<" + tagName + ">([\\s\\S]*?)</" + tagName + ">";
+    const tagRegex = new RegExp(pattern, "i");
+    const m = xml.match(tagRegex);
+    return m ? m[1].trim() : "";
+}
+
 /**
  * Executes a search against Nyaa.land using the Kiyomi Kotlin bridge for HTTP requests.
  * @param {string} query
@@ -54,46 +66,48 @@ function search(query, category) {
     // 1. Construct URL
     let searchUrl = SEARCH_URL_TEMPLATE
         .replace("{category}", categoryId)
-        .replace("{query}", encodeURIComponent(query)); // URL-encode query
+        .replace("{query}", encodeURIComponent(query || "")); // URL-encode query
 
     // 2. HTTP request via bridge
+    if (typeof Kiyomi !== "object" || typeof Kiyomi.httpGet !== "function") {
+        return [];
+    }
+
     const rssXml = Kiyomi.httpGet(searchUrl);
+    if (!rssXml) return [];
 
     // 3. Simple XML parsing for <item> blocks
-    const itemsRegex = /<item>([\\s\\S]*?)<\\/item>/g;
+    // IMPORTANT: single backslashes in regex literal
+    const itemsRegex = /<item>([\s\S]*?)<\/item>/gi;
     const results = [];
     let match;
 
     while ((match = itemsRegex.exec(rssXml)) !== null) {
         const itemXml = match[1];
 
-        // Helper to extract tags (supports nyaa:xyz)
-        const extractTag = (xml, tagName) => {
-            const tagRegex = new RegExp(`<${tagName}>([\\s\\S]*?)<\\/${tagName}>`, "i");
-            const tagMatch = xml.match(tagRegex);
-            return tagMatch ? tagMatch[1].trim() : "";
-        };
-
         const rawFields = {
-            title:      extractTag(itemXml, "title"),
-            infoHash:   extractTag(itemXml, "nyaa:infoHash"),
-            size_raw:   extractTag(itemXml, "nyaa:size"),
-            seeds:      parseInt(extractTag(itemXml, "nyaa:seeders"))  || 0,
-            peers:      parseInt(extractTag(itemXml, "nyaa:leechers")) || 0,
-            infoUrl:    extractTag(itemXml, "guid"),
+            title:       extractTag(itemXml, "title"),
+            infoHash:    extractTag(itemXml, "nyaa:infoHash"),
+            size_raw:    extractTag(itemXml, "nyaa:size"),
+            seeds:       parseInt(extractTag(itemXml, "nyaa:seeders"), 10)  || 0,
+            peers:       parseInt(extractTag(itemXml, "nyaa:leechers"), 10) || 0,
+            infoUrl:     extractTag(itemXml, "guid"),
             publishDate: extractTag(itemXml, "pubDate")
         };
 
         if (!rawFields.infoHash) continue; // require hash
+        if (!rawFields.title) continue;
 
         // Post-processing via Kotlin bridge
-        const sizeBytesStr = Kiyomi.humanSizeToBytes(rawFields.size_raw);
+        const sizeBytesStr = typeof Kiyomi.humanSizeToBytes === "function"
+            ? Kiyomi.humanSizeToBytes(rawFields.size_raw)
+            : null;
+
         const sizeBytes = sizeBytesStr ? Number(sizeBytesStr) : 0;
 
-        const magnetUrl = Kiyomi.buildMagnetFromHash(
-            rawFields.infoHash,
-            rawFields.title
-        );
+        const magnetUrl = typeof Kiyomi.buildMagnetFromHash === "function"
+            ? Kiyomi.buildMagnetFromHash(rawFields.infoHash, rawFields.title)
+            : "";
 
         // Final mapping
         results.push({

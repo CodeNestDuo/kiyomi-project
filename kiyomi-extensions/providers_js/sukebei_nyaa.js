@@ -56,7 +56,8 @@ const SEARCH_URL_TEMPLATE =
  * Extracts text inside <tagName>...</tagName> from a snippet of XML.
  */
 function extractTag(xml, tagName) {
-    const re = new RegExp(`<${tagName}>([\\s\\S]*?)<\\/${tagName}>`, "i");
+    const pattern = "<" + tagName + ">([\\s\\S]*?)</" + tagName + ">";
+    const re = new RegExp(pattern, "i");
     const m  = xml.match(re);
     return m ? m[1].trim() : "";
 }
@@ -78,13 +79,19 @@ function search(query, category) {
     // 1. Build search URL
     let url = SEARCH_URL_TEMPLATE
         .replace("{category}", encodeURIComponent(catId))
-        .replace("{query}", encodeURIComponent(query));
+        .replace("{query}", encodeURIComponent(query || ""));
 
     // 2. Fetch RSS XML via Kotlin bridge
+    if (typeof Kiyomi !== "object" || typeof Kiyomi.httpGet !== "function") {
+        return [];
+    }
+
     const rssXml = Kiyomi.httpGet(url);
+    if (!rssXml) return [];
 
     // 3. Parse <item> inside <channel>
-    const itemRegex = /<item>([\\s\\S]*?)<\\/item>/g;
+    // IMPORTANT: single backslashes in regex literal
+    const itemRegex = /<item>([\s\S]*?)<\/item>/gi;
     const results   = [];
     let match;
 
@@ -96,10 +103,11 @@ function search(query, category) {
         const infoUrl = extractTag(itemXml, "guid");
         const pubDate = extractTag(itemXml, "pubDate");
 
+        if (!title) continue;
+
         // enclosure url → torrentDownloadUrl
-        const enclosureRe = /<enclosure[^>]*url="([^"]+)"[^>]*>/i;
-        const enclosureM  = itemXml.match(enclosureRe);
-        const torrentDownloadUrl = enclosureM ? enclosureM[1] : "";
+        const enclosureMatch = itemXml.match(/<enclosure[^>]*url="([^"]+)"[^>]*>/i);
+        const torrentDownloadUrl = enclosureMatch ? enclosureMatch[1] : "";
 
         // nyaa: tags – we just use the raw tag names in the regex helper
         const infoHash  = extractTag(itemXml, "nyaa:infoHash");
@@ -107,16 +115,20 @@ function search(query, category) {
         const seedsStr  = extractTag(itemXml, "nyaa:seeders");
         const peersStr  = extractTag(itemXml, "nyaa:leechers");
 
-        if (!title) continue;
         if (!infoHash) continue; // hash is required to build magnet
 
         // --- Post-processors equivalent ---
 
         // HUMAN_SIZE_TO_BYTES
-        const sizeBytes = Kiyomi.humanSizeToBytes(sizeHuman) || "0";
+        const sizeBytesStr = typeof Kiyomi.humanSizeToBytes === "function"
+            ? Kiyomi.humanSizeToBytes(sizeHuman)
+            : null;
+        const sizeBytes = sizeBytesStr ? Number(sizeBytesStr) : 0;
 
         // BUILD_MAGNET_FROM_HASH
-        const magnetUrl = Kiyomi.buildMagnetFromHash(infoHash, title);
+        const magnetUrl = typeof Kiyomi.buildMagnetFromHash === "function"
+            ? Kiyomi.buildMagnetFromHash(infoHash, title)
+            : "";
 
         const seeds = parseInt(seedsStr, 10) || 0;
         const peers = parseInt(peersStr, 10) || 0;
@@ -126,7 +138,7 @@ function search(query, category) {
             title: title,
             magnetUrl: magnetUrl,
             hash: infoHash,
-            size: sizeBytes,          // numeric string is fine; Kotlin will parse to Long
+            size: sizeBytes,
             seeds: seeds,
             peers: peers,
             infoUrl: infoUrl,

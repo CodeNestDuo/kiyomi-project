@@ -34,9 +34,8 @@ const EXTENSION_INFO = {
 // Torznab category map (same as JSON)
 const CATEGORY_MAP = {
     "All": "0",
-    "Anime": "5070",
-    "Series": "5000",
-    "Movies": "2000"
+    //"Anime": "5070",
+    //"Movies": "2000"
 };
 
 // Torznab search endpoint template
@@ -77,7 +76,8 @@ function resolveApiKey() {
  * Helper: extract text between <tag>...</tag> inside a snippet of XML.
  */
 function extractTag(xml, tagName) {
-    const re = new RegExp(`<${tagName}>([\\s\\S]*?)<\\/${tagName}>`, "i");
+    // NOTE: single backslashes here; this builds a *string* for RegExp
+    const re = new RegExp("<" + tagName + ">([\\s\\S]*?)</" + tagName + ">", "i");
     const m  = xml.match(re);
     return m ? m[1].trim() : "";
 }
@@ -88,7 +88,7 @@ function extractTag(xml, tagName) {
  */
 function extractTorznabAttr(xml, attrName) {
     const re = new RegExp(
-        `<torznab:attr[^>]*name="${attrName}"[^>]*value="([^"]+)"[^>]*>`,
+        '<torznab:attr[^>]*name="' + attrName + '"[^>]*value="([^"]+)"[^>]*>',
         "i"
     );
     const m = xml.match(re);
@@ -131,7 +131,8 @@ function search(query, category) {
     const rssXml = Kiyomi.httpGet(url);
 
     // 3. Parse <item> blocks under <channel>
-    const itemRegex = /<item>([\\s\\S]*?)<\\/item>/g;
+    // IMPORTANT: regex literal here uses *single* backslashes
+    const itemRegex = /<item>([\s\S]*?)<\/item>/gi;
     const results   = [];
     let match;
 
@@ -142,9 +143,9 @@ function search(query, category) {
         const title       = extractTag(itemXml, "title");
         const infoUrl     = extractTag(itemXml, "comments");
         const pubDate     = extractTag(itemXml, "pubDate");
-        const enclosureRe = /<enclosure[^>]*url="([^"]+)"[^>]*>/i;
-        const enclosureM  = itemXml.match(enclosureRe);
-        const torrentDownloadUrl = enclosureM ? enclosureM[1] : "";
+
+        const enclosureMatch = itemXml.match(/<enclosure[^>]*url="([^"]+)"[^>]*>/i);
+        const torrentDownloadUrl = enclosureMatch ? enclosureMatch[1] : "";
 
         // Torznab attributes
         const hash       = extractTorznabAttr(itemXml, "infohash");
