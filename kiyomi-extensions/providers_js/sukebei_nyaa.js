@@ -1,17 +1,38 @@
-{
-  "id": "sukebei_nyaa",
-  "displayName": "Sukebei Nyaa (Adult)",
-  "siteUrl": "https://sukebei.nyaa.si",
-  "iconUrl": "https://sukebei.nyaa.si/static/favicon.png",
-  "type": "RSS_XML",
-  "isAdult": true,
-  "isSecure": true,
-  "cautionReason": "",
-  "isPrivate": false,
-  "isApiKeyRequired": false,
-  "version": 1.0,
+// ==KiyomiExtension==
+// @id           sukebei_nyaa-js
+// @name         Sukebei Nyaa (Adult, JS)
+// @version      1.0.0
+// @author       Kiyomi Project
+// @lang         all
+// @icon         https://sukebei.nyaa.si/static/favicon.png
+// @site         https://sukebei.nyaa.si
+// @package      sukebei.nyaa.si
+// @type         rss-xml
+// @nsfw         true
+// @secure       true
+// @private      false
+// @requiresKey  false
+// @description  Sukebei Nyaa adult indexer via Kiyomi JS engine.
+// ==/KiyomiExtension==
 
-  "categoryMap": {
+
+// ===== Runtime metadata (optional, for future use) =====
+const EXTENSION_INFO = {
+    id: "sukebei_nyaa-js",
+    displayName: "Sukebei Nyaa (Adult, JS)",
+    siteUrl: "https://sukebei.nyaa.si",
+    iconUrl: "https://sukebei.nyaa.si/static/favicon.png",
+    type: "RSS_XML",
+    isAdult: true,
+    isSecure: true,
+    cautionReason: "",
+    isPrivate: false,
+    isApiKeyRequired: false,
+    version: "1.0.0"
+};
+
+// Same as your JSON categoryMap
+const CATEGORY_MAP = {
     "All": "0_0",
     "Anime": "1_1",
     "Doujinshi": "1_2",
@@ -22,87 +43,98 @@
     "Videos": "2_2",
     "Real Life": "2_0",
     "Other Art": "1_0"
-  },
+};
 
-  "searchUrlTemplate": "https://sukebei.nyaa.si/?page=rss&c={category}&f=0&q={query}",
+// Same as searchUrlTemplate in JSON
+const SEARCH_URL_TEMPLATE =
+    "https://sukebei.nyaa.si/?page=rss&c={category}&f=0&q={query}";
 
-  "searchSteps": [
-    {
-      "stepType": "HTTP_REQUEST",
-      "method": "GET",
-      "urlKey": "searchUrlTemplate"
-    },
-    {
-      "stepType": "MAP_RESULTS_GENERIC",
-      "rootSelector": "channel > item",
-      "isRootArray": false,
 
-      "fields": {
-        // Core RSS Fields
-        "title": { "accessor": "title::text", "accessorType": "XML_TAG" },
-        "infoUrl": { "accessor": "guid::text", "accessorType": "XML_TAG" },
-        
-        // FIX 1: Map the enclosure URL to torrentDownloadUrl
-        "torrentDownloadUrl": { 
-          "accessor": "enclosure::attr(url)", 
-          "accessorType": "XML_TAG" 
-        },
-        
-        // FIX 2: Hash is extracted from the nyaa:infoHash tag
-        "hash": { 
-          "accessor": "nyaa\\:infoHash::text", 
-          "accessorType": "XML_TAG" 
-        },
-        
-        // --- Core Statistics (nyaa: tags) ---
-        "size_raw": { 
-          "accessor": "nyaa\\:size::text", 
-          "accessorType": "XML_TAG", 
-          "conversionType": "HUMAN_SIZE_TO_BYTES" 
-        },
-        "seeds": { 
-          "accessor": "nyaa\\:seeders::text", 
-          "accessorType": "XML_TAG", 
-          "conversionType": "INT" 
-        },
-        "peers": { 
-          "accessor": "nyaa\\:leechers::text", 
-          "accessorType": "XML_TAG", 
-          "conversionType": "INT" 
-        },
-        
-        // Date field
-        "publishDate": { "accessor": "pubDate::text", "accessorType": "XML_TAG", "conversionType": "DATE_STRING" }
-      },
+// ---------- Helpers ----------
 
-      "postProcessors": [
-        // CRITICAL FIX: Re-enable post-processor to construct the magnet link 
-        {
-          "processorType": "FUNCTION_CALL",
-          "functionName": "BUILD_MAGNET_FROM_HASH",
-          "sourceKey": "hash", // Use the extracted hash
-          "targetKey": "magnetUrl", // Populate the magnet URL field
-          "extraSourceKey": "title"
-        },
-        {
-          "processorType": "FUNCTION_CALL",
-          "functionName": "HUMAN_SIZE_TO_BYTES",
-          "sourceKey": "size_raw",
-          "targetKey": "size"
-        }
-      ],
-
-      "finalMapping": {
-        "title": "{title}",
-        "magnetUrl": "{magnetUrl}", // Mapped by Post-Processor
-        "hash": "{hash}",
-        "size": "{size}",
-        "seeds": "{seeds}",
-        "peers": "{peers}",
-        "infoUrl": "{infoUrl}",
-        "publishDate": "{publishDate}",
-        "torrentDownloadUrl": "{torrentDownloadUrl}" // Mapped directly from enclosure
-      }
-    }
-  ]
+/**
+ * Extracts text inside <tagName>...</tagName> from a snippet of XML.
+ */
+function extractTag(xml, tagName) {
+    const re = new RegExp(`<${tagName}>([\\s\\S]*?)<\\/${tagName}>`, "i");
+    const m  = xml.match(re);
+    return m ? m[1].trim() : "";
 }
+
+/**
+ * Main entry for Kiyomi.
+ * Mirrors your JSON:
+ *   - HTTP_REQUEST → Kiyomi.httpGet(URL)
+ *   - MAP_RESULTS_GENERIC over channel > item
+ *   - postProcessors: BUILD_MAGNET_FROM_HASH + HUMAN_SIZE_TO_BYTES
+ *
+ * @param {string} query
+ * @param {string} category  – "All", "Anime", "Doujinshi", ...
+ * @returns {Array<Object>}  – Mapped to TorrentDescription
+ */
+function search(query, category) {
+    const catId = CATEGORY_MAP[category] || CATEGORY_MAP["All"];
+
+    // 1. Build search URL
+    let url = SEARCH_URL_TEMPLATE
+        .replace("{category}", encodeURIComponent(catId))
+        .replace("{query}", encodeURIComponent(query));
+
+    // 2. Fetch RSS XML via Kotlin bridge
+    const rssXml = Kiyomi.httpGet(url);
+
+    // 3. Parse <item> inside <channel>
+    const itemRegex = /<item>([\\s\\S]*?)<\\/item>/g;
+    const results   = [];
+    let match;
+
+    while ((match = itemRegex.exec(rssXml)) !== null) {
+        const itemXml = match[1];
+
+        // Core RSS fields
+        const title   = extractTag(itemXml, "title");
+        const infoUrl = extractTag(itemXml, "guid");
+        const pubDate = extractTag(itemXml, "pubDate");
+
+        // enclosure url → torrentDownloadUrl
+        const enclosureRe = /<enclosure[^>]*url="([^"]+)"[^>]*>/i;
+        const enclosureM  = itemXml.match(enclosureRe);
+        const torrentDownloadUrl = enclosureM ? enclosureM[1] : "";
+
+        // nyaa: tags – we just use the raw tag names in the regex helper
+        const infoHash  = extractTag(itemXml, "nyaa:infoHash");
+        const sizeHuman = extractTag(itemXml, "nyaa:size");
+        const seedsStr  = extractTag(itemXml, "nyaa:seeders");
+        const peersStr  = extractTag(itemXml, "nyaa:leechers");
+
+        if (!title) continue;
+        if (!infoHash) continue; // hash is required to build magnet
+
+        // --- Post-processors equivalent ---
+
+        // HUMAN_SIZE_TO_BYTES
+        const sizeBytes = Kiyomi.humanSizeToBytes(sizeHuman) || "0";
+
+        // BUILD_MAGNET_FROM_HASH
+        const magnetUrl = Kiyomi.buildMagnetFromHash(infoHash, title);
+
+        const seeds = parseInt(seedsStr, 10) || 0;
+        const peers = parseInt(peersStr, 10) || 0;
+
+        // Final mapping → TorrentDescription-compatible object
+        results.push({
+            title: title,
+            magnetUrl: magnetUrl,
+            hash: infoHash,
+            size: sizeBytes,          // numeric string is fine; Kotlin will parse to Long
+            seeds: seeds,
+            peers: peers,
+            infoUrl: infoUrl,
+            publishDate: pubDate,
+            torrentDownloadUrl: torrentDownloadUrl
+        });
+    }
+
+    return results;
+}
+

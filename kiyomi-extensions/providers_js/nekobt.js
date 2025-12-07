@@ -43,15 +43,35 @@ const CATEGORY_MAP = {
 const SEARCH_URL_TEMPLATE =
     "https://nekobt.to/api/torznab/api?t=search&q={query}&cat={category}&apikey={API_KEY}";
 
-// IMPORTANT:
-// For now we assume Kiyomi will provide the API key somehow.
-// Easiest future option:
-//
-//   const API_KEY = Kiyomi.getApiKey("nekobt") || "";
-//
-// For now we keep a placeholder:
-const API_KEY = ""; // TODO: inject via bridge or edit manually.
 
+// ---------- helpers ----------
+
+/**
+ * Resolve the API key using engine-injected globals and/or the Kiyomi bridge.
+ * Prefers KIYOMI_API_KEY injected by KiyomiJsExtensionEngine.
+ */
+function resolveApiKey() {
+    // 1) Prefer engine-injected constant
+    if (typeof KIYOMI_API_KEY === "string" && KIYOMI_API_KEY.length > 0) {
+        return KIYOMI_API_KEY;
+    }
+
+    // 2) Fallback: use injected provider id (or EXTENSION_INFO / hardcoded default)
+    let providerId = "";
+    if (typeof KIYOMI_PROVIDER_ID === "string" && KIYOMI_PROVIDER_ID.length > 0) {
+        providerId = KIYOMI_PROVIDER_ID;
+    } else if (EXTENSION_INFO && typeof EXTENSION_INFO.id === "string") {
+        providerId = EXTENSION_INFO.id; // "nekobt-js"
+    } else {
+        providerId = "nekobt-js";
+    }
+
+    if (typeof Kiyomi === "object" && typeof Kiyomi.getApiKey === "function") {
+        return Kiyomi.getApiKey(providerId) || "";
+    }
+
+    return "";
+}
 
 /**
  * Helper: extract text between <tag>...</tag> inside a snippet of XML.
@@ -75,9 +95,12 @@ function extractTorznabAttr(xml, attrName) {
     return m ? m[1].trim() : "";
 }
 
+
+// ---------- main entry for Kiyomi ----------
+
 /**
  * Main entry point for Kiyomi:
- *   - Called by QuickJsExtensionEngine as search(query, category)
+ *   - Called by KiyomiJsExtensionEngine as search(query, category)
  *   - Returns an array of objects that map directly to TorrentDescription.
  *
  * @param {string} query
@@ -85,20 +108,26 @@ function extractTorznabAttr(xml, attrName) {
  * @returns {Array<Object>}
  */
 function search(query, category) {
-    const catId   = CATEGORY_MAP[category] || CATEGORY_MAP["All"];
+    const catId = CATEGORY_MAP[category] || CATEGORY_MAP["All"];
 
-    if (!API_KEY) {
-        // In practice you’ll wire this via Kiyomi bridge, but this protects from silent failures.
-        throw new Error("NekoBT API_KEY is empty. Configure it in the JS extension or via Kiyomi bridge.");
+    const apiKey = resolveApiKey();
+    if (!apiKey) {
+        throw new Error(
+            "NekoBT API key is empty. Configure it in Kiyomi (Extensions → API key) for provider 'nekobt-js'."
+        );
     }
 
     // 1. Build Torznab URL
     let url = SEARCH_URL_TEMPLATE
         .replace("{query}", encodeURIComponent(query))
         .replace("{category}", encodeURIComponent(catId))
-        .replace("{API_KEY}", encodeURIComponent(API_KEY));
+        .replace("{API_KEY}", encodeURIComponent(apiKey));
 
     // 2. Fetch RSS XML via Kotlin bridge
+    if (typeof Kiyomi !== "object" || typeof Kiyomi.httpGet !== "function") {
+        return [];
+    }
+
     const rssXml = Kiyomi.httpGet(url);
 
     // 3. Parse <item> blocks under <channel>
@@ -131,12 +160,13 @@ function search(query, category) {
         const seeds = parseInt(seedsStr, 10)  || 0;
         const peers = parseInt(peersStr, 10)  || 0;
 
-        // Prefer the Torznab magneturl; if missing, you *could* fallback to
-        // Kiyomi.buildMagnetFromHash(hash, title).
+        // Prefer the Torznab magneturl; if missing, fall back to building from hash
         const magnetUrl =
             magnetAttr && magnetAttr.length > 0
                 ? magnetAttr
-                : (hash ? Kiyomi.buildMagnetFromHash(hash, title) : "");
+                : (hash && typeof Kiyomi.buildMagnetFromHash === "function"
+                    ? Kiyomi.buildMagnetFromHash(hash, title)
+                    : "");
 
         results.push({
             title: title,

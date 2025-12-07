@@ -43,6 +43,33 @@ const SEARCH_URL_TEMPLATE = "https://feed.animetosho.org/api?q={query}";
 // ---------- helpers ----------
 
 /**
+ * Resolve API key using engine-injected globals and/or the Kiyomi bridge.
+ * For Anime Tosho the key is *optional* in practice; we only append it if present.
+ */
+function resolveApiKey() {
+    // 1) Prefer engine-injected constant
+    if (typeof KIYOMI_API_KEY === "string" && KIYOMI_API_KEY.length > 0) {
+        return KIYOMI_API_KEY;
+    }
+
+    // 2) Fallback: use injected provider id or EXTENSION_INFO.id
+    let providerId = "";
+    if (typeof KIYOMI_PROVIDER_ID === "string" && KIYOMI_PROVIDER_ID.length > 0) {
+        providerId = KIYOMI_PROVIDER_ID;
+    } else if (EXTENSION_INFO && typeof EXTENSION_INFO.id === "string") {
+        providerId = EXTENSION_INFO.id; // "animetosho-js"
+    } else {
+        providerId = "animetosho-js";
+    }
+
+    if (typeof Kiyomi === "object" && typeof Kiyomi.getApiKey === "function") {
+        return Kiyomi.getApiKey(providerId) || "";
+    }
+
+    return "";
+}
+
+/**
  * Extracts simple <tag>value</tag> from an item XML chunk.
  */
 function extractTag(itemXml, tagName) {
@@ -104,11 +131,22 @@ function search(query, category) {
     let searchUrl = SEARCH_URL_TEMPLATE
         .replace("{query}", encodeURIComponent(query || ""));
 
-    // 2) Fetch RSS via bridge
+    // 2) Optionally append apikey if configured in Kiyomi
+    const apiKey = resolveApiKey();
+    if (apiKey) {
+        const sep = searchUrl.indexOf("?") >= 0 ? "&" : "?";
+        searchUrl += `${sep}apikey=${encodeURIComponent(apiKey)}`;
+    }
+
+    // 3) Fetch RSS via bridge
+    if (typeof Kiyomi !== "object" || typeof Kiyomi.httpGet !== "function") {
+        return [];
+    }
+
     const rssXml = Kiyomi.httpGet(searchUrl);
     if (!rssXml) return [];
 
-    // 3) Iterate over <item>...</item>
+    // 4) Iterate over <item>...</item>
     const itemsRegex = /<item>([\s\S]*?)<\/item>/gi;
     const results = [];
     let match;
@@ -122,7 +160,7 @@ function search(query, category) {
         const infoUrl = extractTag(itemXml, "guid");
         const torrentDownloadUrl = extractEnclosureUrl(itemXml);
 
-        const magnetUrl = extractTorznabAttr(itemXml, "magneturl");
+        const magnetAttr = extractTorznabAttr(itemXml, "magneturl");
         const hash = extractTorznabAttr(itemXml, "infohash");
 
         const bannerImageUrl = extractTorznabAttr(itemXml, "bannerurl");
@@ -144,6 +182,12 @@ function search(query, category) {
         const tvdbId = tvdbIdStr ? (parseInt(tvdbIdStr, 10) || 0) : 0;
         const season = seasonStr ? (parseInt(seasonStr, 10) || 0) : 0;
         const year = yearStr ? (parseInt(yearStr, 10) || 0) : 0;
+
+        // Prefer magneturl; fallback to buildMagnetFromHash if available
+        let magnetUrl = magnetAttr || "";
+        if (!magnetUrl && hash && typeof Kiyomi.buildMagnetFromHash === "function") {
+            magnetUrl = Kiyomi.buildMagnetFromHash(hash, title);
+        }
 
         results.push({
             title: title,

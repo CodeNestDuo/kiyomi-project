@@ -88,6 +88,33 @@ function formatIsoDate(iso) {
     return d.toISOString().slice(0, 10);
 }
 
+/**
+ * Resolve the API key using engine-injected globals and/or the Kiyomi bridge.
+ * Prefers KIYOMI_API_KEY injected by KiyomiJsExtensionEngine.
+ */
+function resolveApiKey() {
+    // 1) Prefer engine-injected constant
+    if (typeof KIYOMI_API_KEY === "string" && KIYOMI_API_KEY.length > 0) {
+        return KIYOMI_API_KEY;
+    }
+
+    // 2) Fallback: use injected provider id (or EXTENSION_INFO / hardcoded default)
+    let providerId = "";
+    if (typeof KIYOMI_PROVIDER_ID === "string" && KIYOMI_PROVIDER_ID.length > 0) {
+        providerId = KIYOMI_PROVIDER_ID;
+    } else if (EXTENSION_INFO && typeof EXTENSION_INFO.id === "string") {
+        providerId = EXTENSION_INFO.id; // "knaben-js"
+    } else {
+        providerId = "knaben-js";
+    }
+
+    if (typeof Kiyomi === "object" && typeof Kiyomi.getApiKey === "function") {
+        return Kiyomi.getApiKey(providerId) || "";
+    }
+
+    return "";
+}
+
 
 // ---------- main entry for Kiyomi ----------
 
@@ -106,18 +133,15 @@ function search(query, category) {
     const payload = buildRequestPayload(query, category);
     const bodyJson = JSON.stringify(payload);
 
-    // 2) Resolve API key (must be implemented on Kotlin side)
-    //    Kiyomi.getApiKey("knaben") should behave similar to your ExtensionManager.getApiKey(config.id)
-    const apiKey = (typeof Kiyomi.getApiKey === "function")
-        ? (Kiyomi.getApiKey("knaben") || "")
-        : "";
+    // 2) Resolve API key (from engine-injected globals / bridge)
+    const apiKey = resolveApiKey();
 
     // 3) POST request via bridge
-    //    You will implement Kiyomi.httpPostJson(url, body, apiKey?) in Kotlin.
-    //    For example: it can automatically attach the API key as header (e.g. X-Api-Key / Authorization).
-    const rawJson = (typeof Kiyomi.httpPostJson === "function")
-        ? Kiyomi.httpPostJson(API_ENDPOINT, bodyJson, apiKey)
-        : "";
+    if (typeof Kiyomi !== "object" || typeof Kiyomi.httpPostJson !== "function") {
+        return [];
+    }
+
+    const rawJson = Kiyomi.httpPostJson(API_ENDPOINT, bodyJson, apiKey);
 
     if (!rawJson) return [];
 
