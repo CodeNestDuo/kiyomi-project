@@ -2,10 +2,11 @@
   "indexVersion": 1.0,
   "dateGenerated": "2025-12-06T13:00:00Z",
   "name": "K-Drama & Asian Series Index (V2)",
-  "description": "Curated sources specializing in high-quality Korean and international dramas and TV shows.",
+  "description": "Curated sources specializing in high-quality Japanese, Korean, Chinese and international dramas and TV shows.",
   "author": "Kiyomi Community Content",
-  "iconUrl": "https://kiyomi-app.com/icons/korea.png",
-  
+  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/globe_asia_icon.png",
+  "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/k_drama_bg.webp",
+  
   "providers": [
     {
       "id": "nyaa-js",
@@ -42,7 +43,7 @@
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/knaben.js",
       "iconUrl": "https://knaben.org/favicon.ico",
       "description": "Modern, fast search API offering structured results, including many East Asian releases.",
-      "isAdult": false,
+      "isAdult": true,
       "isSecure": true,
       "cautionReason": "",
       "isPrivate": true,
@@ -63,6 +64,20 @@
       "isApiKeyRequired": false,
       "version": 1.0
     },
+    {
+      "id": "tokyotosho-js",
+      "name": "TokyoTosho",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/tokyotosho.js",
+      "iconUrl": "https://www.tokyotosho.info/favicon.ico",
+      "description": "Contains some obscure or older niche J-Drama, C-Drama & K-Drama files.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "Non-video content (e.g., games, software, archives) may contain malware.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    },
     {
       "id": "uindex-js",
       "name": "UIndex",

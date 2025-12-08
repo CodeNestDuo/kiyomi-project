@@ -1,0 +1,68 @@
+{
+  "indexVersion": 1.0,
+  "dateGenerated": "2025-12-08T10:41:55Z",
+  "name": "Kiyomi Special Index (Adult Media)",
+  "description": "Dedicated repository for content containing adult media (XXX, Hentai, JAV, etc.). Providers listed here have explicit adult content.",
+  "author": "Kiyomi Core Team",
+  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/adult_icon.png",
+  "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/erotic_bg.webp",
+  
+  "providers": [
+    {
+      "id": "thepiratebay-js",
+      "name": "The Pirate Bay (API)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/thepiratebay.js",
+      "iconUrl": "https://torrindex.net/images/tpb.jpg",
+      "description": "General purpose torrent indexer; includes an **Adult (XXX)** category.",
+      "isAdult": true,
+      "isSecure": false,
+      "cautionReason": "Search results are often unverified and may contain malicious files.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    },
+    {
+      "id": "sukebei_nyaa-js",
+      "name": "Sukebei Nyaa (Adult)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/sukebei_nyaa.js",
+      "iconUrl": "https://sukebei.nyaa.si/static/favicon.png",
+      "description": "Dedicated adults-only sister site of Nyaa, specializing in 18+ Japanese/Asian media like Hentai and Doujinshi.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false, 
+      "isApiKeyRequired": false,
+      "version": 1.0
+    },
+    {
+      "id": "tokyotosho-js",
+      "name": "TokyoTosho",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/tokyotosho.js",
+      "iconUrl": "https://www.tokyotosho.info/favicon.ico",
+      "description": "General Eastern media index which includes **Hentai and JAV** categories.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "Non-video content (e.g., games, software, archives) may contain malware.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    },
+    {
+      "id": "knaben-js",
+      "name": "Knaben (API)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/knaben.js",
+      "iconUrl": "https://knaben.org/favicon.ico",
+      "description": "Modern API providing structured results, including content that may fall under the adult category.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": true, 
+      "isApiKeyRequired": true,
+      "version": 1.0
+    },
+  ]
+}
