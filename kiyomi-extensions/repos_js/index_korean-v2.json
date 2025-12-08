@@ -1,12 +1,11 @@
 {
-  "indexVersion": 1.0,
+  "indexVersion": 1,
   "dateGenerated": "2025-12-06T13:00:00Z",
   "name": "K-Drama & Asian Series Index (V2)",
   "description": "Curated sources specializing in high-quality Japanese, Korean, Chinese and international dramas and TV shows.",
   "author": "Kiyomi Community Content",
   "iconUrl": "https://kiyomi-extensions.pages.dev/icons/globe_asia_icon.png",
-  "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/k_drama_bg.webp",
-  
+  "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/k_drama_bg.webp",
   "providers": [
     {
       "id": "nyaa-js",
@@ -34,7 +33,7 @@
       "cautionReason": "Search results are often unverified and may contain malicious files.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1
     },
     {
       "id": "knaben-js",
@@ -62,22 +61,22 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1
     },
     {
-      "id": "tokyotosho-js",
-      "name": "TokyoTosho",
-      "author": "Kiyomi Community",
-      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/tokyotosho.js",
-      "iconUrl": "https://www.tokyotosho.info/favicon.ico",
-      "description": "Contains some obscure or older niche J-Drama, C-Drama & K-Drama files.",
-      "isAdult": true,
-      "isSecure": true,
-      "cautionReason": "Non-video content (e.g., games, software, archives) may contain malware.",
-      "isPrivate": false,
-      "isApiKeyRequired": false,
-      "version": 1.0
-    },
+      "id": "tokyotosho-js",
+      "name": "TokyoTosho",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/tokyotosho.js",
+      "iconUrl": "https://www.tokyotosho.info/favicon.ico",
+      "description": "Contains some obscure or older niche J-Drama, C-Drama & K-Drama files.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "Non-video content (e.g., games, software, archives) may contain malware.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1
+    },
     {
       "id": "uindex-js",
       "name": "UIndex",
@@ -90,7 +89,7 @@
       "cautionReason": "Search results are often unverified and may contain malicious files.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1
     }
   ]
 }

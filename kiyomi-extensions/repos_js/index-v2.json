@@ -6,7 +6,6 @@
   "author": "Kiyomi Core Team",
   "iconUrl": "https://kiyomi-extensions.pages.dev/icons/app_logo_icon.png",
   "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/action_flicks_bg.webp",
-  
   "providers": [
     {
       "id": "thepiratebay-js",
@@ -46,11 +45,11 @@
       "isAdult": false,
       "isSecure": true,
       "cautionReason": "",
-      "isPrivate": true, // Often requires registration/API key
+      "isPrivate": true,
       "isApiKeyRequired": true,
       "version": 1.0
     },
-     {
+    {
       "id": "nekobt-js",
       "name": "NekoBT (Private Torznab)",
       "author": "Kiyomi Community",
@@ -88,7 +87,7 @@
       "isAdult": true,
       "isSecure": true,
       "cautionReason": "",
-      "isPrivate": true, 
+      "isPrivate": true,
       "isApiKeyRequired": true,
       "version": 1.0
     },
@@ -102,7 +101,7 @@
       "isAdult": true,
       "isSecure": true,
       "cautionReason": "",
-      "isPrivate": false, 
+      "isPrivate": false,
       "isApiKeyRequired": false,
       "version": 1.0
     },
@@ -149,46 +148,46 @@
       "version": 1.0
     },
     {
-      "id": "anirena-js",
-      "name": "Anirena",
-      "author": "Kiyomi Community",
-      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/anirena.js",
-      "iconUrl": "https://www.anirena.com/favicon.ico",
-      "description": "Provides simple RSS search results primarily for anime content.",
-      "isAdult": false,
-      "isSecure": true,
-      "cautionReason": "",
-      "isPrivate": false,
-      "isApiKeyRequired": false,
-      "version": 1.0
-    },
+      "id": "anirena-js",
+      "name": "Anirena",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/anirena.js",
+      "iconUrl": "https://www.anirena.com/favicon.ico",
+      "description": "Provides simple RSS search results primarily for anime content.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    },
     {
-      "id": "animetime-js",
-      "name": "AnimeTime",
-      "author": "Kiyomi Community",
-      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/animetime.js",
-      "iconUrl": "https://animetime.cc/build/assets/logo-256-Bb6iPaHP.webp",
-      "description": "RSS feed focusing on dual-audio, multi-subbed anime releases.",
-      "isAdult": false,
-      "isSecure": true,
-      "cautionReason": "",
-      "isPrivate": false,
-      "isApiKeyRequired": false,
-      "version": 1.0
-    },
+      "id": "animetime-js",
+      "name": "AnimeTime",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/animetime.js",
+      "iconUrl": "https://animetime.cc/build/assets/logo-256-Bb6iPaHP.webp",
+      "description": "RSS feed focusing on dual-audio, multi-subbed anime releases.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    },
     {
-      "id": "tokyotosho-js",
-      "name": "TokyoTosho",
-      "author": "Kiyomi Community",
-      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/tokyotosho.js",
-      "iconUrl": "https://www.tokyotosho.info/favicon.ico",
-      "description": "General Eastern media index, including Anime, Manga, and non-video media.",
-      "isAdult": true,
-      "isSecure": true,
-      "cautionReason": "Non-video content (e.g., games, software, archives) may contain malware.",
-      "isPrivate": false,
-      "isApiKeyRequired": false,
-      "version": 1.0
-    }
+      "id": "tokyotosho-js",
+      "name": "TokyoTosho",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/tokyotosho.js",
+      "iconUrl": "https://www.tokyotosho.info/favicon.ico",
+      "description": "General Eastern media index, including Anime, Manga, and non-video media.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "Non-video content (e.g., games, software, archives) may contain malware.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0
+    }
   ]
 }
