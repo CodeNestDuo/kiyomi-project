@@ -54,7 +54,7 @@
       "name": "NekoBT (Private Torznab)",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/nekobt.js",
-      "iconUrl": "https://nekobt.to/favicon.ico",
+      "iconUrl": "https://nekobt.to/cdn/pfp/null/64",
       "description": "Specialized private anime indexer providing high-quality torrents via a Torznab API.",
       "isAdult": false,
       "isSecure": true,
