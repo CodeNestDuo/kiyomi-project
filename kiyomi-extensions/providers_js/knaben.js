@@ -55,27 +55,38 @@ const API_ENDPOINT = "https://api.knaben.org/v1";
  * Build the POST JSON payload (mirrors bodyConstructor in JSON config).
  */
 function buildRequestPayload(query, category) {
-    const catId = CATEGORY_MAP[category] ?? CATEGORY_MAP["All"];
+    // Get the category ID string ("" for All)
+    const catIdString = CATEGORY_MAP[category] ?? CATEGORY_MAP["All"];
 
-    let categoriesArray = [];
-    if (catId && String(catId).trim().length > 0) {
-        const num = parseInt(catId, 10);
-        if (!Number.isNaN(num)) {
-            categoriesArray = [num];
-        }
+    let categoriesArray = [];
+    
+    // If catIdString is NOT the "All" category (which is defined as ""), 
+    // attempt to parse and include it.
+    if (catIdString && String(catIdString).trim().length > 0) {
+        const num = parseInt(catIdString, 10);
+        if (!Number.isNaN(num)) {
+            categoriesArray = [num];
+        }
+    }
+
+    // If the array is empty (i.e., "All" was selected), we can safely omit the categories property.
+    const payload = {
+        query: query,
+        size: 300,
+        order_by: "seeders",
+        order_direction: "desc",
+        hide_unsafe: true,
+        hide_xxx: false,
+        // categories: categoriesArray // We will omit this property if empty
+    };
+
+    // Conditionally add the categories property only if it's not "All"
+    if (categoriesArray.length > 0) {
+        payload.categories = categoriesArray;
     }
 
-    return {
-        query: query,
-        size: 300,                 // defaultValue: "300"
-        order_by: "seeders",       // "seeders"
-        order_direction: "desc",   // "desc"
-        hide_unsafe: true,         // "true"
-        hide_xxx: false,           // "false"
-        categories: categoriesArray
-    };
+    return payload;
 }
-
 /**
  * Simple ISO date → readable date.
  * (JSON config uses FORMAT_ISO_DATE post-processor)
