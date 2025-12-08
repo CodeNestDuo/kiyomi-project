@@ -94,7 +94,7 @@ function search(query, category) {
         return [];
     }
 
-    const rssXml = Kiyomi.httpGet(url);
+    const rssXml = Kiyomi.httpGet(url,null);
     if (!rssXml) {
         Kiyomi.logDebug("Anirena: HTTP fetch failed or returned empty content.");
         return [];

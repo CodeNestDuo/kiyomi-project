@@ -118,7 +118,7 @@ function search(query, category) {
     Kiyomi.logDebug("TokyoTosho: Requesting URL: " + url);
 
     // 2. Fetch RSS XML via Kotlin bridge
-    const rssXml = Kiyomi.httpGet(url);
+    const rssXml = Kiyomi.httpGet(url,null);
     if (!rssXml) {
         Kiyomi.logDebug("TokyoTosho: HTTP fetch failed or returned empty content.");
         return [];

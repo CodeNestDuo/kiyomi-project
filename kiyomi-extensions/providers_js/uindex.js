@@ -88,7 +88,7 @@ function search(query, category) {
         .replace("{category}", encodeURIComponent(catId));
 
     // 2) Fetch HTML
-    const html = Kiyomi.httpGet(url);
+    const html = Kiyomi.httpGet(url,null);
     if (!html) {
         Kiyomi.logDebug("UIndex: HTTP fetch failed or returned empty content.");
         return [];

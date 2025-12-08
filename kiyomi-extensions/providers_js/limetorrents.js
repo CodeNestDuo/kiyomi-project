@@ -49,10 +49,6 @@ const SEARCH_URL_TEMPLATE =
 
 /**
  * Executes a search against LimeTorrents RSS.
- * Uses:
- *   - Kiyomi.httpGet(url)
- *   - Kiyomi.buildMagnetFromHash(hash, title)
- *
  * @param {string} query
  * @param {string} category  – one of CATEGORY_MAP keys
  * @returns {Array<Object>}  – list of torrent description objects
@@ -66,7 +62,7 @@ function search(query, category) {
         .replace("{category}", encodeURIComponent(categoryPath));
 
     // 2. Fetch RSS XML
-    const rssXml = Kiyomi.httpGet(searchUrl);
+    const rssXml = Kiyomi.httpGet(searchUrl,null);
 
     // 3. Parse <item> blocks
     const itemRegex = /<item>([\s\S]*?)<\/item>/g;

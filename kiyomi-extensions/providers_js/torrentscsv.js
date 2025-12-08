@@ -58,7 +58,7 @@ function epochToDateString(epochStr) {
 /**
  * Main entry for Kiyomi JS engine.
  * Mirrors:
- *  - HTTP_REQUEST → Kiyomi.httpGet(url)
+ *  - HTTP_REQUEST → Kiyomi.httpGet(url,headers)
  *  - MAP_RESULTS_GENERIC on root "torrents" array
  *  - postProcessors: BUILD_MAGNET_FROM_HASH, EPOCH_TO_DATE_STRING
  *
@@ -76,7 +76,7 @@ function search(query, category) {
         .replace("{query}", encodeURIComponent(query));
 
     // 2) HTTP request through Kotlin bridge
-    const jsonText = Kiyomi.httpGet(url);
+    const jsonText = Kiyomi.httpGet(url,null);
 
     let root;
     try {

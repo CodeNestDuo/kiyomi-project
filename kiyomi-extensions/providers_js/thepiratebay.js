@@ -66,7 +66,7 @@ function epochToDateString(epochStr) {
 /**
  * Main entry for Kiyomi JS engine.
  * Mirrors your JSON steps:
- *   - HTTP_REQUEST  → Kiyomi.httpGet(url)
+ *   - HTTP_REQUEST  → Kiyomi.httpGet(url,headers)
  *   - MAP_RESULTS_GENERIC on root JSON array
  *   - postProcessors: BUILD_MAGNET_FROM_HASH, EPOCH_TO_DATE_STRING, RAW_BYTES_TO_LONG
  *
@@ -83,7 +83,7 @@ function search(query, category) {
         .replace("{query}", encodeURIComponent(query));
 
     // 2. Fetch JSON via Kotlin bridge
-    const jsonText = Kiyomi.httpGet(url);
+    const jsonText = Kiyomi.httpGet(url,null);
 
     let items;
     try {

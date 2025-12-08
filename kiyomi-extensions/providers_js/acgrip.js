@@ -97,7 +97,7 @@ function search(query, category) {
         .replace("{category}", catId)
         .replace("{query}", encodeURIComponent(query || ""));
 
-    const rssXml = Kiyomi.httpGet(url);
+    const rssXml = Kiyomi.httpGet(url,null);
     if (!rssXml) return [];
 
     const itemsRegex = /<item>([\s\S]*?)<\/item>/gi;

@@ -115,7 +115,7 @@ function search(query, category) {
         return [];
     }
 
-    const rssXml = Kiyomi.httpGet(url);
+    const rssXml = Kiyomi.httpGet(url,null);
 
     // 3. Parse <item> blocks under <channel>
     const itemRegex = /<item>([\s\S]*?)<\/item>/gi;

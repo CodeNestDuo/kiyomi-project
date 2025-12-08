@@ -143,7 +143,7 @@ function search(query, category) {
         return [];
     }
 
-    const rssXml = Kiyomi.httpGet(searchUrl);
+    const rssXml = Kiyomi.httpGet(searchUrl,null);
     if (!rssXml) return [];
 
     // 4) Iterate over <item>...</item>

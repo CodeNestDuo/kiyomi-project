@@ -73,7 +73,7 @@ function search(query, category) {
         return [];
     }
 
-    const rssXml = Kiyomi.httpGet(searchUrl);
+    const rssXml = Kiyomi.httpGet(searchUrl,null);
     if (!rssXml) return [];
 
     // 3. Simple XML parsing for <item> blocks

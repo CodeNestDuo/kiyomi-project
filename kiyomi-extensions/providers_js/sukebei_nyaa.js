@@ -65,7 +65,7 @@ function extractTag(xml, tagName) {
 /**
  * Main entry for Kiyomi.
  * Mirrors your JSON:
- *   - HTTP_REQUEST → Kiyomi.httpGet(URL)
+ *   - HTTP_REQUEST → Kiyomi.httpGet(URL,HEADERS)
  *   - MAP_RESULTS_GENERIC over channel > item
  *   - postProcessors: BUILD_MAGNET_FROM_HASH + HUMAN_SIZE_TO_BYTES
  *
@@ -86,7 +86,7 @@ function search(query, category) {
         return [];
     }
 
-    const rssXml = Kiyomi.httpGet(url);
+    const rssXml = Kiyomi.httpGet(url,null);
     if (!rssXml) return [];
 
     // 3. Parse <item> inside <channel>
