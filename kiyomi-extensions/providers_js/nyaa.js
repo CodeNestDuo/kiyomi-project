@@ -86,12 +86,12 @@ function search(query, category) {
         const itemXml = match[1];
 
         const rawFields = {
-            title:       extractTag(itemXml, "title"),
-            infoHash:    extractTag(itemXml, "nyaa:infoHash"),
-            size_raw:    extractTag(itemXml, "nyaa:size"),
-            seeds:       parseInt(extractTag(itemXml, "nyaa:seeders"), 10)  || 0,
-            peers:       parseInt(extractTag(itemXml, "nyaa:leechers"), 10) || 0,
-            infoUrl:     extractTag(itemXml, "guid"),
+            title: extractTag(itemXml, "title"),
+            infoHash: extractTag(itemXml, "nyaa:infoHash"),
+            size_raw: extractTag(itemXml, "nyaa:size"),
+            seeds: parseInt(extractTag(itemXml, "nyaa:seeders"), 10) || 0,
+            peers: parseInt(extractTag(itemXml, "nyaa:leechers"), 10) || 0,
+            infoUrl: extractTag(itemXml, "guid"),
             publishDate: extractTag(itemXml, "pubDate")
         };
 

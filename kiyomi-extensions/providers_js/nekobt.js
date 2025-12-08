@@ -78,7 +78,7 @@ function resolveApiKey() {
 function extractTag(xml, tagName) {
     // NOTE: single backslashes here; this builds a *string* for RegExp
     const re = new RegExp("<" + tagName + ">([\\s\\S]*?)</" + tagName + ">", "i");
-    const m  = xml.match(re);
+    const m = xml.match(re);
     return m ? m[1].trim() : "";
 }
 
@@ -133,33 +133,33 @@ function search(query, category) {
     // 3. Parse <item> blocks under <channel>
     // IMPORTANT: regex literal here uses *single* backslashes
     const itemRegex = /<item>([\s\S]*?)<\/item>/gi;
-    const results   = [];
+    const results = [];
     let match;
 
     while ((match = itemRegex.exec(rssXml)) !== null) {
         const itemXml = match[1];
 
         // Core RSS fields
-        const title       = extractTag(itemXml, "title");
-        const infoUrl     = extractTag(itemXml, "comments");
-        const pubDate     = extractTag(itemXml, "pubDate");
+        const title = extractTag(itemXml, "title");
+        const infoUrl = extractTag(itemXml, "comments");
+        const pubDate = extractTag(itemXml, "pubDate");
 
         const enclosureMatch = itemXml.match(/<enclosure[^>]*url="([^"]+)"[^>]*>/i);
         const torrentDownloadUrl = enclosureMatch ? enclosureMatch[1] : "";
 
         // Torznab attributes
-        const hash       = extractTorznabAttr(itemXml, "infohash");
+        const hash = extractTorznabAttr(itemXml, "infohash");
         const magnetAttr = extractTorznabAttr(itemXml, "magneturl");
-        const sizeStr    = extractTorznabAttr(itemXml, "size");
-        const seedsStr   = extractTorznabAttr(itemXml, "seeders");
-        const peersStr   = extractTorznabAttr(itemXml, "peers");
+        const sizeStr = extractTorznabAttr(itemXml, "size");
+        const seedsStr = extractTorznabAttr(itemXml, "seeders");
+        const peersStr = extractTorznabAttr(itemXml, "peers");
 
         if (!title) continue;
         if (!hash && !magnetAttr) continue; // must have at least one identifier
 
-        const size  = parseInt(sizeStr, 10)   || 0;
-        const seeds = parseInt(seedsStr, 10)  || 0;
-        const peers = parseInt(peersStr, 10)  || 0;
+        const size = parseInt(sizeStr, 10) || 0;
+        const seeds = parseInt(seedsStr, 10) || 0;
+        const peers = parseInt(peersStr, 10) || 0;
 
         // Prefer the Torznab magneturl; if missing, fall back to building from hash
         const magnetUrl =

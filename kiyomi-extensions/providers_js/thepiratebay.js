@@ -33,12 +33,12 @@ const EXTENSION_INFO = {
 
 // Mirrors your JSON categoryMap
 const CATEGORY_MAP = {
-    "All":   "0",
-    "Movies":"200",
-    "Series":"200",   // mapped same as Movies per your JSON
+    "All": "0",
+    "Movies": "200",
+    "Series": "200",   // mapped same as Movies per your JSON
     "Music": "101",
-    "Porn":  "500",
-    "Apps":  "300",
+    "Porn": "500",
+    "Apps": "300",
     "Books": "601",
     "Games": "400",
     "Other": "600"
@@ -105,7 +105,7 @@ function search(query, category) {
         if (!it || typeof it !== "object") continue;
 
         const title = it.name || "";
-        const hash  = it.info_hash || "";
+        const hash = it.info_hash || "";
         const imdbId = it.imdb || "";
 
         const idRaw = it.id || "";
@@ -138,15 +138,15 @@ function search(query, category) {
 
         // Final mapping → mirrors finalMapping in JSON config
         results.push({
-            title:       title,
-            magnetUrl:   magnetUrl,
-            hash:        hash,
-            size:        size,
-            seeds:       seeds,
-            peers:       peers,
+            title: title,
+            magnetUrl: magnetUrl,
+            hash: hash,
+            size: size,
+            seeds: seeds,
+            peers: peers,
             publishDate: publishDate,
-            imdbId:      imdbId,
-            infoUrl:     infoUrl
+            imdbId: imdbId,
+            infoUrl: infoUrl
             // torrentDownloadUrl not provided by apibay; magnet is primary path
         });
     }

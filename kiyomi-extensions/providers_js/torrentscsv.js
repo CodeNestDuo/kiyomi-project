@@ -96,14 +96,14 @@ function search(query, category) {
         if (!t || typeof t !== "object") continue;
 
         const title = t.name || "";
-        const hash  = t.infohash || "";
+        const hash = t.infohash || "";
 
         if (!title || !hash) continue; // must have these
 
-        const sizeRaw   = t.size_bytes ?? "0";
-        const seedsRaw  = t.seeders ?? "0";
-        const peersRaw  = t.leechers ?? "0";
-        const created   = t.created_unix ?? "0";
+        const sizeRaw = t.size_bytes ?? "0";
+        const seedsRaw = t.seeders ?? "0";
+        const peersRaw = t.leechers ?? "0";
+        const created = t.created_unix ?? "0";
 
         // --- post-processor equivalents ---
 
@@ -111,7 +111,7 @@ function search(query, category) {
         const magnetUrl = Kiyomi.buildMagnetFromHash(hash, title);
 
         // size_bytes is already raw bytes → just parse
-        const size  = parseInt(sizeRaw, 10) || 0;
+        const size = parseInt(sizeRaw, 10) || 0;
         const seeds = parseInt(seedsRaw, 10) || 0;
         const peers = parseInt(peersRaw, 10) || 0;
 
@@ -120,12 +120,12 @@ function search(query, category) {
 
         // finalMapping → directly to TorrentDescription fields
         results.push({
-            title:       title,
-            magnetUrl:   magnetUrl,
-            hash:        hash,
-            size:        size,
-            seeds:       seeds,
-            peers:       peers,
+            title: title,
+            magnetUrl: magnetUrl,
+            hash: hash,
+            size: size,
+            seeds: seeds,
+            peers: peers,
             publishDate: publishDate
             // API doesn't provide a dedicated infoUrl / torrentDownloadUrl
         });

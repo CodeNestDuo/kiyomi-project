@@ -58,7 +58,7 @@ const SEARCH_URL_TEMPLATE =
 function extractTag(xml, tagName) {
     const pattern = "<" + tagName + ">([\\s\\S]*?)</" + tagName + ">";
     const re = new RegExp(pattern, "i");
-    const m  = xml.match(re);
+    const m = xml.match(re);
     return m ? m[1].trim() : "";
 }
 
@@ -92,14 +92,14 @@ function search(query, category) {
     // 3. Parse <item> inside <channel>
     // IMPORTANT: single backslashes in regex literal
     const itemRegex = /<item>([\s\S]*?)<\/item>/gi;
-    const results   = [];
+    const results = [];
     let match;
 
     while ((match = itemRegex.exec(rssXml)) !== null) {
         const itemXml = match[1];
 
         // Core RSS fields
-        const title   = extractTag(itemXml, "title");
+        const title = extractTag(itemXml, "title");
         const infoUrl = extractTag(itemXml, "guid");
         const pubDate = extractTag(itemXml, "pubDate");
 
@@ -110,10 +110,10 @@ function search(query, category) {
         const torrentDownloadUrl = enclosureMatch ? enclosureMatch[1] : "";
 
         // nyaa: tags – we just use the raw tag names in the regex helper
-        const infoHash  = extractTag(itemXml, "nyaa:infoHash");
+        const infoHash = extractTag(itemXml, "nyaa:infoHash");
         const sizeHuman = extractTag(itemXml, "nyaa:size");
-        const seedsStr  = extractTag(itemXml, "nyaa:seeders");
-        const peersStr  = extractTag(itemXml, "nyaa:leechers");
+        const seedsStr = extractTag(itemXml, "nyaa:seeders");
+        const peersStr = extractTag(itemXml, "nyaa:leechers");
 
         if (!infoHash) continue; // hash is required to build magnet
 

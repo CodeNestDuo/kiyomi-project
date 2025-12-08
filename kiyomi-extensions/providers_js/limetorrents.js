@@ -93,12 +93,12 @@ function search(query, category) {
         };
 
         // --- Raw fields from RSS ---
-        const title         = extractTag(itemXml, "title");
-        const infoUrl       = extractTag(itemXml, "link");
-        const publishDate   = extractTag(itemXml, "pubDate");
-        const sizeText      = extractTag(itemXml, "size"); // raw bytes string
-        const description   = extractTag(itemXml, "description");
-        const enclosureUrl  = extractAttrFromTag(itemXml, "enclosure", "url");
+        const title = extractTag(itemXml, "title");
+        const infoUrl = extractTag(itemXml, "link");
+        const publishDate = extractTag(itemXml, "pubDate");
+        const sizeText = extractTag(itemXml, "size"); // raw bytes string
+        const description = extractTag(itemXml, "description");
+        const enclosureUrl = extractAttrFromTag(itemXml, "enclosure", "url");
 
         // Size is already raw bytes -> parse directly
         const size = parseInt(sizeText, 10) || 0;
