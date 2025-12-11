@@ -1,11 +1,11 @@
 {
-  "indexVersion": 1,
+  "indexVersion": 1.1,
   "dateGenerated": "2025-12-06T13:00:00Z",
   "lastTweaked": "2025-12-11T11:30:00Z",
-  "name": "K-Drama & Asian Series Index (V2)",
+  "name": "K-Drama & Asian Series Hub",
   "description": "Curated sources specializing in high-quality Japanese, Korean, Chinese and international dramas and TV shows.",
-  "author": "Kiyomi Community Content",
-  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/asia_icon.png",
+  "author": "Kiyomi Asian Content Curators",
+  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/asia_icon.jpg",
   "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/k_drama_bg.webp",
   "providers": [
     {

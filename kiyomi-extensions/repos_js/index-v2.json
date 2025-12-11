@@ -3,9 +3,9 @@
   "dateGenerated": "2025-12-06T12:00:00Z",
   "lastTweaked": "2025-12-11T11:30:00Z",
   "name": "Kiyomi Main Index (General) (V2)",
-  "description": "The official, comprehensive index covering general media, movies, music, and international providers.",
+  "description": "The official master index. This repository curates and consolidates providers covering general media, movies, music, and international sources from all other registered Kiyomi repositories.",
   "author": "Kiyomi Core Team",
-  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/app_logo_icon.png",
+  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/app_logo_icon.jpg",
   "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/action_flicks_bg.webp",
   "providers": [
     {

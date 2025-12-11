@@ -1,11 +1,11 @@
 {
-  "indexVersion": 1,
+  "indexVersion": 1.1,
   "dateGenerated": "2025-12-08T10:41:55Z",
   "lastTweaked": "2025-12-11T11:30:00Z",
-  "name": "Kiyomi Special Index (Adult Media)",
+  "name": "Adult Media Hub",
   "description": "Dedicated repository for content containing adult media (XXX, Hentai, JAV, etc.). Providers listed here have explicit adult content.",
-  "author": "Kiyomi Core Team",
-  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/adult_icon.png",
+  "author": "Kiyomi Porn Curators",
+  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/adult_icon.jpg",
   "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/erotic_bg.webp",
   "providers": [
     {

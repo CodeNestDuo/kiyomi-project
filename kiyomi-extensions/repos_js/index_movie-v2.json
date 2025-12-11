@@ -2,10 +2,10 @@
   "indexVersion": 1.1,
   "dateGenerated": "2025-12-06T12:00:00Z",
   "lastTweaked": "2025-12-11T11:30:00Z",
-  "name": "Kiyomi Movie Index (V2)",
+  "name": "Movie Hub",
   "description": "Curated sources specializing in movies, films, documentaries, and high-quality cinematic releases (including YTS and private APIs).",
   "author": "Kiyomi Movie Curators",
-  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/movie_icon.png",
+  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/movie_icon.jpg",
   "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/action_flicks_bg.webp",
   "providers": [
     {

@@ -2,10 +2,10 @@
   "indexVersion": 1.1,
   "dateGenerated": "2025-12-06T12:00:00Z",
   "lastTweaked": "2025-12-11T11:30:00Z",
-  "name": "Kiyomi TV Show Index (V2)",
+  "name": "TV Show Hub",
   "description": "Curated sources specializing in episodic television series, web shows, and serial content (including rapid release trackers).",
   "author": "Kiyomi TV Curators",
-  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/tv_icon.png",
+  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/tv_icon.jpg",
   "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/tv_shows_bg.webp",
   "providers": [
     {
