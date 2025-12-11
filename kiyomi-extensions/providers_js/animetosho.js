@@ -13,6 +13,7 @@
 // @private      true
 // @requiresKey  true
 // @description  Anime Tosho Torznab-style RSS integration for Kiyomi JS engine.
+// @primaryCategory anime
 // ==/KiyomiExtension==
 
 

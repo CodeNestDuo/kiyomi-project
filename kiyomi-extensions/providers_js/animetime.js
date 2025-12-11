@@ -13,6 +13,8 @@
 // @private      false
 // @requiresKey  false
 // @description  Scrapes AnimeTime RSS feed for torrents.
+// @primaryCategory anime
+// @extraCategories tv
 // ==/KiyomiExtension==
 
 

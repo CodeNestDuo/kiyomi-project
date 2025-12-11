@@ -13,6 +13,7 @@
 // @private      false
 // @requiresKey  false
 // @description  Simple search RSS scraping for Anirena.
+// @primaryCategory anime
 // ==/KiyomiExtension==
 
 
@@ -94,7 +95,7 @@ function search(query, category) {
         return [];
     }
 
-    const rssXml = Kiyomi.httpGet(url,null);
+    const rssXml = Kiyomi.httpGet(url);
     if (!rssXml) {
         Kiyomi.logDebug("Anirena: HTTP fetch failed or returned empty content.");
         return [];

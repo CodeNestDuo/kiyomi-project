@@ -13,6 +13,7 @@
 // @private      false
 // @requiresKey  false
 // @description  TorrentsCSV JSON API integration for Kiyomi JS engine.
+// @primaryCategory general
 // ==/KiyomiExtension==
 
 

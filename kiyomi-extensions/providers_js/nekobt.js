@@ -13,6 +13,7 @@
 // @private      true
 // @requiresKey  true
 // @description  NekoBT Torznab indexer via Kiyomi JS engine.
+// @primaryCategory anime
 // ==/KiyomiExtension==
 
 

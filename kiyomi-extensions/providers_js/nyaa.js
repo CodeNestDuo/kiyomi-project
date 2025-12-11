@@ -12,6 +12,8 @@
 // @private      false
 // @requiresKey  false
 // @description  Nyaa torrent search via RSS using the Kiyomi JS engine.
+// @primaryCategory anime
+// @extraCategories asian_drama
 // ==/KiyomiExtension==
 
 

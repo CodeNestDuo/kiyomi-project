@@ -13,6 +13,8 @@
 // @private      false
 // @requiresKey  false
 // @description  Scrapes TokyoTosho RSS feed for torrents.
+// @primaryCategory general
+// @extraCategories anime, tv
 // ==/KiyomiExtension==
 
 

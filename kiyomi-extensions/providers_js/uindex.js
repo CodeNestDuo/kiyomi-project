@@ -13,6 +13,8 @@
 // @private      false
 // @requiresKey  false
 // @description  UIndex HTML search integration for Kiyomi JS engine.
+// @primaryCategory general
+// @extraCategories anime, movie, xxx
 // ==/KiyomiExtension==
 
 

@@ -13,6 +13,8 @@
 // @private      false
 // @requiresKey  false
 // @description  ACG.RIP RSS integration for Kiyomi JS engine.
+// @primaryCategory anime
+// @extraCategories general
 // ==/KiyomiExtension==
 
 

@@ -12,6 +12,8 @@
 // @private      false
 // @requiresKey  false
 // @description  LimeTorrents search via RSS using the Kiyomi JS engine.
+// @primaryCategory general
+// @extraCategories anime, movie, tv
 // ==/KiyomiExtension==
 
 
