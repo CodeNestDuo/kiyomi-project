@@ -10,7 +10,7 @@
   "providers": [
     {
       "id": "nyaa-js",
-      "name": "Nyaa (Anime/Asian Media)",
+      "name": "Nyaa",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/nyaa.js",
       "iconUrl": "https://nyaa.land/static/favicon.png",
@@ -25,7 +25,7 @@
     },
     {
       "id": "animetosho-js",
-      "name": "Anime Tosho (Torznab API)",
+      "name": "Anime Tosho",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/animetosho.js",
       "iconUrl": "https://animetosho.org/inc/favicon.ico",
@@ -36,11 +36,11 @@
       "isPrivate": true,
       "isApiKeyRequired": true,
       "version": 1,
-      "backendType": "rss"
+      "backendType": "torznab/rss"
     },
     {
       "id": "acgrip-js",
-      "name": "ACG.RIP (Chinese Anime RSS)",
+      "name": "ACG.RIP",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/acgrip.js",
       "iconUrl": "https://acg.rip/favicon.ico",
@@ -55,7 +55,7 @@
     },
     {
       "id": "sukebei_nyaa-js",
-      "name": "Sukebei Nyaa (Adult)",
+      "name": "Sukebei Nyaa",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/sukebei_nyaa.js",
       "iconUrl": "https://sukebei.nyaa.si/static/favicon.png",
@@ -70,7 +70,7 @@
     },
     {
       "id": "knaben-js",
-      "name": "Knaben (API)",
+      "name": "Knaben",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/knaben.js",
       "iconUrl": "https://knaben.org/favicon.ico",
@@ -85,7 +85,7 @@
     },
     {
       "id": "nekobt-js",
-      "name": "NekoBT (Private Torznab)",
+      "name": "NekoBT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/nekobt.js",
       "iconUrl": "https://nekobt.to/cdn/pfp/null/64",
@@ -96,7 +96,7 @@
       "isPrivate": true,
       "isApiKeyRequired": true,
       "version": 1,
-      "backendType": "rss"
+      "backendType": "torznab/rss"
     },
     {
       "id": "anirena-js",
@@ -145,7 +145,7 @@
     },
     {
       "id": "mikanproject-js",
-      "name": "Mikan Project (Anime)",
+      "name": "Mikan Project",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/mikanproject.js",
       "iconUrl": "https://mikanani.me/favicon.ico",
@@ -175,7 +175,7 @@
     },
     {
       "id": "cloudtorrents-js",
-      "name": "CloudTorrents (API)",
+      "name": "CloudTorrents",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/cloudtorrents.js",
       "iconUrl": "https://cloudtorrents.com/assets/apple-touch-icon.png",

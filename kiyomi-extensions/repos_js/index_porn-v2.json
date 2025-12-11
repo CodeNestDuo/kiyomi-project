@@ -10,7 +10,7 @@
   "providers": [
     {
       "id": "thepiratebay-js",
-      "name": "The Pirate Bay (API)",
+      "name": "The Pirate Bay",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/thepiratebay.js",
       "iconUrl": "https://torrindex.net/images/tpb.jpg",
@@ -25,7 +25,7 @@
     },
     {
       "id": "sukebei_nyaa-js",
-      "name": "Sukebei Nyaa (Adult)",
+      "name": "Sukebei Nyaa",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/sukebei_nyaa.js",
       "iconUrl": "https://sukebei.nyaa.si/static/favicon.png",
@@ -55,7 +55,7 @@
     },
     {
       "id": "knaben-js",
-      "name": "Knaben (API)",
+      "name": "Knaben",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/knaben.js",
       "iconUrl": "https://knaben.org/favicon.ico",
@@ -85,7 +85,7 @@
     },
     {
       "id": "cloudtorrents-js",
-      "name": "CloudTorrents (API)",
+      "name": "CloudTorrents",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/cloudtorrents.js",
       "iconUrl": "https://cloudtorrents.com/assets/apple-touch-icon.png",
@@ -130,7 +130,7 @@
     },
     {
       "id": "limetorrents-js",
-      "name": "LimeTorrents (Public RSS)",
+      "name": "LimeTorrents",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/limetorrents.js",
       "iconUrl": "https://www.limetorrents.fun/favicon.ico",
