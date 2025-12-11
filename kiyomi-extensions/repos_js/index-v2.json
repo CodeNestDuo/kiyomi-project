@@ -1,6 +1,7 @@
 {
-  "indexVersion": 1.0,
+  "indexVersion": 1.1,
   "dateGenerated": "2025-12-06T12:00:00Z",
+  "lastTweaked": "2025-12-11T11:30:00Z",
   "name": "Kiyomi Main Index (General) (V2)",
   "description": "The official, comprehensive index covering general media, movies, music, and international providers.",
   "author": "Kiyomi Core Team",
@@ -19,7 +20,8 @@
       "cautionReason": "Search results are often unverified and may contain malicious files.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1.0,
+      "backendType": "api"
     },
     {
       "id": "nyaa-js",
@@ -33,7 +35,8 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1.0,
+      "backendType": "rss"
     },
     {
       "id": "animetosho-js",
@@ -47,7 +50,8 @@
       "cautionReason": "",
       "isPrivate": true,
       "isApiKeyRequired": true,
-      "version": 1.0
+      "version": 1.0,
+      "backendType": "torznab/rss"
     },
     {
       "id": "nekobt-js",
@@ -61,7 +65,8 @@
       "cautionReason": "",
       "isPrivate": true,
       "isApiKeyRequired": true,
-      "version": 1.0
+      "version": 1.0,
+      "backendType": "torznab/rss"
     },
     {
       "id": "acgrip-js",
@@ -75,7 +80,8 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1.0,
+      "backendType": "rss"
     },
     {
       "id": "knaben-js",
@@ -89,7 +95,8 @@
       "cautionReason": "",
       "isPrivate": true,
       "isApiKeyRequired": true,
-      "version": 1.0
+      "version": 1.0,
+      "backendType": "api"
     },
     {
       "id": "sukebei_nyaa-js",
@@ -103,7 +110,8 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1.0,
+      "backendType": "rss"
     },
     {
       "id": "torrentscsv-js",
@@ -111,13 +119,14 @@
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/torrentscsv.js",
       "iconUrl": "https://torrents-csv.com/favicon.ico",
-      "description": "Provides simple, clean JSON API access to torrent data, listing torrent name, infohash, size, and seeders.",
+      "description": "A collaborative git repository of torrents, consisting of a single, searchable torrents.csv file. It stores torrents with at least one seeder ",
       "isAdult": false,
       "isSecure": true,
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1.0,
+      "backendType": "api"
     },
     {
       "id": "limetorrents-js",
@@ -126,12 +135,13 @@
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/limetorrents.js",
       "iconUrl": "https://www.limetorrents.fun/favicon.ico",
       "description": "General Torrents Download indexer with mostly Verified Torrents.",
-      "isAdult": false,
+      "isAdult": true,
       "isSecure": false,
       "cautionReason": "Unverified public indexer. Contains potentially harmful/mislabelled torrents.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1.0,
+      "backendType": "rss"
     },
     {
       "id": "uindex-js",
@@ -145,7 +155,8 @@
       "cautionReason": "Search results are often unverified and may contain malicious files.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1.0,
+      "backendType": "scrape"
     },
     {
       "id": "anirena-js",
@@ -159,7 +170,8 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1.0,
+      "backendType": "rss"
     },
     {
       "id": "animetime-js",
@@ -173,7 +185,8 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1.0,
+      "backendType": "rss"
     },
     {
       "id": "tokyotosho-js",
@@ -187,7 +200,128 @@
       "cautionReason": "Non-video content (e.g., games, software, archives) may contain malware.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.0
+      "version": 1.0,
+      "backendType": "rss"
+    },
+    {
+      "id": "btdig-js",
+      "name": "BTDigg",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/btdig.js",
+      "iconUrl": "https://www.btdig.com/favicon.ico",
+      "description": "Global, popular torrent search engine using DHT network metadata.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "Search results are often unverified and may contain malicious files.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "scrape"
+    },
+    {
+      "id": "bitsearch-js",
+      "name": "BitSearch.to",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/bitsearch.js",
+      "iconUrl": "https://bitsearch.to/favicon.ico",
+      "description": "The fastest torrent search engine!",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "Search results are often unverified and may contain malicious or misleading torrents.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "api"
+    },
+    {
+      "id": "cloudtorrents-js",
+      "name": "CloudTorrents (API)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/cloudtorrents.js",
+      "iconUrl": "https://cloudtorrents.com/assets/apple-touch-icon.png",
+      "description": "Modern API-based indexer offering structured, fast search results.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "api"
+    },
+    {
+      "id": "yts-js",
+      "name": "YTS (YIFY Movies)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/yts.js",
+      "iconUrl": "https://yts.mx/assets/images/website/favicon-32x32.png",
+      "description": "High-quality movie torrents (YTS/YIFY) with rich metadata and consistent naming.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "Some torrents may be unverified or community uploaded.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "api"
+    },
+    {
+      "id": "filemood-js",
+      "name": "FileMood",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/filemood.js",
+      "iconUrl": "https://filemood.com/favicon.ico",
+      "description": "General indexer specializing in file search, requires manual magnet link construction.",
+      "isAdult": true,
+      "isSecure": false,
+      "cautionReason": "Scraping results can be unstable.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "scrape"
+    },
+    {
+      "id": "torrentdownload-js",
+      "name": "TorrentDownload",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/torrentdownload.js",
+      "iconUrl": "https://www.torrentdownload.info/favicon.ico",
+      "description": "Public indexer providing torrents for new TV shows & TV series, movies, music and games.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "Scraping results can be unstable.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "scrape"
+    },
+    {
+      "id": "mikanproject-js",
+      "name": "Mikan Project (Anime)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/mikanproject.js",
+      "iconUrl": "https://mikanani.me/favicon.ico",
+      "description": "Dedicated indexer for Japanese animation, known for fast release indexing.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "rss"
+    },
+    {
+      "id": "snowfl-js",
+      "name": "Snowfl",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/snowfl.js",
+      "iconUrl": "https://snowfl.com/favicon.ico",
+      "description": "General meta-search engine providing results from multiple sources.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "External meta-search results can be unverified.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "api"
     }
   ]
 }

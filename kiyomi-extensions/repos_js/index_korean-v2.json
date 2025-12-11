@@ -1,6 +1,7 @@
 {
   "indexVersion": 1,
   "dateGenerated": "2025-12-06T13:00:00Z",
+  "lastTweaked": "2025-12-11T11:30:00Z",
   "name": "K-Drama & Asian Series Index (V2)",
   "description": "Curated sources specializing in high-quality Japanese, Korean, Chinese and international dramas and TV shows.",
   "author": "Kiyomi Community Content",
@@ -19,7 +20,8 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1.1
+      "version": 1,
+      "backendType": "rss"
     },
     {
       "id": "thepiratebay-js",
@@ -28,12 +30,13 @@
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/thepiratebay.js",
       "iconUrl": "https://torrindex.net/images/tpb.jpg",
       "description": "A general index useful for finding established or internationally popular K-Dramas.",
-      "isAdult": false,
+      "isAdult": true,
       "isSecure": false,
       "cautionReason": "Search results are often unverified and may contain malicious files.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1
+      "version": 1,
+      "backendType": "api"
     },
     {
       "id": "knaben-js",
@@ -47,7 +50,8 @@
       "cautionReason": "",
       "isPrivate": true,
       "isApiKeyRequired": true,
-      "version": 0.9
+      "version": 1,
+      "backendType": "api"
     },
     {
       "id": "torrentscsv-js",
@@ -55,13 +59,14 @@
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/torrentscsv.js",
       "iconUrl": "https://torrents-csv.com/favicon.ico",
-      "description": "Aggregates data from diverse sources, helping locate obscure or older niche K-Drama files.",
+      "description": "A collaborative git repository of torrents, consisting of a single, searchable torrents.csv file. It stores torrents with at least one seeder ",
       "isAdult": false,
       "isSecure": true,
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1
+      "version": 1,
+      "backendType": "api"
     },
     {
       "id": "tokyotosho-js",
@@ -75,7 +80,8 @@
       "cautionReason": "Non-video content (e.g., games, software, archives) may contain malware.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1
+      "version": 1,
+      "backendType": "rss"
     },
     {
       "id": "uindex-js",
@@ -89,7 +95,98 @@
       "cautionReason": "Search results are often unverified and may contain malicious files.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1
+      "version": 1,
+      "backendType": "scrape"
+    },
+    {
+      "id": "btdig-js",
+      "name": "BTDigg",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/btdig.js",
+      "iconUrl": "https://www.btdig.com/favicon.ico",
+      "description": "Global search engine utilizing the DHT network; useful for finding large, long-tail archives of older Asian series.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "Search results are often unverified and may contain malicious files.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "scrape"
+    },
+    {
+      "id": "cloudtorrents-js",
+      "name": "CloudTorrents (API)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/cloudtorrents.js",
+      "iconUrl": "https://cloudtorrents.com/assets/apple-touch-icon.png",
+      "description": "Modern API-based indexer; useful for locating structured TV series results when niche trackers fail.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "api"
+    },
+    {
+      "id": "filemood-js",
+      "name": "FileMood",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/filemood.js",
+      "iconUrl": "https://filemood.com/favicon.ico",
+      "description": "General indexer specializing in file search, requires manual magnet link construction. May contain niche or old series.",
+      "isAdult": true,
+      "isSecure": false,
+      "cautionReason": "Scraping results can be unstable.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "scrape"
+    },
+    {
+      "id": "torrentdownload-js",
+      "name": "TorrentDownload",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/torrentdownload.js",
+      "iconUrl": "https://www.torrentdownload.info/favicon.ico",
+      "description": "Public indexer; useful as a reliable backup.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "Scraping results can be unstable.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "scrape"
+    },
+    {
+      "id": "limetorrents-js",
+      "name": "LimeTorrents (Public RSS)",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/limetorrents.js",
+      "iconUrl": "https://www.limetorrents.fun/favicon.ico",
+      "description": "General Torrents Download indexer; good for widely distributed international series releases.",
+      "isAdult": true,
+      "isSecure": false,
+      "cautionReason": "Unverified public indexer. Contains potentially harmful/mislabelled torrents.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "scrape"
+    },
+    {
+      "id": "snowfl-js",
+      "name": "Snowfl",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_js/snowfl.js",
+      "iconUrl": "https://snowfl.com/favicon.ico",
+      "description": "General meta-search engine providing results from multiple sources; excellent for checking title availability across many trackers.",
+      "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "External meta-search results can be unverified.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1.0,
+      "backendType": "api"
     }
   ]
 }
