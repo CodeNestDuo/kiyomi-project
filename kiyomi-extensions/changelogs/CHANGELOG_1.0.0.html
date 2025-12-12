@@ -1,0 +1,155 @@
+<h1 id="-kiyomi-app-changelog">📜 Kiyomi App Changelog</h1>
+<p>The format is based on <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a>.</p>
+<h2 id="1-0-0-2025-12-12">1.0.0 - 2025-12-12</h2>
+<h3 id="-overview">🎉 Overview</h3>
+<p>Welcome to the first public release of <strong>Kiyomi</strong>!</p>
+<p>Kiyomi is a flexible, all-in-one media application designed to empower you to discover, manage, and instantly stream video content.</p>
+<p>This release includes core features for <strong>media discovery</strong>, <strong>torrent management</strong>, and <strong>direct streaming while downloading</strong>.</p>
+<hr>
+<h3 id="-core-features">⭐ Core Features</h3>
+<h4 id="-discovery-browsing">🔍 Discovery &amp; Browsing</h4>
+<ul>
+<li><strong>Seamless Search:</strong> Find movies, TV shows, and actors instantly using a single search bar.</li>
+<li><strong>TMDB Integration:</strong> Easily connect your TMDB account to access personal features like remote Watchlist, Favorites, and Ratings. You can also view your TMDB Profile account page.</li>
+<li><strong>Structured Details:</strong> Dedicated screens for Movies, TV Shows, Seasons, Episodes, and People, providing comprehensive summaries and artwork.</li>
+<li><strong>Advanced Filters:</strong> Use dedicated filters (by year, type, genre, etc.) to discover new content tailored to your preferences.</li>
+</ul>
+<h4 id="-playback-local-files">📺 Playback &amp; Local Files</h4>
+<ul>
+<li><strong>Powerful Universal Media Player:</strong> Enjoy smooth, high-quality playback with broad support for most video codecs. The built-in player (based on Media3 ExoPlayer) includes rich customization options, full support for multiple <strong>subtitle tracks</strong>, <strong>audio tracks</strong>, and flexible controls.</li>
+<li><strong>In-App File Browser:</strong> Easily browse your local storage to manually locate and play video files, regardless of where they are stored on your device.</li>
+<li><strong>Continue Watching:</strong> The app tracks your <strong>playback data</strong> and allows you to <strong>resume</strong> any media (local file or torrent stream) exactly where you left off.</li>
+</ul>
+<h4 id="-direct-streaming-torrents">🧲 Direct Streaming &amp; Torrents</h4>
+<ul>
+<li><strong>Integrated Torrent Client:</strong> Kiyomi manages all your torrent downloads internally.<ul>
+<li>View all torrents in one place, showing live progress, speeds, and status (Downloading, Seeding, Paused, etc.).</li>
+</ul>
+</li>
+<li><strong>Instant Streaming (Stream-While-Downloading):</strong> Start watching videos almost immediately! Kiyomi buffers the file while it downloads, allowing for instant playback and seeking ahead in the video.</li>
+<li><strong>Flexible File Selection:</strong> After adding a torrent (via magnet or file), easily choose exactly which files to download (e.g., only one episode or just the main movie file).</li>
+<li><strong>Reliable Resumption:</strong> The app remembers your exact download progress, even if the app or your phone is closed unexpectedly, ensuring you never lose your spot.</li>
+</ul>
+<h4 id="-custom-lists-organization">🗃️ Custom Lists &amp; Organization</h4>
+<ul>
+<li><strong>Personalized Hub:</strong> A central hub for all your curated lists.</li>
+<li><strong>Remote &amp; Local Tracking:</strong> Kiyomi supports tracking your media status in two ways:<ul>
+<li><strong>TMDB Features:</strong> When logged in, you can directly use TMDB&#39;s official <strong>Watchlist</strong>, <strong>Favorites</strong>, and <strong>Rating</strong> features.</li>
+<li><strong>Local Tracking (Offline):</strong> For users without a TMDB account, the app provides built-in <strong>local database features</strong> for media status tracking (Liking, Pinning/Watchlist, Local Ratings) that work fully offline.</li>
+</ul>
+</li>
+<li><strong>Custom Offline Collections:</strong> Create, name, and manage your own private lists (e.g., &quot;My Anime List,&quot; &quot;Watch Later&quot;).</li>
+<li><strong>Easy Management:</strong> Quickly add or remove any movie or show from your collections directly from the details screen.</li>
+</ul>
+<h4 id="-extensions-custom-providers">🧩 Extensions &amp; Custom Providers</h4>
+<ul>
+<li><strong>Extension Store:</strong> Browse and install community-created extensions to add new content sources and specialized search engines to Kiyomi.</li>
+<li><strong>Smart Torrent Search:</strong> When looking for a torrent for a specific episode or movie, the app provides smart categories (like Anime, TV, Movie) to the search providers, helping them find the best quality release faster.</li>
+</ul>
+<h4 id="-settings-customization">⚙️ Settings &amp; Customization</h4>
+<ul>
+<li><strong>Full Control:</strong> Comprehensive settings allow you to customize Kiyomi&#39;s look, feel, and behavior.</li>
+<li><strong>Torrent Setup:</strong> Easily choose your default download folder, and toggle advanced settings like <strong>sequential downloading</strong> or <strong>extra trackers</strong> for faster speeds.</li>
+<li><strong>Reset Options:</strong> Ability to reset certain settings or configurations back to sensible defaults if something feels off.</li>
+</ul>
+<hr>
+<h3 id="-app-updates">🔔 App Updates</h3>
+<ul>
+<li>Kiyomi can <strong>automatically check for new versions</strong> (about once every 24 hours).</li>
+<li>A <strong>&quot;New Version Available&quot;</strong> message appears on the About screen when an update is ready.</li>
+<li>The app can download and display a full, detailed <strong>changelog</strong> for new versions, which remains available offline once downloaded.</li>
+</ul>
+<hr>
+<h3 id="-reliability-performance">🛠 Reliability &amp; Performance</h3>
+<ul>
+<li>Torrent progress and settings are saved regularly to reduce the chance of losing progress if the app or device is closed unexpectedly.</li>
+<li>Torrents and file names are cleaned up to be more readable, so downloaded folders are easier to recognize.</li>
+<li>Designed to recover gracefully after restarts by restoring torrents from:<ul>
+<li>Fast-resume data (best).</li>
+<li>Saved <code>.torrent</code> files.</li>
+<li>Magnet links or infohashes as a last resort.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="-planned-upcoming-ideas-roadmap-">🔮 Planned / Upcoming (Ideas &amp; Roadmap)</h3>
+<p>These are <strong>not guaranteed</strong>, but are actively being explored for future versions of Kiyomi:</p>
+<h4 id="-backups-cloud-sync">💾 Backups &amp; Cloud Sync</h4>
+<ul>
+<li><strong>Periodic local backup:</strong><ul>
+<li>Automatically create backup files that include:<ul>
+<li>App settings (preferences, UI configuration, torrent options).</li>
+<li>Local database data (collections, torrent metadata, watch state).</li>
+</ul>
+</li>
+<li>Let users export/import these backup files manually if they switch devices.</li>
+</ul>
+</li>
+<li><strong>Optional cloud backup (Google Drive or similar):</strong><ul>
+<li>Allow linking a Google account and syncing backup files to your personal drive.</li>
+<li>Restore your Kiyomi setup on a new device with a single import.</li>
+</ul>
+</li>
+</ul>
+<h4 id="-external-list-integration-challenges">📝 External List Integration &amp; Challenges</h4>
+<ul>
+<li><strong>TMDB Custom List Integration:</strong><ul>
+<li>Explore the ability to <strong>import</strong> your TMDB custom lists and mirror them into Kiyomi collections.</li>
+</ul>
+</li>
+<li><strong>Completion tracking:</strong><ul>
+<li>Show how much of a list you’ve actually watched (e.g., “7/25 movies completed”).</li>
+<li>Visual progress bars or simple percentage indicators.</li>
+</ul>
+</li>
+<li><strong>Friendly “challenges”:</strong><ul>
+<li>Optional mini-goals like:<ul>
+<li>“Finish 10 movies from this list this month.”</li>
+<li>“Complete Season 1 of this show in a week.”</li>
+</ul>
+</li>
+<li>Progress indicators and simple stats—not hardcore gamification, just fun motivation.</li>
+</ul>
+</li>
+</ul>
+<h4 id="-non-torrent-media-providers-experimental-thoughts-">🌐 Non-Torrent Media Providers (Experimental Thoughts)</h4>
+<ul>
+<li><strong>Idea only (not committed yet):</strong><ul>
+<li>Explore support for non-torrent provider types in the future, similar in spirit to apps like <strong>Aniyomi / Mangayomi</strong>:<ul>
+<li>Direct streaming sources.</li>
+<li>Other content APIs.</li>
+</ul>
+</li>
+<li>If implemented, this would likely reuse the existing extension/provider system so everything stays modular.</li>
+</ul>
+</li>
+</ul>
+<h4 id="-tv-casting-big-screen">📺 TV / Casting &amp; Big Screen</h4>
+<ul>
+<li><strong>Cast to TV:</strong><ul>
+<li>Add support for casting video to compatible devices (e.g., Chromecast or cast-enabled TVs), so you can keep controlling playback from your phone.</li>
+</ul>
+</li>
+<li><strong>TV-optimised experience:</strong><ul>
+<li>Explore Android TV / Google TV support or a TV UI mode:<ul>
+<li>Larger, remote-friendly layouts.</li>
+<li>Simple navigation for couch usage.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="-desktop-pc-companion-longer-term-idea-">💻 Desktop / PC Companion (Longer-Term Idea)</h4>
+<ul>
+<li><strong>Possible separate desktop app or companion:</strong><ul>
+<li>We are exploring the development of a simple application for laptops/PCs. This could potentially be built using a streamlined language like <strong>Python</strong> (for ease of development and maintenance) or <strong>Kotlin Multiplatform</strong> for cross-platform compatibility.</li>
+<li>The primary goal would be to act as a <strong>torrent powerhouse</strong>, capable of:<ul>
+<li>Managing large-scale torrent downloads locally on your PC.</li>
+<li>Sharing your media library with your Kiyomi mobile app.</li>
+<li>Allowing your Kiyomi Android app to remotely control or stream files managed by the PC companion.</li>
+</ul>
+</li>
+<li><strong>Important Note:</strong> This is a very early, long-term idea. If pursued, it will require significant time and resources, which may temporarily take development focus away from the main mobile application.</li>
+</ul>
+</li>
+</ul>
