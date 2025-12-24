@@ -1,0 +1,80 @@
+{
+  "name": "Matthuisman NZAU Collection",
+  "createdAt": 1765785180000,
+  "modifiedAt": 1765802807904,
+  "author": "Community Curated",
+  "iptvSourceProviders": [
+    {
+      "id": 1,
+      "name": "NZAU Raw TV",
+      "url": "https://i.mjh.nz/nzau/raw-tv.m3u8",
+      "isAdult": false,
+      "lastModified": 1765802807904,
+      "description": "Combined New Zealand and Australian (Sydney) Freeview raw TV playlist without extra headers, suitable for general IPTV clients."
+    },
+    {
+      "id": 2,
+      "name": "NZAU Raw Radio",
+      "url": "https://i.mjh.nz/nzau/raw-radio.m3u8",
+      "isAdult": false,
+      "lastModified": 1765802807904,
+      "description": "Combined New Zealand and Australian (Sydney) Freeview raw radio playlist without extra headers."
+    },
+    {
+      "id": 3,
+      "name": "NZAU Raw TV & Radio",
+      "url": "https://i.mjh.nz/nzau/raw.m3u8",
+      "isAdult": false,
+      "lastModified": 1765802807904,
+      "description": "Combined New Zealand and Australian (Sydney) Freeview raw TV and radio playlist for generic IPTV clients."
+    },
+    {
+      "id": 4,
+      "name": "NZAU KODI TV",
+      "url": "https://i.mjh.nz/nzau/kodi-tv.m3u8",
+      "isAdult": false,
+      "lastModified": 1765802807904,
+      "description": "KODI-optimized TV playlist for NZ & AU Freeview with X_FORWARD headers for use with IPTV Simple Client."
+    },
+    {
+      "id": 5,
+      "name": "NZAU KODI Radio",
+      "url": "https://i.mjh.nz/nzau/kodi-radio.m3u8",
+      "isAdult": false,
+      "lastModified": 1765802807904,
+      "description": "KODI-optimized radio playlist for NZ & AU Freeview with X_FORWARD headers."
+    },
+    {
+      "id": 6,
+      "name": "NZAU KODI TV & Radio",
+      "url": "https://i.mjh.nz/nzau/kodi.m3u8",
+      "isAdult": false,
+      "lastModified": 1765802807904,
+      "description": "KODI-optimized combined TV and radio playlist for NZ & AU Freeview with X_FORWARD headers."
+    },
+    {
+      "id": 7,
+      "name": "NZAU Tvheadend TV",
+      "url": "https://i.mjh.nz/nzau/tvh-tv.m3u8",
+      "isAdult": false,
+      "lastModified": 1765802807904,
+      "description": "Tvheadend TV playlist for NZ & AU Freeview where streams are piped through ffmpeg to MPEG-TS."
+    },
+    {
+      "id": 8,
+      "name": "NZAU Tvheadend Radio",
+      "url": "https://i.mjh.nz/nzau/tvh-radio.m3u8",
+      "isAdult": false,
+      "lastModified": 1765802807904,
+      "description": "Tvheadend radio playlist for NZ & AU Freeview with streams piped through ffmpeg to MPEG-TS."
+    },
+    {
+      "id": 9,
+      "name": "NZAU Tvheadend TV & Radio",
+      "url": "https://i.mjh.nz/nzau/tvh.m3u8",
+      "isAdult": false,
+      "lastModified": 1765802807904,
+      "description": "Tvheadend combined TV and radio playlist for NZ & AU Freeview with ffmpeg piping to MPEG-TS."
+    }
+  ]
+}

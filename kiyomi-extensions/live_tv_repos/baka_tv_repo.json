@@ -1,0 +1,136 @@
+{
+  "name": "IPTV Collection",
+  "createdAt": 1765785180000,
+  "modifiedAt": 1765802807904,
+  "author": "Community Curated",
+  "iptvSourceProviders": [
+    {
+      "id": 1,
+      "name": "IPTV Org",
+      "url": "https://iptv-org.github.io/iptv/index.m3u",
+      "isAdult": false,
+      "lastModified": 1765802807904,
+      "description": "A large open-source IPTV playlist featuring publicly available and legal TV channels from around the world."
+    },
+    {
+      "id": 2,
+      "name": "Samsung TV Plus Channels",
+      "url": "https://apsattv.com/ssungusa.m3u",
+      "isAdult": false,
+      "lastModified": 1765802807904,
+      "description": "Official Samsung TV Plus free ad-supported live TV channels including news, movies, and entertainment."
+    },
+    {
+      "id": 3,
+      "name": "Fire TV Channels",
+      "url": "https://www.apsattv.com/firetv.m3u",
+      "isAdult": false,
+      "lastModified": 0,
+      "description": "Amazon Fire TV free live channels playlist featuring ad-supported entertainment, news, and lifestyle content."
+    },
+    {
+      "id": 4,
+      "name": "Free-TV",
+      "url": "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8",
+      "isAdult": false,
+      "lastModified": 0,
+      "description": "Community-maintained IPTV playlist aggregating free-to-air TV channels from multiple countries."
+    },
+    {
+      "id": 5,
+      "name": "Xumo",
+      "url": "https://www.apsattv.com/xumo.m3u",
+      "isAdult": false,
+      "lastModified": 1765785185349,
+      "description": "Xumo free streaming TV service offering live channels across news, sports, movies, and lifestyle genres."
+    },
+    {
+      "id": 6,
+      "name": "Local Now",
+      "url": "https://www.apsattv.com/localnow.m3u",
+      "isAdult": false,
+      "lastModified": 1765785209959,
+      "description": "Local Now IPTV channels focused on regional news, weather updates, and community programming."
+    },
+    {
+      "id": 7,
+      "name": "LG Channels",
+      "url": "https://www.apsattv.com/lg.m3u",
+      "isAdult": false,
+      "lastModified": 1765785198975,
+      "description": "LG Channels Watch Free playlist providing ad-supported TV content for LG smart TV users."
+    },
+    {
+      "id": 8,
+      "name": "Roku Channels",
+      "url": "https://www.apsattv.com/rok.m3u",
+      "isAdult": false,
+      "lastModified": 1765785199448,
+      "description": "Roku Channel lineup featuring live TV, movies, series, and curated entertainment streams."
+    },
+    {
+      "id": 9,
+      "name": "Xiaomi Channels",
+      "url": "https://www.apsattv.com/xiaomi.m3u",
+      "isAdult": false,
+      "lastModified": 1765793551287,
+      "description": "Xiaomi and Mi TV free IPTV channels offering international and lifestyle programming."
+    },
+    {
+      "id": 10,
+      "name": "Distro TV",
+      "url": "https://www.apsattv.com/distro.m3u",
+      "isAdult": false,
+      "lastModified": 1765785200308,
+      "description": "DistroTV free streaming channels with movies, TV shows, documentaries, and live entertainment."
+    },
+    {
+      "id": 11,
+      "name": "Redbox TV",
+      "url": "https://www.apsattv.com/redbox.m3u",
+      "isAdult": false,
+      "lastModified": 1765785200595,
+      "description": "Redbox live TV channels offering free movies, news, and trending pop-culture content."
+    },
+    {
+      "id": 12,
+      "name": "Vizio TV",
+      "url": "https://www.apsattv.com/vizio.m3u",
+      "isAdult": false,
+      "lastModified": 1765785289126,
+      "description": "Vizio WatchFree IPTV channels delivering ad-supported live TV and on-demand programming."
+    },
+    {
+      "id": 13,
+      "name": "Tablo TV",
+      "url": "https://www.apsattv.com/tablo.m3u",
+      "isAdult": false,
+      "lastModified": 1765785289171,
+      "description": "Tablo TV streaming channels focused on free, over-the-air style television content."
+    },
+    {
+      "id": 14,
+      "name": "Worldwide Webcams",
+      "url": "https://m3u.su/dic",
+      "isAdult": false,
+      "lastModified": 1765786806922,
+      "description": "Live webcam streams from cities, tourist destinations, nature locations, and landmarks worldwide."
+    },
+    {
+      "id": 15,
+      "name": "logan-xall",
+      "url": "https://m3u.su/bb2",
+      "isAdult": false,
+      "lastModified": 1765787062018,
+      "description": "A diverse IPTV playlist containing a mix of international TV channels and content categories."
+    },
+    {
+      "id": 16,
+      "name": "Adult",
+      "url": "http://adultiptv.net/chs.m3u",
+      "isAdult": true,
+      "lastModified": 1765802807904,
+      "description": "Adult-only IPTV playlist containing explicit content intended for mature audiences only."
+    }
+  ]
+}

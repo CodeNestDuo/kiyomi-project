@@ -1,11 +1,16 @@
 <h1 id="-kiyomi-app-changelog">📜 Kiyomi App Changelog</h1>
 <p>The format is based on <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a>.</p>
-<h2 id="1-0-2-2025-12-12">1.0.2 - 2025-12-12</h2>
+<h2 id="1-0-1-2025-12-12">1.0.1 - 2025-12-12</h2>
 <h3 id="-overview">🎉 Overview</h3>
 <p>Welcome to the first public release of <strong>Kiyomi</strong>!</p>
 <p>Kiyomi is a flexible, all-in-one media application designed to empower you to discover, manage, and instantly stream video content.</p>
 <p>This release includes core features for <strong>media discovery</strong>, <strong>torrent management</strong>, and <strong>direct streaming while downloading</strong>.</p>
+<p>
+    In addition to on-demand content, Kiyomi also includes <strong>IPTV support</strong> for live TV and streaming channels.
+</p>
+
 <hr>
+
 <h3 id="-core-features">⭐ Core Features</h3>
 <h4 id="-discovery-browsing">🔍 Discovery &amp; Browsing</h4>
 <ul>
@@ -30,6 +35,40 @@
 <li><strong>Flexible File Selection:</strong> After adding a torrent (via magnet or file), easily choose exactly which files to download (e.g., only one episode or just the main movie file).</li>
 <li><strong>Reliable Resumption:</strong> The app remembers your exact download progress, even if the app or your phone is closed unexpectedly, ensuring you never lose your spot.</li>
 </ul>
+<h4 id="-tv-casting-big-screen">📺 TV / Casting &amp; Big Screen</h4>
+<ul>
+    <li>
+        <strong>DLNA Casting (Implemented):</strong>
+        <ul>
+            <li>Stream video directly to <strong>DLNA-compatible TVs, media boxes, and smart devices</strong> on the same local network.</li>
+            <li>Control playback from your phone while the content plays on the big screen.</li>
+            <li>Works with both <strong>local files</strong> and <strong>torrent streams</strong>.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Future Casting Expansion:</strong>
+        <ul>
+            <li>DLNA support provides a foundation for additional casting solutions in future releases.</li>
+        </ul>
+    </li>
+</ul>
+<h4 id="-iptv-live-tv">📡 IPTV &amp; Live TV</h4>
+<ul>
+    <li><strong>Built-in IPTV Support:</strong>
+        <ul>
+            <li>Play live TV and streaming channels using <strong>M3U / M3U8 playlists</strong>.</li>
+            <li>Supports both <strong>local files</strong> and <strong>remote URLs</strong>.</li>
+            <li>Channel playback uses the same <strong>powerful universal media player</strong>, ensuring smooth streaming and subtitle/audio track support where available.</li>
+        </ul>
+    </li>
+    <li><strong>Unified Media Experience:</strong>
+        <ul>
+            <li>IPTV lives alongside movies, shows, local files, and torrents—everything in one app.</li>
+            <li>Continue Watching and playback state tracking apply to IPTV streams where supported.</li>
+        </ul>
+    </li>
+</ul>
+
 <h4 id="-custom-lists-organization">🗃️ Custom Lists &amp; Organization</h4>
 <ul>
 <li><strong>Personalized Hub:</strong> A central hub for all your curated lists.</li>
@@ -74,23 +113,38 @@
 <hr>
 <h3 id="-planned-upcoming-ideas-roadmap-">🔮 Planned / Upcoming (Ideas &amp; Roadmap)</h3>
 <p>These are <strong>not guaranteed</strong>, but are actively being explored for future versions of Kiyomi:</p>
-<h4 id="-backups-cloud-sync">💾 Backups &amp; Cloud Sync</h4>
+<h4 id="-backups-cloud-sync">💾 Backups &amp; Restore (In Progress)</h4>
 <ul>
-<li><strong>Periodic local backup:</strong><ul>
-<li>Automatically create backup files that include:<ul>
-<li>App settings (preferences, UI configuration, torrent options).</li>
-<li>Local database data (collections, torrent metadata, watch state).</li>
+    <li>
+        <strong>Simple local backup system (currently in development):</strong>
+        <ul>
+            <li>
+                Create a backup file that includes:
+                <ul>
+                    <li>App settings and preferences.</li>
+                    <li>Local database data (collections, watch progress, torrent metadata).</li>
+                </ul>
+            </li>
+            <li>
+                Manual export and import to:
+                <ul>
+                    <li>Move your setup to a new device.</li>
+                    <li>Restore data after reinstalling the app.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <strong>Future cloud sync (exploration stage):</strong>
+        <ul>
+            <li>Optional cloud backups (e.g., Google Drive).</li>
+            <li>Built on top of the local backup system.</li>
+            <li>Fully opt-in and privacy-focused.</li>
+        </ul>
+    </li>
 </ul>
-</li>
-<li>Let users export/import these backup files manually if they switch devices.</li>
-</ul>
-</li>
-<li><strong>Optional cloud backup (Google Drive or similar):</strong><ul>
-<li>Allow linking a Google account and syncing backup files to your personal drive.</li>
-<li>Restore your Kiyomi setup on a new device with a single import.</li>
-</ul>
-</li>
-</ul>
+
+
 <h4 id="-external-list-integration-challenges">📝 External List Integration &amp; Challenges</h4>
 <ul>
 <li><strong>TMDB Custom List Integration:</strong><ul>
@@ -121,21 +175,6 @@
 </ul>
 </li>
 <li>If implemented, this would likely reuse the existing extension/provider system so everything stays modular.</li>
-</ul>
-</li>
-</ul>
-<h4 id="-tv-casting-big-screen">📺 TV / Casting &amp; Big Screen</h4>
-<ul>
-<li><strong>Cast to TV:</strong><ul>
-<li>Add support for casting video to compatible devices (e.g., Chromecast or cast-enabled TVs), so you can keep controlling playback from your phone.</li>
-</ul>
-</li>
-<li><strong>TV-optimised experience:</strong><ul>
-<li>Explore Android TV / Google TV support or a TV UI mode:<ul>
-<li>Larger, remote-friendly layouts.</li>
-<li>Simple navigation for couch usage.</li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
