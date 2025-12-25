@@ -1,5 +1,5 @@
 // ==KiyomiExtension==
-// @id           bitsearch-api-js
+// @id           bitsearch-js
 // @name         BitSearch.to (API, JS)
 // @version      1.0.0
 // @author       Kiyomi Project
@@ -20,7 +20,7 @@
 
 // ===== metadata mirror (optional introspection) =====
 const EXTENSION_INFO = {
-    id: "bitsearch-api-js",
+    id: "bitsearch-js",
     displayName: "BitSearch.to (API)",
     siteUrl: "https://bitsearch.to",
     iconUrl: "https://bitsearch.to/icons/favicon-bitsearch.ico",
