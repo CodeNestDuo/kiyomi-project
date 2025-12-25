@@ -13,7 +13,7 @@
 // @private      false
 // @requiresKey  false
 // @description  Sukebei Nyaa adult indexer via Kiyomi JS engine.
-// @primaryCategory general
+// @primaryCategory hentai
 // @extraCategories anime, movie, tv, xxx
 // ==/KiyomiExtension==
 

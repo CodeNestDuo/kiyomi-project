@@ -14,7 +14,7 @@
 // @requiresKey  true
 // @description  Knaben JSON API integration for Kiyomi JS engine.
 // @primaryCategory general
-// @extraCategories anime, movie, tv, xxx
+// @extraCategories anime, movie, tv, xxx, hentai
 // ==/KiyomiExtension==
 
 
