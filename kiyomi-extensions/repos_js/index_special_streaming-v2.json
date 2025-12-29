@@ -1,0 +1,62 @@
+{
+  "indexVersion": 1.1,
+  "dateGenerated": "2025-12-06T12:00:00Z",
+  "lastTweaked": "2025-12-29T07:45:00Z",
+  "name": "Kiyomi Streaming Collection",
+  "description": "High-speed Video-on-Demand (VOD) extensions for Anime, Asian Dramas, and more.",
+  "author": "Kiyomi Core Team",
+  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/vod_streaming_icon.png",
+  "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/vod_streaming_banner.webp",
+  "providers": [
+    {
+      "id": "allanime-js",
+      "name": "AllAnime",
+      "type": "STREAMING",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_streaming_js/allanime.js",
+      "version": 1.0,
+      "description": "Direct streaming for anime, movies, and series.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "animegg-js",
+      "name": "AnimeGG",
+      "type": "STREAMING",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_streaming_js/animegg.js",
+      "version": 1.0,
+      "description": "Fast anime streaming with multiple mirror support.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "animepahe-js",
+      "name": "AnimePahe",
+      "type": "STREAMING",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_streaming_js/animepahe.js",
+      "version": 1.0,
+      "description": "High-quality, lightweight anime streaming.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "dramafull-js",
+      "name": "DramaFull",
+      "type": "STREAMING",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_streaming_js/dramafull.js",
+      "version": 1.0,
+      "description": "Specialized in Asian dramas, movies, and variety shows.",
+      "isAdult": false,
+      "language": "ko, zh, en"
+    },
+    {
+      "id": "hahomoe-js",
+      "name": "HahoMoe",
+      "type": "STREAMING",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_streaming_js/hahomoe.js",
+      "version": 1.0,
+      "description": "Dedicated anime streaming provider.",
+      "isAdult": false,
+      "language": "en"
+    }
+  ]
+}

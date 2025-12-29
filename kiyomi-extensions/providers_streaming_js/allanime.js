@@ -1,12 +1,46 @@
+// ==KiyomiExtension==
+// @id            allanime-js
+// @name          AllAnime
+// @version       1.0
+// @author        Kiyomi Project
+// @lang          en
+// @icon          https://allmanga.to/favicon.ico
+// @site          https://allmanga.to
+// @package       allmanga.to
+// @type          streaming
+// @nsfw          false
+// @secure        true
+// @private       false
+// @requiresKey   false
+// @description   Streaming provider for anime using AllAnime GraphQL API.
+// ==/KiyomiExtension==
+
 /**
- * Kiyomi Streaming JS Provider: AllAnime
+ * ===== Runtime Metadata =====
  */
+const EXTENSION_INFO = {
+    id: "allanime-js",
+    displayName: "AllAnime",
+    siteUrl: "https://allmanga.to",
+    iconUrl: "https://allmanga.to/favicon.ico",
+    type: "STREAMING",
+    isAdult: false,
+    isSecure: true,
+    cautionReason: "",
+    isPrivate: false,
+    isApiKeyRequired: false,
+    version: "1.0"
+};
 
 const BASE_URL = "https://allmanga.to";
 const API_URL = "https://api.allanime.day";
-const PROVIDER_ID = "allanime";
 
-Kiyomi.setActiveProvider(PROVIDER_ID);
+/**
+ * Note: We removed the PROVIDER_ID constant and manual setActiveProvider 
+ * to allow the Kotlin Engine to handle cookie bucket scoping automatically.
+ */
+
+// ---------- Helpers ----------
 
 function httpPost(payload) {
     const headers = {
@@ -17,8 +51,24 @@ function httpPost(payload) {
     return Kiyomi.httpPostJson(`${API_URL}/api`, JSON.stringify(payload), JSON.stringify(headers));
 }
 
+function decryptSource(hash) {
+    if (!hash || !hash.startsWith("-")) return hash;
+    const hex = hash.substring(hash.lastIndexOf("-") + 1);
+    let decrypted = "";
+    for (let i = 0; i < hex.length; i += 2) {
+        const charCode = parseInt(hex.substr(i, 2), 16);
+        decrypted += String.fromCharCode(charCode ^ 56);
+    }
+    return decrypted;
+}
+
 // -------------------- Core Logic --------------------
 
+/**
+ * Search for Anime
+ * @param {string} query 
+ * @param {number} page 
+ */
 function search(query, page) {
     const p = page || 1;
     const graphqlQuery = `query($search: SearchInput, $limit: Int, $page: Int, $translationType: VaildTranslationTypeEnumType, $countryOrigin: VaildCountryOriginEnumType) {
@@ -56,7 +106,10 @@ function search(query, page) {
     }));
 }
 
-// ADD THIS FUNCTION - It was missing/undefined in your logs
+/**
+ * Fetch Show Details
+ * @param {string} url 
+ */
 function details(url) {
     const id = url.split("<&sep>")[0];
     const graphqlQuery = `query ($_id: String!) {
@@ -68,8 +121,6 @@ function details(url) {
             thumbnail
             genres
             status
-            type
-            score
         }
     }`;
 
@@ -86,6 +137,10 @@ function details(url) {
     };
 }
 
+/**
+ * Fetch Episode List
+ * @param {string} url 
+ */
 function episodes(url) {
     const id = url.split("<&sep>")[0];
     const graphqlQuery = `query ($_id: String!) {
@@ -96,12 +151,10 @@ function episodes(url) {
     }`;
 
     const response = JSON.parse(httpPost({ query: graphqlQuery, variables: { _id: id } }));
-    // We default to 'sub' as per preferences
     const subList = response.data.show.availableEpisodesDetail.sub || [];
 
     return subList.map(ep => ({
         name: `Episode ${ep}`,
-        // Pack the data needed for stream extraction into a JSON string
         url: JSON.stringify({
             showId: id,
             translationType: "sub",
@@ -111,6 +164,10 @@ function episodes(url) {
     })).sort((a, b) => a.number - b.number);
 }
 
+/**
+ * Fetch Video Streams
+ * @param {string} episodeDataJson 
+ */
 function streams(episodeDataJson) {
     const epData = JSON.parse(episodeDataJson);
     const graphqlQuery = `query($showId: String!, $translationType: VaildTranslationTypeEnumType!, $episodeString: String!) {
@@ -159,15 +216,4 @@ function streams(episodeDataJson) {
         }
     }
     return results;
-}
-
-function decryptSource(hash) {
-    if (!hash || !hash.startsWith("-")) return hash;
-    const hex = hash.substring(hash.lastIndexOf("-") + 1);
-    let decrypted = "";
-    for (let i = 0; i < hex.length; i += 2) {
-        const charCode = parseInt(hex.substr(i, 2), 16);
-        decrypted += String.fromCharCode(charCode ^ 56);
-    }
-    return decrypted;
 }

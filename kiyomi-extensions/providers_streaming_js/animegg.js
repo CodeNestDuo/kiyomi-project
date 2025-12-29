@@ -1,25 +1,67 @@
+// ==KiyomiExtension==
+// @id            animegg-js
+// @name          AnimeGG
+// @version       1.0
+// @author        Kiyomi Project
+// @lang          en
+// @icon          https://www.animegg.org/images/favicon.png
+// @site          https://www.animegg.org
+// @package       animegg.org
+// @type          streaming
+// @nsfw          false
+// @secure        true
+// @private       false
+// @requiresKey   false
+// @description   Streaming provider for AnimeGG using Jsoup and Regex extraction.
+// ==/KiyomiExtension==
+
 /**
- * Kiyomi Streaming JS Provider: AnimeGG
+ * ===== Runtime Metadata =====
  */
+const EXTENSION_INFO = {
+    id: "animegg-js",
+    displayName: "AnimeGG",
+    siteUrl: "https://www.animegg.org",
+    iconUrl: "https://www.animegg.org/images/favicon.png",
+    type: "STREAMING",
+    isAdult: false,
+    isSecure: true,
+    cautionReason: "",
+    isPrivate: false,
+    isApiKeyRequired: false,
+    version: "1.0"
+};
 
 const BASE_URL = "https://www.animegg.org";
-const PROVIDER_ID = "animegg";
 
-Kiyomi.setActiveProvider(PROVIDER_ID);
+/**
+ * Note: Kiyomi.setActiveProvider is handled by the Kotlin Engine 
+ * automatically using the database ID. Do not manually override here.
+ */
+
+// ---------- Helpers ----------
 
 function httpGet(url, headersObj) {
     const headers = headersObj || {};
     return Kiyomi.httpGet(url, JSON.stringify(headers));
 }
 
+/**
+ * Safely fixes the quasi-JSON object found in script tags to valid JSON
+ */
 function fixJson(str) {
     return str.replace(/(\w+):/g, '"$1":')
-              .replace(/:\s?([^{\[}\]":\s,]+)/g, ': "$1"')
-              .replace(/: "http/g, ': "http');
+        .replace(/:\s?([^{\[}\]":\s,]+)/g, ': "$1"')
+        .replace(/: "http/g, ': "http');
 }
 
 // -------------------- Core Logic --------------------
 
+/**
+ * Search for Anime
+ * @param {string} query 
+ * @param {number} page 
+ */
 function search(query, page) {
     const p = page || 1;
     let url = (query && query.trim().length > 0)
@@ -44,14 +86,17 @@ function search(query, page) {
     });
 }
 
+/**
+ * Fetch Anime details and Genres
+ * @param {string} url 
+ */
 function details(url) {
     const html = httpGet(url);
 
-    // Use XPath only for the genres array
     let genres = [];
     try {
         genres = JSON.parse(Kiyomi.xpath(html, '//div[contains(@class,"tagscat")]/a/text()'));
-    } catch(e) {}
+    } catch (e) { }
 
     return {
         title: Kiyomi.selectText(html, ".media-body h1") || "Anime",
@@ -59,13 +104,16 @@ function details(url) {
         poster: Kiyomi.resolveUrl(BASE_URL, Kiyomi.attr(Kiyomi.selectFirstElement(html, ".media .media-object"), "src")),
         description: Kiyomi.selectText(html, ".ptext"),
         genres: genres,
-        // FIX: Use Jsoup :contains selector instead of XPath
         status: Kiyomi.selectText(html, ".infoami span:contains(Status)")
-                  .replace("Status:", "")
-                  .trim() || "Unknown"
+            .replace("Status:", "")
+            .trim() || "Unknown"
     };
 }
 
+/**
+ * Fetch list of episodes
+ * @param {string} url 
+ */
 function episodes(url) {
     const html = httpGet(url);
     const elements = JSON.parse(Kiyomi.select(html, ".newmanga li div"));
@@ -84,6 +132,10 @@ function episodes(url) {
     }).sort((a, b) => a.number - b.number);
 }
 
+/**
+ * Extract stream links from iframes
+ * @param {string} url 
+ */
 function streams(url) {
     const html = httpGet(url);
     const iframes = JSON.parse(Kiyomi.select(html, "iframe"));
@@ -94,7 +146,6 @@ function streams(url) {
         let iframeUrl = Kiyomi.attr(iframeSnippet, "src");
         if (!iframeUrl) continue;
 
-        // FIX: Resolve the relative URL before calling httpGet
         iframeUrl = Kiyomi.resolveUrl(BASE_URL, iframeUrl);
 
         try {
@@ -102,7 +153,6 @@ function streams(url) {
             const scriptData = Kiyomi.regexFirst(playerHtml, "var videoSources = ([^;]+)", 1);
 
             if (scriptData) {
-                // Extract host safely
                 const hostMatch = iframeUrl.match(/^https?:\/\/[^\/]+/);
                 const host = hostMatch ? hostMatch[0] : "";
 

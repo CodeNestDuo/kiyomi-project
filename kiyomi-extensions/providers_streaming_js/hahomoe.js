@@ -1,18 +1,59 @@
+// ==KiyomiExtension==
+// @id            hahomoe-js
+// @name          Haho.moe
+// @version       1.0
+// @author        Kiyomi Project
+// @lang          en
+// @icon          https://haho.moe/favicon.ico
+// @site          https://haho.moe
+// @package       haho.moe
+// @type          streaming
+// @nsfw          true
+// @secure        true
+// @private       false
+// @requiresKey   false
+// @description   Streaming provider for Haho.moe with cookie-based thumb view support.
+// ==/KiyomiExtension==
+
 /**
- * Kiyomi Streaming JS Provider: Haho.moe
+ * ===== Runtime Metadata =====
  */
+const EXTENSION_INFO = {
+    id: "hahomoe-js",
+    displayName: "Haho.moe",
+    siteUrl: "https://haho.moe",
+    iconUrl: "https://haho.moe/favicon.ico",
+    type: "STREAMING",
+    isAdult: true,
+    isSecure: true,
+    cautionReason: "",
+    isPrivate: false,
+    isApiKeyRequired: false,
+    version: "1.0"
+};
 
 const BASE_URL = "https://haho.moe";
-const PROVIDER_ID = "hahomoe";
 
-Kiyomi.setActiveProvider(PROVIDER_ID);
+/**
+ * Note: Kiyomi.setActiveProvider is handled by the Kotlin Engine 
+ * based on the Extension ID. Manual calls are removed here to 
+ * prevent session/cookie bucket mismatches in VOD search.
+ */
+
+// ---------- Helpers ----------
 
 function httpGet(url, headersObj) {
     const headers = headersObj || {};
+    // Ensure loop-view is always thumb for consistent scraping
     headers["Cookie"] = (headers["Cookie"] ? headers["Cookie"] + "; " : "") + "loop-view=thumb";
     return Kiyomi.httpGet(url, JSON.stringify(headers));
 }
 
+// -------------------- Core Logic --------------------
+
+/**
+ * Search for Anime
+ */
 function search(query, page) {
     const p = page || 1;
     let url = (query && query.trim().length > 0)
@@ -21,14 +62,12 @@ function search(query, page) {
 
     const html = httpGet(url);
 
-    // Kiyomi.select returns a JSON string array of HTML elements
     const elements = JSON.parse(Kiyomi.select(html, "ul.anime-loop.loop > li > a"));
 
     return elements.map(el => {
         const href = Kiyomi.attr(el, "href");
         const title = Kiyomi.selectText(el, "div.label > span, div span.thumb-title");
 
-        // Find the image within the current element snippet
         const imgTag = Kiyomi.selectFirstElement(el, "img");
         const thumb = imgTag ? Kiyomi.attr(imgTag, "src") : "";
 
@@ -41,6 +80,9 @@ function search(query, page) {
     });
 }
 
+/**
+ * Fetch Anime Details
+ */
 function details(url) {
     const html = httpGet(url);
     let genres = [];
@@ -59,12 +101,15 @@ function details(url) {
     };
 }
 
+/**
+ * Fetch Episode List (Handles up to 5 pages)
+ */
 function episodes(url) {
     let allEpisodes = [];
     let currentUrl = url;
     let pageCount = 0;
 
-    while (currentUrl && pageCount < 5) { // Limit pages for performance
+    while (currentUrl && pageCount < 5) { 
         const html = httpGet(currentUrl);
         const elements = JSON.parse(Kiyomi.select(html, "ul.episode-loop > li > a"));
 
@@ -89,6 +134,9 @@ function episodes(url) {
     return allEpisodes.sort((a, b) => a.number - b.number);
 }
 
+/**
+ * Extract Stream Links
+ */
 function streams(url) {
     const fullUrl = url.startsWith("http") ? url : BASE_URL + url;
     const html = httpGet(fullUrl);

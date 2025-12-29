@@ -1,11 +1,46 @@
+// ==KiyomiExtension==
+// @id            dramafull-js
+// @name          DramaFull
+// @version       1.0
+// @author        Kiyomi Project
+// @lang          en
+// @icon          https://dramafull.cc/favicon.ico
+// @site          https://dramafull.cc
+// @package       dramafull.cc
+// @type          streaming
+// @nsfw          false
+// @secure        true
+// @private       false
+// @requiresKey   false
+// @description   Streaming provider for Asian Dramas and Movies using DramaFull API.
+// ==/KiyomiExtension==
+
 /**
- * Kiyomi Streaming JS Provider: DramaFull
+ * ===== Runtime Metadata =====
  */
+const EXTENSION_INFO = {
+    id: "dramafull-js",
+    displayName: "DramaFull",
+    siteUrl: "https://dramafull.cc",
+    iconUrl: "https://dramafull.cc/favicon.ico",
+    type: "STREAMING",
+    isAdult: false,
+    isSecure: true,
+    cautionReason: "",
+    isPrivate: false,
+    isApiKeyRequired: false,
+    version: "1.0"
+};
 
 const BASE_URL = "https://dramafull.cc";
-const PROVIDER_ID = "dramafull";
 
-Kiyomi.setActiveProvider(PROVIDER_ID);
+/**
+ * Note: Kiyomi.setActiveProvider is handled by the Kotlin Engine 
+ * based on the Extension ID. Manual calls inside the script are removed 
+ * to prevent cookie bucket mismatches.
+ */
+
+// ---------- Helpers ----------
 
 function httpGet(url, headersObj) {
     const headers = headersObj || {};
@@ -18,6 +53,9 @@ function httpPost(url, payload) {
 
 // -------------------- Core Logic --------------------
 
+/**
+ * Search for Dramas or Movies
+ */
 function search(query, page) {
     const p = page || 1;
     let results = [];
@@ -51,12 +89,18 @@ function search(query, page) {
     }));
 }
 
+/**
+ * Fetch Drama Details
+ */
 function details(url) {
     const html = httpGet(url);
 
     const genres = [];
     const genreElements = JSON.parse(Kiyomi.select(html, "div.genre-list a"));
-    genreElements.forEach(el => genres.push(Kiyomi.selectText(el, "a")));
+    genreElements.forEach(el => {
+        const text = Kiyomi.selectText(el, "a");
+        if (text) genres.push(text);
+    });
 
     return {
         title: Kiyomi.selectText(html, "div.right-info h1") || "Drama",
@@ -68,6 +112,9 @@ function details(url) {
     };
 }
 
+/**
+ * Fetch Episode List
+ */
 function episodes(url) {
     const html = httpGet(url);
     const episodeElements = JSON.parse(Kiyomi.select(html, "div.episode-item a"));
@@ -94,15 +141,16 @@ function episodes(url) {
     });
 }
 
+/**
+ * Extract Stream Links and Subtitles
+ */
 function streams(episodeUrl) {
     const results = [];
     const html = httpGet(episodeUrl);
 
-    // 1. Improved Regex to find the signedUrl
-    // Handles different spacing and minification styles
+    // 1. Find the signedUrl in HTML or Script tags
     let signedUrl = Kiyomi.regexFirst(html, 'signedUrl\\s*[:=]\\s*["\']([^"\']+)["\']', 1);
 
-    // 2. Fallback: If not found, look for it in all script tags
     if (!signedUrl) {
         const scripts = JSON.parse(Kiyomi.select(html, "script"));
         for (let i = 0; i < scripts.length; i++) {
@@ -116,12 +164,11 @@ function streams(episodeUrl) {
     }
 
     if (!signedUrl) {
-        Kiyomi.logError("DramaFull: signedUrl not found in HTML or Scripts");
+        Kiyomi.logError("DramaFull: signedUrl not found");
         return [];
     }
 
     try {
-        // 3. Unescape and fetch the metadata
         const cleanSignedUrl = signedUrl.replace(/\\/g, "");
         const videoDataText = httpGet(cleanSignedUrl, {
             "Referer": episodeUrl,
@@ -131,12 +178,8 @@ function streams(episodeUrl) {
         const videoData = JSON.parse(videoDataText);
         const videoSource = videoData.video_source;
 
-        if (!videoSource) {
-            Kiyomi.logError("DramaFull: No video_source found in JSON");
-            return [];
-        }
+        if (!videoSource) return [];
 
-        // 4. Extract links for each quality
         Object.keys(videoSource).forEach(q => {
             const streamUrl = videoSource[q];
             if (!streamUrl) return;
