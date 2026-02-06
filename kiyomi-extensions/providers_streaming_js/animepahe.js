@@ -36,7 +36,7 @@ const BASE_URL = "https://animepahe.si";
 
 /**
  * Note: Kiyomi.setActiveProvider(PROVIDER_ID) is removed.
- * The Kotlin Engine sets the active provider scope automatically 
+ * The Kotlin Engine sets the active provider scope automatically
  * based on the installed extension's ID.
  */
 
@@ -142,44 +142,65 @@ function episodes(url) {
  */
 function streams(url) {
     const fullUrl = url.startsWith("http") ? url : `${BASE_URL}${url}`;
-    const headers = {
-        "Referer": BASE_URL + "/",
-        // Consistent User-Agent is vital for ddos-guard bypass
-        "User-Agent": "Mozilla/5.0 (Linux; Android 16) sdk_gphone64_x86_64 Build/BE2A.250530.026.D1 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36"
-    };
-
-    const html = httpGet(fullUrl, headers);
-    const kwikLinks = regexAll(html, 'data-src="([^"]+)"', 1);
-    const resolutions = regexAll(html, '<button[^>]*class="dropdown-item"[^>]*>([^<]+)</button>', 1);
-
+    const mainHtml = Kiyomi.httpGet(fullUrl, null);
+    
+    const buttons = JSON.parse(Kiyomi.select(mainHtml, "#resolutionMenu > button") || "[]");
     const results = [];
-    for (let i = 0; i < kwikLinks.length; i++) {
-        const link = kwikLinks[i];
-        if (!link.includes("kwik.cx")) continue;
+
+    buttons.forEach((btnHtml) => {
+        const quality = Kiyomi.selectText(btnHtml, "button");
+        const kwikUrl = Kiyomi.attr(btnHtml, "data-src"); 
+
+        if (!kwikUrl) return;
 
         try {
-            const kwikHtml = httpGet(link, { "Referer": BASE_URL });
+            const kwikHtml = Kiyomi.httpGet(kwikUrl, JSON.stringify({ "Referer": "https://animepahe.si/" }));
 
-            const unpacked = Kiyomi.unpackJs(kwikHtml);
-            const deobfuscated = Kiyomi.deobfuscateJsPassword(unpacked);
-            const searchPool = unpacked + " " + deobfuscated;
+            // 1. Unpack the script using the bridge
+            const decrypted = Kiyomi.unpackJs(kwikHtml);
 
-            const videoUrl = Kiyomi.regexFirst(searchPool, "['\"](https?://[^'\"\\s]+?\\.m3u8[^'\"\\s]*?)['\"]", 1);
+            // 2. BROAD URL REGEX (This ignores variable names like 'source' or 'q')
+            // It looks for any string starting with http and ending with .m3u8 or .mp4
+            const linkMatch = decrypted.match(/['"](https?:\/\/[^'"]+\.(?:m3u8|mp4)[^'"]*)['"]/i);
 
-            if (videoUrl) {
-                const cleanUrl = videoUrl.replace(/\\/g, "");
+            if (linkMatch) {
+                let streamUrl = linkMatch[1].replace(/\\/g, ""); // Remove backslashes
+                
+                Kiyomi.logDebug(`[Success] Found link for ${quality}: ${streamUrl}`);
+                
                 results.push({
-                    url: cleanUrl,
-                    quality: resolutions[i] || "Unknown",
-                    headers: { "Referer": "https://kwik.cx" }
+                    url: streamUrl,
+                    quality: quality + (streamUrl.includes(".m3u8") ? " (m3u8)" : ""),
+                    headers: { 
+                        "Referer": "https://kwik.cx/",
+                        "User-Agent": "Mozilla/5.0 (Linux; Android 16)" 
+                    }
                 });
             } else {
-                Kiyomi.logError("Extraction failed for: " + link);
+                // 3. FALLBACK: Check for the POST form (Legacy Kwik)
+                const postMatch = decrypted.match(/action=['"]([^'"]+)['"]/i);
+                const tokenMatch = decrypted.match(/value=['"]([a-zA-Z0-9]{40,})['"]/i)
+                                || decrypted.match(/_token['"]?\s*[:=]\s*['"]([^'"]+)["']/i);
+
+                if (postMatch && tokenMatch) {
+                    const mp4Url = Kiyomi.httpPostForm(postMatch[1], JSON.stringify({"_token": tokenMatch[1]}), JSON.stringify({"Referer": kwikUrl}));
+                    if (mp4Url && mp4Url.includes(".mp4")) {
+                        results.push({
+                            url: mp4Url,
+                            quality: quality,
+                            headers: { "Referer": "https://kwik.cx/", "User-Agent": "Mozilla/5.0" }
+                        });
+                    }
+                }
             }
         } catch (e) {
-            Kiyomi.logError("Logic error in streams: " + e.message);
+            Kiyomi.logError("Kwik fail: " + e.message);
         }
-    }
+    });
 
-    return results.sort((a, b) => (parseInt(b.quality) || 0) - (parseInt(a.quality) || 0));
+    // CRITICAL: Filter empty results to stop the Android 'Invalid resource ID' crash
+    const finalResults = results.filter(r => r.url && r.url.length > 10);
+    
+    Kiyomi.logDebug(`[Final] Returning ${finalResults.length} links to UI.`);
+    return finalResults.sort((a, b) => (parseInt(b.quality) || 0) - (parseInt(a.quality) || 0));
 }

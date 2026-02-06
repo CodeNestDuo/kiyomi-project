@@ -6,7 +6,7 @@
   "description": "The official master index. Consolidated repository for Torrents (P2P), Streaming (VOD), and IPTV (Live TV).",
   "author": "Kiyomi Core Team",
   "iconUrl": "https://kiyomi-extensions.pages.dev/icons/app_logo_icon.jpg",
-  "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/action_flicks_bg.webp",
+  "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/master_index_bg.webp",
   "providers": [
     /* --- TORRENTS COLLECTION --- */
     {
@@ -277,6 +277,17 @@
       "language": "en"
     },
     {
+      "id": "kawaiifu-js",
+      "name": "Kawaiifu",
+      "type": "STREAMING",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_streaming_js/kawaiifu.js",
+      "iconUrl": "https://kawaiifu.com/wp-content/uploads/2018/05/Kawaiifu_favicon.png",
+      "version": 1.0,
+      "description": "Excellent source for older anime titles. Known for high-quality encodes and providing uncensored/DVD versions of specific series.",
+      "isAdult": true,
+      "language": "en, ja"
+    },
+    {
       "id": "animepahe-js",
       "name": "AnimePahe",
       "type": "STREAMING",
@@ -296,7 +307,7 @@
       "version": 1.0,
       "description": "Specialized in Asian dramas, movies, and variety shows.",
       "isAdult": false,
-      "language": "ko, zh, en"
+      "language": "ko, zh, ja, en"
     },
     {
       "id": "hahomoe-js",
@@ -308,6 +319,39 @@
       "description": "Hentai AHO Streaming — Fast and Free Hentai Anime Streaming. Provides original video / DVD quality in Censor / Sub / Raw versions",
       "isAdult": true,
       "language": "ja, en"
+    },
+    {
+      "id": "netflix-mirror-js",
+      "name": "Netflix Mirror",
+      "type": "STREAMING",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_streaming_js/netflix_mirror.js",
+      "iconUrl": "https://net20.cc/favicon.ico",
+      "version": 1.8,
+      "description": "Mirror service for Netflix content. Fast streaming with persistent session bypass.",
+      "isAdult": false,
+      "language": "multi"
+    },
+    {
+      "id": "disneyplus-mirror-js",
+      "name": "Disney Plus",
+      "type": "STREAMING",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_streaming_js/disneyplus_mirror.js",
+      "iconUrl": "https://net51.cc/favicon.ico",
+      "version": 1.6,
+      "description": "Disney+ content mirror. High-speed servers with localized content support.",
+      "isAdult": false,
+      "language": "multi"
+    },
+    {
+      "id": "hotstar-mirror-js",
+      "name": "HotStar",
+      "type": "STREAMING",
+      "configUrl": "https://kiyomi-extensions.pages.dev/providers_streaming_js/hotstar_mirror.js",
+      "iconUrl": "https://net20.cc/favicon.ico",
+      "version": 1.6,
+      "description": "Mirror for Hotstar/Disney library. Primarily focused on local variations and backups.",
+      "isAdult": false,
+      "language": "multi"
     },
     /* --- IPTV COLLECTION --- */
     {
