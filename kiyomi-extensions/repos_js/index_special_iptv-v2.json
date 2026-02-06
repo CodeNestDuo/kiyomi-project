@@ -5,8 +5,8 @@
   "name": "Kiyomi IPTV Collection",
   "description": "Curated list of Live IPTV stream extensions, consolidated from various global IPTV providers and online aggregators.",
   "author": "Kiyomi Core Team",
-  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/live_iptv_icon.png",
-  "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/live_iptv_banner.webp",
+  "iconUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/icons/live_iptv_icon.png",
+  "headerImageUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/images/live_iptv_banner.webp",
   "providers": [
     {
       "id": "iptv-org",
