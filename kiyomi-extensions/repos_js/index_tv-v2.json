@@ -3,11 +3,12 @@
   "dateGenerated": "2025-12-06T12:00:00Z",
   "lastTweaked": "2025-12-11T11:30:00Z",
   "name": "TV Show Hub",
-  "description": "Curated sources specializing in episodic television series, web shows, and serial content (including rapid release trackers).",
+  "description": "Curated sources specializing in episodic television series, web shows, and serial content (including rapid release trackers). Bundles IPTV extensions too",
   "author": "Kiyomi TV Curators",
-  "iconUrl": "https://kiyomi-extensions.pages.dev/icons/tv_icon.jpg",
-  "headerImageUrl": "https://kiyomi-extensions.pages.dev/images/tv_shows_bg.webp",
+  "iconUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/icons/tv_icon.jpg",
+  "headerImageUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/images/live_iptv_banner.webp",
   "providers": [
+    /* --- TV Torrents COLLECTION --- */
     {
       "id": "thepiratebay-js",
       "name": "The Pirate Bay  ",
@@ -187,6 +188,177 @@
       "isApiKeyRequired": false,
       "version": 1.0,
       "backendType": "scrape"
+    },
+    /* --- IPTV COLLECTION --- */
+    {
+      "id": "iptv-org",
+      "name": "IPTV Org",
+      "type": "IPTV",
+      "configUrl": "https://iptv-org.github.io/iptv/index.m3u",
+      "version": 1.0,
+      "description": "Large open-source IPTV playlist featuring legal TV channels worldwide.",
+      "isAdult": false,
+      "language": "multi"
+    },
+    {
+      "id": "samsung-tv-plus",
+      "name": "Samsung TV Plus Channels",
+      "type": "IPTV",
+      "configUrl": "https://apsattv.com/ssungusa.m3u",
+      "version": 1.0,
+      "description": "Samsung TV Plus: Free ad-supported live news, movies, and entertainment.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "fire-tv-channels",
+      "name": "Fire TV Channels",
+      "type": "IPTV",
+      "configUrl": "https://www.apsattv.com/firetv.m3u",
+      "version": 1.0,
+      "description": "Amazon Fire TV free live channels lineup.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "free-tv-global",
+      "name": "Free-TV",
+      "type": "IPTV",
+      "configUrl": "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8",
+      "version": 1.0,
+      "description": "Community-maintained global free-to-air TV channels.",
+      "isAdult": false,
+      "language": "multi"
+    },
+    {
+      "id": "xumo-channels",
+      "name": "Xumo",
+      "type": "IPTV",
+      "configUrl": "https://www.apsattv.com/xumo.m3u",
+      "version": 1.0,
+      "description": "Xumo free streaming: news, sports, movies, and lifestyle.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "local-now",
+      "name": "Local Now",
+      "type": "IPTV",
+      "configUrl": "https://www.apsattv.com/localnow.m3u",
+      "version": 1.0,
+      "description": "Regional news, weather updates, and community programming.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "lg-channels-free",
+      "name": "LG Channels",
+      "type": "IPTV",
+      "configUrl": "https://www.apsattv.com/lg.m3u",
+      "version": 1.0,
+      "description": "LG Channels Watch Free ad-supported TV content.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "nzau-kodi-tv",
+      "name": "NZAU KODI TV",
+      "type": "IPTV",
+      "configUrl": "https://i.mjh.nz/nzau/kodi-tv.m3u8",
+      "version": 1.0,
+      "description": "KODI-optimized TV playlist for NZ & AU Freeview.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "xiaomi-channels",
+      "name": "Xiaomi Channels",
+      "type": "IPTV",
+      "configUrl": "https://www.apsattv.com/xiaomi.m3u",
+      "version": 1.0,
+      "description": "Xiaomi and Mi TV free international and lifestyle programming.",
+      "isAdult": false,
+      "language": "multi"
+    },
+    {
+      "id": "distro-tv",
+      "name": "Distro TV",
+      "type": "IPTV",
+      "configUrl": "https://www.apsattv.com/distro.m3u",
+      "version": 1.0,
+      "description": "DistroTV: free movies, TV shows, and live entertainment.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "redbox-tv",
+      "name": "Redbox TV",
+      "type": "IPTV",
+      "configUrl": "https://www.apsattv.com/redbox.m3u",
+      "version": 1.0,
+      "description": "Redbox live TV: free movies, news, and pop-culture.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "vizio-watch-free",
+      "name": "Vizio TV",
+      "type": "IPTV",
+      "configUrl": "https://www.apsattv.com/vizio.m3u",
+      "version": 1.0,
+      "description": "Vizio WatchFree ad-supported live TV and on-demand.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "tablo-free-tv",
+      "name": "Tablo TV",
+      "type": "IPTV",
+      "configUrl": "https://www.apsattv.com/tablo.m3u",
+      "version": 1.0,
+      "description": "Tablo TV streaming channels: free over-the-air style content.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "roku-channel-live",
+      "name": "Roku Channels",
+      "type": "IPTV",
+      "configUrl": "https://www.apsattv.com/rok.m3u",
+      "version": 1.0,
+      "description": "Roku Channel lineup: live TV, movies, and curated streams.",
+      "isAdult": false,
+      "language": "en"
+    },
+    {
+      "id": "worldwide-webcams",
+      "name": "Worldwide Webcams",
+      "type": "IPTV",
+      "configUrl": "https://m3u.su/dic",
+      "version": 1.0,
+      "description": "Live webcam streams from landmarks and nature spots worldwide.",
+      "isAdult": false,
+      "language": "multi"
+    },
+    {
+      "id": "logan-xall-global",
+      "name": "logan-xall",
+      "type": "IPTV",
+      "configUrl": "https://m3u.su/bb2",
+      "version": 1.0,
+      "description": "Diverse IPTV playlist with international TV categories.",
+      "isAdult": false,
+      "language": "multi"
+    },
+    {
+      "id": "adult-iptv-global",
+      "name": "Adult IPTV",
+      "type": "IPTV",
+      "configUrl": "http://adultiptv.net/chs.m3u",
+      "version": 1.0,
+      "description": "Explicit content intended for mature audiences only.",
+      "isAdult": true,
+      "language": "en"
     }
   ]
 }
