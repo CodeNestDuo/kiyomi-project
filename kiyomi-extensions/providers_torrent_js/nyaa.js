@@ -1,38 +1,44 @@
 // ==KiyomiExtension==
 // @id           nyaa-js
 // @name         Nyaa (RSS Feed, JS)
-// @version      1.0.0
+// @version      1.1.0
 // @author       Kiyomi Project
 // @lang         all
-// @icon         https://nyaa.land/static/favicon.png
-// @site         https://nyaa.land
-// @package      nyaa.land
+// @icon         https://nyaa.si/static/favicon.png
+// @site         https://nyaa.si
+// @mirrors      https://nyaa.si,https://nyaa.land,https://nyaa.net
+// @package      nyaa.si
 // @type         torrent-rss
 // @nsfw         false
 // @private      false
 // @requiresKey  false
-// @description  Nyaa torrent search via RSS using the Kiyomi JS engine.
+// @description  Nyaa torrent search via RSS using the Kiyomi JS engine with configurable mirrors.
 // @primaryCategory anime
 // @extraCategories asian_drama
 // ==/KiyomiExtension==
 
-
-// ===== Extension Metadata (runtime object, optional but handy) =====
+// ===== Extension Metadata (Readable from App side via QuickJS or JSON eval) =====
 const EXTENSION_INFO = {
     id: "nyaa-js",
     displayName: "Nyaa (RSS Feed, JS)",
-    siteUrl: "https://nyaa.land",
-    iconUrl: "https://nyaa.land/static/favicon.png",
+    siteUrl: "https://nyaa.si",
+    // App UI can read this list to render a mirror selector setting
+    fallbackUrls: [
+        "https://nyaa.si",
+        "https://nyaa.land",
+        "https://nyaa.net"
+    ],
+    iconUrl: "https://nyaa.si/static/favicon.png",
     type: "RSS_XML",
     isAdult: false,
     isSecure: true,
     cautionReason: "",
     isPrivate: false,
     isApiKeyRequired: false,
-    version: "1.0.0"
+    version: "1.1.0"
 };
 
-// Maps your internal Category enum to Nyaa's category IDs
+// Maps internal Category enum to Nyaa's category IDs
 const CATEGORY_MAP = {
     "All": "0_0",
     "Anime": "1_0",
@@ -41,15 +47,10 @@ const CATEGORY_MAP = {
     "Other": "6_0"
 };
 
-// Full URL template (same idea as JSON)
-const SEARCH_URL_TEMPLATE = "https://nyaa.land/?page=rss&c={category}&f=0&q={query}";
-
-
 /**
- * Helper to extract tags (supports nyaa:xyz too).
+ * Helper to extract XML tag contents.
  */
 function extractTag(xml, tagName) {
-    // build the pattern as a string, so we only have to escape backslashes once
     const pattern = "<" + tagName + ">([\\s\\S]*?)</" + tagName + ">";
     const tagRegex = new RegExp(pattern, "i");
     const m = xml.match(tagRegex);
@@ -57,29 +58,43 @@ function extractTag(xml, tagName) {
 }
 
 /**
- * Executes a search against Nyaa.land using the Kiyomi Kotlin bridge for HTTP requests.
+ * Executes a search against Nyaa.
+ * 
  * @param {string} query
- * @param {string} category  – one of CATEGORY_MAP keys
- * @returns {Array<Object>}  – list of torrent description objects
+ * @param {string} category          – one of CATEGORY_MAP keys
+ * @param {string} [customBaseUrl]    – optional URL selected by user in App settings
+ * @returns {Array<Object>}           – list of torrent description objects
  */
-function search(query, category) {
-    const categoryId = CATEGORY_MAP[category] || CATEGORY_MAP["All"];
-
-    // 1. Construct URL
-    let searchUrl = SEARCH_URL_TEMPLATE
-        .replace("{category}", categoryId)
-        .replace("{query}", encodeURIComponent(query || "")); // URL-encode query
-
-    // 2. HTTP request via bridge
+function search(query, category, customBaseUrl) {
     if (typeof Kiyomi !== "object" || typeof Kiyomi.httpGet !== "function") {
         return [];
     }
 
-    const rssXml = Kiyomi.httpGet(searchUrl,null);
+    const categoryId = CATEGORY_MAP[category] || CATEGORY_MAP["All"];
+    const encodedQuery = encodeURIComponent(query || "");
+
+    // If user chose a specific mirror in app settings, prioritize it
+    const candidateBases = (customBaseUrl && customBaseUrl.trim().length > 0)
+        ? [customBaseUrl.trim().replace(/\/+$/, "")]
+        : EXTENSION_INFO.fallbackUrls;
+
+    let rssXml = "";
+
+    // Try candidate mirror(s) until valid XML is returned
+    for (let i = 0; i < candidateBases.length; i++) {
+        const base = candidateBases[i].replace(/\/+$/, "");
+        const searchUrl = base + "/?page=rss&c=" + categoryId + "&f=0&q=" + encodedQuery;
+
+        const response = Kiyomi.httpGet(searchUrl, null);
+        if (response && response.indexOf("<item>") !== -1) {
+            rssXml = response;
+            break;
+        }
+    }
+
     if (!rssXml) return [];
 
-    // 3. Simple XML parsing for <item> blocks
-    // IMPORTANT: single backslashes in regex literal
+    // XML parsing for <item> blocks
     const itemsRegex = /<item>([\s\S]*?)<\/item>/gi;
     const results = [];
     let match;
@@ -97,10 +112,8 @@ function search(query, category) {
             publishDate: extractTag(itemXml, "pubDate")
         };
 
-        if (!rawFields.infoHash) continue; // require hash
-        if (!rawFields.title) continue;
+        if (!rawFields.infoHash || !rawFields.title) continue;
 
-        // Post-processing via Kotlin bridge
         const sizeBytesStr = typeof Kiyomi.humanSizeToBytes === "function"
             ? Kiyomi.humanSizeToBytes(rawFields.size_raw)
             : null;
@@ -111,7 +124,6 @@ function search(query, category) {
             ? Kiyomi.buildMagnetFromHash(rawFields.infoHash, rawFields.title)
             : "";
 
-        // Final mapping
         results.push({
             title: rawFields.title,
             magnetUrl: magnetUrl,
@@ -126,4 +138,3 @@ function search(query, category) {
 
     return results;
 }
-
