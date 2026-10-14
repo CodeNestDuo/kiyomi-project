@@ -92,13 +92,16 @@ function _mapListEntry(e) {
   var titleObj = m.title || {};
   var title = titleObj.english || titleObj.romaji || titleObj.native || "";
   var poster = (m.coverImage && m.coverImage.medium) ? m.coverImage.medium : "";
+  
   return {
     id: m.id,
     title: title,
     status: _aniToUiStatus(e.status),
     progress: e.progress || 0,
     total: (m.episodes != null) ? m.episodes : null,
-    poster: poster
+    poster: poster,
+    score: e.score || 0,
+    isFavorite: !!m.isFavourite
   };
 }
 
@@ -112,13 +115,13 @@ function run(action, payload) {
       id: id,
       name: "Anilist",
       description: "AniList is a community-driven anime and manga database and tracking site known for its modern interface and flexible customization options, including different rating scales. ",
-      icon: "hhttps://kiyomi-project.pages.dev/icons/anilist_logo.svg", 
+      icon: "https://kiyomi-project.pages.dev/icons/anilist_logo.svg",
       login: {
         flows: ["webview", "browser_loopback"],
         needs: ["state"], // engine supplies state; you already do this in Python
         notes: "Uses Authorization Code flow (no implicit token). Engine provides redirectUri + state."
       },
-      features: ["getProfile", "getListPage", "getFullList", "updateAnime", "markWatched", "deleteAnime", "logout"]
+      features: ["getProfile", "getListPage", "getFullList", "getMediaInfo", "updateMedia", "markWatched", "deleteMedia", "toggleFavorite", "changeScore", "getReviewUrl", "logout"],
     });
   }
 
@@ -193,11 +196,13 @@ function run(action, payload) {
   if (action === "getProfile") {
     if (!isAuthenticated()) return _fail("Not authenticated");
 
-    var q2 = "query { Viewer { name avatar { medium } statistics { anime { count episodesWatched } } } }";
+    var q2 = "query { Viewer { id name avatar { medium } statistics { anime { count episodesWatched } } } }";
     var j2 = _gql(q2, {});
     if (!j2 || !j2.data || !j2.data.Viewer) return _fail("Profile fetch failed", j2);
 
     var v = j2.data.Viewer;
+    _kvSet("user_id", v.id); // Ensure ID is pinned to KV
+
     return _ok({
       username: v.name,
       avatar: v.avatar ? v.avatar.medium : "",
@@ -205,42 +210,119 @@ function run(action, payload) {
     });
   }
 
-  if (action === "getListPage") {
-    if (!isAuthenticated()) return _fail("Not authenticated");
+  if (action === "searchMedia") {
+    var query = (payload.query || "").trim();
+    if (!query) return _ok([]);
 
-    var page = payload.page != null ? parseInt(payload.page, 10) : 1;
-    if (!page || page < 1) page = 1;
-
-    var perPage = payload.perPage != null ? parseInt(payload.perPage, 10) : 25;
-    if (!perPage || perPage < 1) perPage = 25;
-    if (perPage > 50) perPage = 50;
-
-    var target = payload.status ? _uiToAniStatus(payload.status) : null;
-
-    var q =
-      "query($page:Int,$perPage:Int,$status:MediaListStatus){ " +
-      "  Page(page:$page, perPage:$perPage){ " +
-      "    pageInfo{ currentPage hasNextPage lastPage perPage total } " +
-      "    mediaList(status:$status, type:ANIME){ progress status media{ id title{ english romaji native } episodes coverImage{ medium } } } " +
+    var q = 
+      "query($search:String){ " +
+      "  Page(page:1, perPage:20){ " +
+      "    media(search:$search, type:ANIME){ " +
+      "      id title{ english romaji native } episodes status format description " +
+      "      meanScore coverImage{ large } bannerImage " +
+      "    } " +
       "  } " +
       "}";
 
-    var j = _gql(q, { page: page, perPage: perPage, status: target });
-    if (!j || j.errors || !j.data || !j.data.Page) return _fail("List page fetch failed", j);
+    var j = _gql(q, { search: query });
+    if (!j || !j.data || !j.data.Page) return _fail("Search failed", j);
 
-    var p = j.data.Page;
-    var info = p.pageInfo || {};
-    var list = p.mediaList || [];
-    var items = list.map(_mapListEntry);
+    var items = j.data.Page.media.map(function(m) {
+      return {
+        id: m.id,
+        title: m.title.english || m.title.romaji || m.title.native,
+        banner: m.bannerImage,
+        poster: m.coverImage.large,
+        description: m.description,
+        meanScore: m.meanScore ? m.meanScore / 10 : null,
+        status: m.status,
+        format: m.format,
+        episodes: m.episodes
+      };
+    });
+    return _ok(items);
+  }
 
+  if (action === "getMediaInfo") {
+    var mediaId = payload.anilistMediaId || payload.id;
+    if (!mediaId) return _fail("Missing anilistMediaId");
+
+    var q =
+      "query($id:Int){ " +
+      "  Media(id:$id, type:ANIME){ " +
+      "    id title{ english romaji native } episodes status format description " +
+      "    meanScore isFavourite coverImage{ extraLarge } bannerImage " +
+      "    nextAiringEpisode{ episode airingAt } " +
+      "  } " +
+      "}";
+
+    var j = _gql(q, { id: parseInt(mediaId, 10) });
+    if (!j || j.errors || !j.data || !j.data.Media) return _fail("Media fetch failed", j);
+
+    var m = j.data.Media;
     return _ok({
-      items: items,
-      page: info.currentPage || page,
-      perPage: info.perPage || perPage,
-      hasNext: !!info.hasNextPage,
-      nextPage: info.hasNextPage ? (page + 1) : null,
-      total: info.total != null ? info.total : null,
-      lastPage: info.lastPage != null ? info.lastPage : null
+      id: m.id,
+      title: m.title.english || m.title.romaji || m.title.native,
+      banner: m.bannerImage,
+      poster: m.coverImage.extraLarge,
+      description: m.description,
+      meanScore: m.meanScore ? m.meanScore / 10 : null, // Normalize 85 -> 8.5
+      status: m.status,
+      format: m.format,
+      episodes: m.episodes,
+      isFavorite: !!m.isFavourite,
+      nextEpisode: m.nextAiringEpisode ? {
+        number: m.nextAiringEpisode.episode,
+        airingAt: m.nextAiringEpisode.airingAt
+      } : null
+    });
+  }
+
+  if (action === "getListPage") {
+    if (!isAuthenticated()) return _fail("Not authenticated");
+
+    // 1. Get the cached User ID from KV (set during login/profile fetch)
+    var userId = _kvGet("user_id");
+
+    // 2. Fallback: If not in KV, fetch it via Viewer query first
+    if (!userId) {
+      var v = _gql("query { Viewer { id } }", {});
+      if (v && v.data && v.data.Viewer) {
+        userId = v.data.Viewer.id;
+        _kvSet("user_id", userId); // Cache it for next time
+      } else {
+        return _fail("Could not determine User ID for list fetch", v);
+      }
+    }
+
+    var page = payload.page != null ? parseInt(payload.page, 10) : 1;
+    var perPage = payload.perPage != null ? parseInt(payload.perPage, 10) : 25;
+    var target = payload.status ? _uiToAniStatus(payload.status) : null;
+
+    var q =
+      "query($page:Int, $perPage:Int, $userId:Int, $status:MediaListStatus){ " +
+      "  Page(page:$page, perPage:$perPage){ " +
+      "    pageInfo{ currentPage hasNextPage total } " +
+      "    mediaList(userId:$userId, status:$status, type:ANIME){ " +
+      "      progress status score(format:POINT_10_DECIMAL) " +
+      "      media{ " +
+      "        id isFavourite title{ english romaji native } " +
+      "        episodes coverImage{ medium } " +
+      "      } " +
+      "    } " +
+      "  } " +
+      "}";
+
+    var j = _gql(q, { page: page, perPage: perPage, userId: parseInt(userId), status: target });
+
+    if (!j || j.errors || !j.data || !j.data.Page) return _fail("List fetch failed", j);
+
+    var list = j.data.Page.mediaList || [];
+    return _ok({
+      items: list.map(_mapListEntry),
+      page: j.data.Page.pageInfo.currentPage,
+      hasNext: !!j.data.Page.pageInfo.hasNextPage,
+      total: j.data.Page.pageInfo.total
     });
   }
 
@@ -271,6 +353,15 @@ function run(action, payload) {
     return _ok(all);
   }
 
+  if (action === "getReviewUrl") {
+    var mediaId = payload.anilistMediaId || payload.id;
+    if (!mediaId) return _fail("Missing anilistMediaId");
+
+    // Direct link to the 'Edit' tab on the media page
+    var url = "https://anilist.co/review/editor/" + mediaId;
+    return _ok({ url: url });
+  }
+
   if (action === "logout") {
     _setToken("");
     return _ok(true, "Logged out");
@@ -285,53 +376,83 @@ function track(action, payload) {
   payload = payload || {};
   if (!isAuthenticated()) return _fail("Not authenticated");
 
-  if (action === "updateAnime") {
+  // --- 1 & 2) Unified Media Update (Status, Progress, Score) ---
+  if (action === "updateMedia" || action === "changeScore") {
     var mediaId = payload.anilistMediaId || payload.id;
     if (!mediaId) return _fail("Missing anilistMediaId");
 
+    // We define all possible variables. AniList handles nulls gracefully.
+    // Note: forcing POINT_10_DECIMAL in the return to match our Common Schema.
     var q =
-      "mutation($mediaId:Int,$progress:Int,$status:MediaListStatus){ " +
-      "  SaveMediaListEntry(mediaId:$mediaId, progress:$progress, status:$status){ id progress status } " +
+      "mutation($mediaId:Int, $progress:Int, $status:MediaListStatus, $score:Float){ " +
+      "  SaveMediaListEntry(mediaId:$mediaId, progress:$progress, status:$status, score:$score){ " +
+      "    id progress status score(format: POINT_10_DECIMAL) " + 
+      "  } " +
       "}";
-
-    var st = payload.status ? (_uiToAniStatus(payload.status) || String(payload.status).toUpperCase()) : "CURRENT";
 
     var vars = {
       mediaId: parseInt(mediaId, 10),
-      progress: (payload.episode != null) ? parseInt(payload.episode, 10) : null,
-      status: st
+      progress: payload.progress !== undefined ? parseInt(payload.progress, 10) : (payload.episode !== undefined ? parseInt(payload.episode, 10) : null),
+      status: payload.status ? (_uiToAniStatus(payload.status) || payload.status) : null,
+      score: payload.score !== undefined ? parseFloat(payload.score) : null
     };
 
     var j = _gql(q, vars);
     if (!j || j.errors) return _fail("AniList update failed", j);
-    return _ok(j.data.SaveMediaListEntry);
+    
+    // Normalize return for the Python local_sync
+    var res = j.data.SaveMediaListEntry;
+    return _ok({
+      id: res.id,
+      progress: res.progress,
+      status: _aniToUiStatus(res.status),
+      score: res.score
+    });
   }
 
-    if (action === "deleteAnime") {
-    var entryId = payload.entryId;
-    var mediaId2 = payload.anilistMediaId || payload.id;
+  // --- 3) Favorite Toggle ---
+  if (action === "toggleFavorite") {
+    var mediaId = payload.anilistMediaId || payload.id;
+    if (!mediaId) return _fail("Missing anilistMediaId");
 
-    if (!entryId && !mediaId2) return _fail("Missing entryId or anilistMediaId");
+    var q = "mutation($id:Int){ ToggleFavourite(animeId:$id){ anime { nodes { id isFavourite } } } }";
 
-    if (!entryId && mediaId2) {
-      var qFind = "query($mediaId:Int){ MediaList(mediaId:$mediaId, type:ANIME){ id } }";
-      var found = _gql(qFind, { mediaId: parseInt(mediaId2, 10) });
-      if (!found || found.errors || !found.data || !found.data.MediaList) {
-        return _fail("Could not find list entry", found);
-      }
-      entryId = found.data.MediaList.id;
+    var j = _gql(q, { id: parseInt(mediaId, 10) });
+    if (!j || j.errors || !j.data) return _fail("Toggle favorite failed", j);
+    
+    // Check if the ID is now in the favourite nodes list
+    var nodes = (j.data.ToggleFavourite.anime && j.data.ToggleFavourite.anime.nodes) ? j.data.ToggleFavourite.anime.nodes : [];
+    var isFav = nodes.some(function(n) { return n.id === parseInt(mediaId, 10); });
+    
+    return _ok({ isFavorite: isFav });
+  }
+
+  // --- 4) Delete Media ---
+  if (action === "deleteMedia") {
+    var mediaId = payload.anilistMediaId || payload.id;
+    if (!mediaId) return _fail("Missing anilistMediaId");
+
+    // We first need the internal List Entry ID to delete
+    var qFind = "query($mediaId:Int){ MediaList(mediaId:$mediaId, isViewer:true){ id } }";
+    var found = _gql(qFind, { mediaId: parseInt(mediaId, 10) });
+    
+    if (!found || !found.data || !found.data.MediaList) {
+      return _fail("Item not found in your list");
     }
 
+    var entryId = found.data.MediaList.id;
     var qDel = "mutation($id:Int){ DeleteMediaListEntry(id:$id){ deleted } }";
     var jDel = _gql(qDel, { id: parseInt(entryId, 10) });
+    
     if (!jDel || jDel.errors) return _fail("Delete failed", jDel);
-    return _ok(jDel.data.DeleteMediaListEntry, "Deleted from AniList");
+    return _ok(true, "Deleted from AniList");
   }
 
+  // --- 5) Mark Watched Wrapper ---
   if (action === "markWatched") {
-    return track("updateAnime", {
-      anilistMediaId: payload.anilistMediaId || payload.id,
-      episode: payload.episode,
+    return track("updateMedia", {
+      id: payload.anilistMediaId || payload.id,
+      progress: payload.progress || payload.episode,
       status: "WATCHING"
     });
   }

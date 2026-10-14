@@ -15,7 +15,7 @@
     {
       "id": 2,
       "name": "Samsung TV Plus Channels",
-      "url": "https://apsattv.com/ssungusa.m3u",
+      "url": "https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/refs/heads/main/playlists/samsungtvplus_all.m3u",
       "isAdult": false,
       "lastModified": 1765802807904,
       "description": "Official Samsung TV Plus free ad-supported live TV channels including news, movies, and entertainment."
@@ -39,7 +39,7 @@
     {
       "id": 5,
       "name": "Xumo",
-      "url": "https://www.apsattv.com/xumo.m3u",
+      "url": "https://www.apsattv.com/xumo.m3u", 
       "isAdult": false,
       "lastModified": 1765785185349,
       "description": "Xumo free streaming TV service offering live channels across news, sports, movies, and lifestyle genres."
@@ -61,14 +61,6 @@
       "description": "LG Channels Watch Free playlist providing ad-supported TV content for LG smart TV users."
     },
     {
-      "id": 8,
-      "name": "Roku Channels",
-      "url": "https://www.apsattv.com/rok.m3u",
-      "isAdult": false,
-      "lastModified": 1765785199448,
-      "description": "Roku Channel lineup featuring live TV, movies, series, and curated entertainment streams."
-    },
-    {
       "id": 9,
       "name": "Xiaomi Channels",
       "url": "https://www.apsattv.com/xiaomi.m3u",
@@ -83,14 +75,6 @@
       "isAdult": false,
       "lastModified": 1765785200308,
       "description": "DistroTV free streaming channels with movies, TV shows, documentaries, and live entertainment."
-    },
-    {
-      "id": 11,
-      "name": "Redbox TV",
-      "url": "https://www.apsattv.com/redbox.m3u",
-      "isAdult": false,
-      "lastModified": 1765785200595,
-      "description": "Redbox live TV channels offering free movies, news, and trending pop-culture content."
     },
     {
       "id": 12,

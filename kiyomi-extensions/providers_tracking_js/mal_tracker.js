@@ -77,14 +77,15 @@ function run(action, payload) {
       id: id,
       name: "MyAnimeList",
       description: "Organize your anime and manga list, and participate in the world's largest community.",
-      icon: "hhttps://kiyomi-project.pages.dev/icons/myanimelist_logo.png", 
+      icon: "https://kiyomi-project.pages.dev/icons/myanimelist_logo.png",
       login: {
         flows: ["webview"],
         pkce: true,
         needs: ["codeChallenge", "codeVerifier", "state", "codeChallengeMethod"],
         notes: "MAL PKCE uses plain (challenge == verifier). Provider pins verifier/state to KV."
       },
-      features: ["getProfile", "getListPage","getFullList", "updateAnime", "markWatched", "deleteAnime", "logout"]
+      features: ["getProfile", "getListPage", "getMediaInfo", "updateMedia", "markWatched", "deleteMedia", "toggleFavorite", "changeScore", "getReviewUrl", "logout"],
+
     });
   }
 
@@ -174,6 +175,58 @@ function run(action, payload) {
     return _ok({ username: j.name, avatar: j.picture || "", stats: j.anime_statistics || {} });
   }
 
+  if (action === "searchMedia") {
+    var query = (payload.query || "").trim();
+    if (!query) return _ok([]);
+
+    var url = CONFIG.apiBase + "/anime?q=" + encodeURIComponent(query) + "&limit=20&fields=id,title,main_picture,mean,status,num_episodes";
+    var resp = Kiyomi.httpGet(url, _bearerHeaders());
+    var j = _safeJsonParse(resp);
+
+    if (!j || !j.data) return _fail("Search failed", resp);
+
+    var items = j.data.map(function(item) {
+      var n = item.node;
+      return {
+        id: n.id,
+        title: n.title,
+        banner: null,
+        poster: n.main_picture ? n.main_picture.large : null,
+        description: "", // MAL search list doesn't include synopsis
+        meanScore: n.mean || null,
+        status: n.status ? n.status.toUpperCase() : "UNKNOWN",
+        format: "TV",
+        episodes: n.num_episodes
+      };
+    });
+    return _ok(items);
+  }
+  
+  if (action === "getMediaInfo") {
+    var animeId = payload.malAnimeId || payload.id;
+    if (!animeId) return _fail("Missing malAnimeId");
+
+    var fields = "id,title,main_picture,synopsis,mean,status,num_episodes,my_list_status{is_rewatching}";
+    var url = CONFIG.apiBase + "/anime/" + String(animeId) + "?fields=" + encodeURIComponent(fields);
+    var resp = Kiyomi.httpGet(url, _bearerHeaders());
+    var j = _safeJsonParse(resp);
+
+    if (!j || !j.id) return _fail("Media info fetch failed", j);
+
+    return _ok({
+      id: j.id,
+      title: j.title,
+      banner: null, // MAL doesn't provide banners in standard API
+      poster: j.main_picture ? (j.main_picture.large || j.main_picture.medium) : null,
+      description: j.synopsis,
+      meanScore: j.mean || null,
+      status: j.status ? j.status.toUpperCase() : "UNKNOWN",
+      format: j.media_type ? j.media_type.toUpperCase() : "TV",
+      episodes: j.num_episodes,
+      isFavorite: j.my_list_status ? j.my_list_status.is_rewatching : false, // Mapping rewatch to favorite
+      nextEpisode: null
+    });
+  }
 
   if (action === "getListPage") {
     if (!isAuthenticated()) return _fail("Not authenticated");
@@ -233,7 +286,7 @@ function run(action, payload) {
 
 
   /**
-   * ✅ getFullList with pagination
+   * getFullList with pagination
    * payload:
    *  - status: "WATCHING"/"PLANNING"/"COMPLETED"/"ON_HOLD"/"DROPPED" (optional)
    *  - limit: number per page (optional, default 100)
@@ -294,6 +347,15 @@ function run(action, payload) {
     return _ok(items);
   }
 
+  if (action === "getReviewUrl") {
+    var animeId = payload.malAnimeId || payload.id;
+    if (!animeId) return _fail("Missing malAnimeId");
+
+    // Direct link to the edit status page
+    var url = "https://myanimelist.net/myreviews.php?seriesid=" + animeId + "&go=write";
+    return _ok({ url: url });
+  }
+
   if (action === "logout") {
     _setTokens("", "");
     return _ok(true, "Logged out");
@@ -308,39 +370,85 @@ function track(action, payload) {
   payload = payload || {};
   if (!isAuthenticated()) return _fail("Not authenticated");
 
-  if (action === "updateAnime") {
-    var animeId = payload.malAnimeId || payload.id;
-    if (!animeId) return _fail("Missing malAnimeId");
+  var animeId = payload.malAnimeId || payload.id;
+  if (!animeId) return _fail("Missing malAnimeId");
 
-    var form = {};
-    if (payload.episode != null) form.num_watched_episodes = String(payload.episode);
+  var url = CONFIG.apiBase + "/anime/" + String(animeId) + "/my_list_status";
+
+  // --- Helper to convert JSON to x-www-form-urlencoded string ---
+  function _toFormUrlEncoded(obj) {
+    return Object.keys(obj).map(function(k) {
+      return encodeURIComponent(k) + "=" + encodeURIComponent(obj[k]);
+    }).join("&");
+  }
+
+  // Handle Updates (Status, Score, Progress)
+  if (action === "updateMedia" || action === "changeScore") {
+    var formData = {};
+    
+    // Progress mapping (Python sends 'progress', MAL expects 'num_watched_episodes')
+    if (payload.progress !== undefined) formData.num_watched_episodes = String(payload.progress);
+    // Legacy support for 'episode' key
+    if (payload.episode !== undefined) formData.num_watched_episodes = String(payload.episode);
+    
     if (payload.status) {
-      // allow UI enum or raw MAL string
-      var ms = _uiToMalStatus(payload.status) || String(payload.status).toLowerCase();
-      form.status = ms;
+      formData.status = _uiToMalStatus(payload.status) || String(payload.status).toLowerCase();
     }
-    if (payload.score != null) form.score = String(payload.score);
+    
+    if (payload.score !== undefined) {
+      // MAL strictly uses 0-10 integers for scoring
+      formData.score = String(Math.round(payload.score || 0));
+    }
 
-    var url = CONFIG.apiBase + "/anime/" + String(animeId) + "/my_list_status";
-    var resp = Kiyomi.httpPostForm(url, form, _bearerHeaders());
+    var body = _toFormUrlEncoded(formData);
+    var headers = {
+      "Authorization": "Bearer " + _access(),
+      "Content-Type": "application/x-www-form-urlencoded"
+    };
+
+    // FIX: MAL V2 requires PUT for updates
+    var resp = Kiyomi.httpRequest("PUT", url, body, headers);
     var j = _safeJsonParse(resp);
-    if (!j) return _fail("Update failed", { raw: resp, parsed: j });
+    
+    if (!j) return _fail("Update failed (MAL returned invalid response)", resp);
     return _ok(j);
   }
 
-  if (action === "deleteAnime") {
-    var animeId2 = payload.malAnimeId || payload.id;
-    if (!animeId2) return _fail("Missing malAnimeId");
-    var url2 = CONFIG.apiBase + "/anime/" + String(animeId2) + "/my_list_status";
-    var resp2 = Kiyomi.httpRequest("DELETE", url2, null, _bearerHeaders());
-    // MAL returns 204 often -> bridge may return "" : treat as success
-    return _ok(true, "Deleted from MAL", { raw: resp2 });
+  // Handle Favorite (Proxy via is_rewatching)
+  if (action === "toggleFavorite") {
+    // 1. Get current status first to flip the boolean
+    var currentResp = Kiyomi.httpGet(url, _bearerHeaders());
+    var currentJ = _safeJsonParse(currentResp);
+    
+    var isCurrentlyRewatching = (currentJ && currentJ.is_rewatching) ? true : false;
+    var targetValue = !isCurrentlyRewatching;
+
+    var body = _toFormUrlEncoded({ "is_rewatching": String(targetValue) });
+    var headers = {
+      "Authorization": "Bearer " + _access(),
+      "Content-Type": "application/x-www-form-urlencoded"
+    };
+
+    // FIX: Use PUT to flip the flag
+    var resp = Kiyomi.httpRequest("PUT", url, body, headers);
+    var j = _safeJsonParse(resp);
+
+    if (!j) return _fail("Toggle favorite failed", resp);
+    return _ok({ "isFavorite": targetValue, "raw": j });
   }
 
+  // Handle Delete
+  if (action === "deleteMedia") {
+    var resp2 = Kiyomi.httpRequest("DELETE", url, null, _bearerHeaders());
+    // MAL returns 204 (No Content) for success, which might result in an empty string
+    return _ok(true, "Deleted from MyAnimeList");
+  }
+
+  // Handle Mark Watched
   if (action === "markWatched") {
-    return track("updateAnime", {
-      malAnimeId: payload.malAnimeId || payload.id,
-      episode: payload.episode,
+    return track("updateMedia", {
+      id: animeId,
+      progress: payload.progress || payload.episode,
       status: "WATCHING"
     });
   }
