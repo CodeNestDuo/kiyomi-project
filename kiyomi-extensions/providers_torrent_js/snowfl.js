@@ -1,77 +1,46 @@
 // ==KiyomiExtension==
-// @id             snowfl-js
-// @name           Snowfl
-// @version        1.0.0
-// @author         LightDestory (ported for Kiyomi by Kiyomi Community)
-// @lang           all
-// @icon           https://snowfl.com/favicon.ico
-// @site           https://snowfl.com
-// @package        snowfl.com
-// @type           api-json
-// @nsfw           false
-// @secure         true
-// @private        false
-// @requiresKey    false
-// @description    Uses Snowfl JSON API search (token + random path) to fetch torrent results.
+// @id           snowfl-js
+// @name         Snowfl
+// @version      1.1.0
+// @author       Kiyomi Community
+// @lang         all
+// @icon         https://snowfl.com/favicon.ico
+// @site         https://snowfl.com
+// @mirrors      https://snowfl.com
+// @package      snowfl.com
+// @type         json-api
+// @nsfw         true
+// @secure       true
+// @private      false
+// @requiresKey  false
+// @description  General meta-search engine providing results from multiple sources; great for cross-checking niche Asian media titles.
 // @primaryCategory general
 // @extraCategories anime, movie, tv
 // ==/KiyomiExtension==
 
+const DEFAULT_BASE_URL = "https://snowfl.com";
+const MAX_RESULTS = 50;
 
-// ===== Runtime metadata =====
-const EXTENSION_INFO = {
-    id: "snowfl-js",
-    displayName: "Snowfl",
-    siteUrl: "https://snowfl.com",
-    iconUrl: "https://snowfl.com/favicon.ico",
-    type: "API_JSON",
-    isAdult: false,
-    isSecure: true,
-    cautionReason: "",
-    isPrivate: false,
-    isApiKeyRequired: false,
-    version: "1.0.0"
+const AGE_UNIT_SECONDS = {
+    "second": 1,
+    "minute": 60,
+    "hour": 3600,
+    "day": 86400,
+    "week": 604800,
+    "month": 2592000,
+    "year": 31536000
 };
 
-
-// ===== Provider URLs =====
-const SNOWFL_BASE = "https://snowfl.com";
-
-
-// ===== Category handling =====
-//
-// Original plugin had only:
-//   supported_categories = {'all': '0'}
-// No real filtering in the query. We keep a minimal map for the UI.
-const CATEGORY_MAP = {
-    "All": "0"
-};
-
-function resolveCategory(category) {
-    if (Object.prototype.hasOwnProperty.call(CATEGORY_MAP, category)) {
-        return category;
-    }
-    const lc = String(category || "").trim().toLowerCase();
-    if (lc === "all" || lc === "" || lc === "0") return "All";
-    return "All";
+function ageToPubDate(age) {
+    if (!age || typeof age !== "string") return "";
+    const m = age.match(/(\d+)\s*(second|minute|hour|day|week|month|year)s?/i);
+    if (!m) return "";
+    const quantity = parseInt(m[1], 10) || 0;
+    const unitSecs = AGE_UNIT_SECONDS[m[2].toLowerCase()] || 86400;
+    const pastMs = Date.now() - (quantity * unitSecs * 1000);
+    return new Date(pastMs).toISOString();
 }
 
-
-// ===== Tuning knobs =====
-
-const SNOWFL_CONFIG = {
-    /**
-     * Maximum number of results we return to Kiyomi from the JSON array.
-     */
-    MAX_RESULTS: 60
-};
-
-
-// ===== Small helpers =====
-
-/**
- * Minimal HTML entity decoder (in case Snowfl HTML-escapes names).
- */
 function decodeHtmlEntities(text) {
     if (!text) return "";
     return text.replace(/&(#x?[0-9a-fA-F]+|amp|lt|gt|quot|apos);/g, function (_m, entity) {
@@ -82,34 +51,10 @@ function decodeHtmlEntities(text) {
             case "quot": return '"';
             case "apos": return "'";
         }
-        if (entity.charAt(0) === "#") {
-            let code = 0;
-            if (entity.charAt(1).toLowerCase() === "x") {
-                code = parseInt(entity.slice(2), 16);
-            } else {
-                code = parseInt(entity.slice(1), 10);
-            }
-            if (!isNaN(code)) {
-                return String.fromCharCode(code);
-            }
-        }
-        return "&" + entity + ";";
+        return entity;
     });
 }
 
-/**
- * Extract infoHash from a magnet URI (if present).
- */
-function extractInfoHashFromMagnet(magnet) {
-    if (!magnet || typeof magnet !== "string") return undefined;
-    const m = magnet.match(/btih:([^&]+)/i);
-    if (!m) return undefined;
-    return m[1];
-}
-
-/**
- * Generate an 8-char random string [a-z0-9].
- */
 function randomSlug() {
     const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
     let out = "";
@@ -119,284 +64,155 @@ function randomSlug() {
     return out;
 }
 
+function resolveQuery(queryOrContext) {
+    if (typeof queryOrContext === "object" && queryOrContext !== null) {
+        if (queryOrContext.query && queryOrContext.query.trim().length > 0) {
+            return queryOrContext.query.trim();
+        }
 
-// ===== Token retrieval =====
+        const title = (queryOrContext.titles && queryOrContext.titles[0]) || "";
+        const season = queryOrContext.seasonNumber || 1;
+        const ep = queryOrContext.episodeNumber ? String(queryOrContext.episodeNumber).padStart(2, "0") : "";
 
-/**
- * Retrieve dynamic token used by Snowfl search URL.
- * This mirrors the Python plugin logic:
- *  1. GET /index.html
- *  2. Extract "b.min.js?<something>"
- *  3. GET that JS and extract the token via regex.
- */
-function retrieveSnowflToken(headersString) {
-    const indexUrl = SNOWFL_BASE + "/index.html";
-    let indexHtml;
-    try {
-        Kiyomi.logDebug("Snowfl: Fetching index HTML: " + indexUrl);
-        indexHtml = Kiyomi.httpGet(indexUrl, headersString);
-    } catch (e) {
-        Kiyomi.logError(
-            "Snowfl: Failed to fetch index.html – " +
-            (e && e.message ? e.message : String(e))
-        );
-        return null;
+        let built = title;
+        if (season > 1) {
+            built += " S" + String(season).padStart(2, "0");
+        }
+        if (queryOrContext.mediaType !== "batch" && ep) {
+            built += " " + ep;
+        }
+
+        return built.trim();
     }
 
-    if (!indexHtml) {
-        Kiyomi.logError("Snowfl: index.html is empty.");
-        return null;
-    }
-
-    // Matches: "(b.min.js?<stuff>)"
-    const jsMatch = indexHtml.match(/"(b\.min\.js\?[^"]+)"/i);
-    if (!jsMatch || !jsMatch[1]) {
-        Kiyomi.logError("Snowfl: Failed to locate b.min.js reference in index.html.");
-        return null;
-    }
-
-    const jsPath = jsMatch[1];
-    const jsUrl = SNOWFL_BASE + "/" + jsPath.replace(/^\/+/, "");
-
-    let scriptText;
-    try {
-        Kiyomi.logDebug("Snowfl: Fetching script: " + jsUrl);
-        scriptText = Kiyomi.httpGet(jsUrl, headersString);
-    } catch (e) {
-        Kiyomi.logError(
-            "Snowfl: Failed to fetch script " +
-            jsUrl +
-            " – " +
-            (e && e.message ? e.message : String(e))
-        );
-        return null;
-    }
-
-    if (!scriptText) {
-        Kiyomi.logError("Snowfl: Script content is empty.");
-        return null;
-    }
-
-    // Python regex:
-    // r'"([a-zA-Z0-9]+)";\$\(\(function\(\){var e,t,n,r,o,a,i='
-    const tokenMatch = scriptText.match(
-        /"([a-zA-Z0-9]+)";\$\(\(function\(\){var e,t,n,r,o,a,i=/i
-    );
-    if (!tokenMatch || !tokenMatch[1]) {
-        Kiyomi.logError("Snowfl: Failed to extract token from script.");
-        return null;
-    }
-
-    const token = tokenMatch[1];
-    Kiyomi.logDebug("Snowfl: Retrieved token: " + token);
-    return token;
+    return String(queryOrContext || "").trim();
 }
 
 /**
- * Build Snowfl JSON search URL from token + query.
- * Mirrors Python generateQuery:
- *   '{0}/{1}/{2}/{3}/0/SEED/NONE/1?_={4}'
+ * Scrapes the dynamic token from the snowfl homepage JS file.
  */
-function buildSnowflSearchUrl(token, encodedQuery) {
+function retrieveSnowflToken(baseUrl, headers) {
+    const homeHtml = Kiyomi.httpGet(baseUrl + "/", headers);
+    if (!homeHtml) return null;
+
+    const jsMatch = homeHtml.match(/((?:b\.min\.js)[^"'\s]*)/i);
+    if (!jsMatch || !jsMatch[1]) return null;
+
+    const jsUrl = baseUrl + "/" + jsMatch[1].replace(/^\/+/, "");
+    const scriptText = Kiyomi.httpGet(jsUrl, headers);
+    if (!scriptText) return null;
+
+    // Pattern used across versions of snowfl b.min.js
+    const keyMatch = scriptText.match(/findNextItem.*?"(.*?)"/i) || scriptText.match(/"([a-zA-Z0-9]+)";\$\(\(function/i);
+    return keyMatch ? keyMatch[1] : null;
+}
+
+/**
+ * Main search entry point.
+ */
+function search(queryOrContext, category, customBaseUrl) {
+    if (typeof Kiyomi !== "object" || typeof Kiyomi.httpGet !== "function") {
+        return [];
+    }
+
+    const searchQuery = resolveQuery(queryOrContext);
+    if (!searchQuery || searchQuery.length < 2) return [];
+
+    const base = (customBaseUrl && customBaseUrl.trim().length > 0)
+        ? customBaseUrl.trim().replace(/\/+$/, "")
+        : DEFAULT_BASE_URL;
+
+    const headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0",
+        "Accept": "application/json, text/plain, */*"
+    };
+
+    const token = retrieveSnowflToken(base, headers);
+    if (!token) {
+        if (typeof Kiyomi.error === "function") {
+            Kiyomi.error("Snowfl: Failed to retrieve dynamic authentication token.");
+        }
+        return [];
+    }
+
+    // Snowfl search query pattern with sorting by seeders
     const slug = randomSlug();
-    const timestamp = Date.now(); // ms since epoch
-    // Python uses self.url which had trailing "/", we use SNOWFL_BASE without trailing
-    const url =
-        SNOWFL_BASE +
-        "/" +
-        token +
-        "/" +
-        encodedQuery +
-        "/" +
-        slug +
-        "/0/SEED/NONE/1?_=" +
-        String(timestamp);
+    const timestamp = Date.now();
+    const searchUrl = base + "/" + token + "/" + encodeURIComponent(searchQuery) + "/" + slug + "/0/SEED/NONE/1?_=" + timestamp;
 
-    return url;
-}
+    const rawJson = Kiyomi.httpGet(searchUrl, headers);
+    if (!rawJson) return [];
 
-
-// ===== JSON parsing =====
-
-/**
- * Parse Snowfl JSON array into Kiyomi torrent objects.
- * Each `torrent` object is expected to have at least:
- *  - name
- *  - size
- *  - seeder
- *  - leecher
- *  - url
- *  - (optional) magnet
- */
-function parseSnowflResults(jsonText) {
-    if (!jsonText) {
-        Kiyomi.logDebug("Snowfl: Empty JSON text.");
-        return [];
-    }
-
-    let data;
+    let items;
     try {
-        data = JSON.parse(jsonText);
+        items = JSON.parse(rawJson);
     } catch (e) {
-        Kiyomi.logError(
-            "Snowfl: Failed to parse JSON – " +
-            (e && e.message ? e.message : String(e))
-        );
         return [];
     }
 
-    if (!Array.isArray(data)) {
-        Kiyomi.logError("Snowfl: Expected JSON array but got something else.");
-        return [];
-    }
+    if (!Array.isArray(items) || items.length === 0) return [];
 
-    const out = [];
-    for (let i = 0; i < data.length; i++) {
-        const torrent = data[i] || {};
-        let name = torrent.name || "";
-        let size = torrent.size || "";
-        let seeds = torrent.seeder || 0;
-        let leechers = torrent.leecher || 0;
-        const pageUrlRaw = torrent.url || "";
+    const results = [];
+    const cappedItems = items.slice(0, MAX_RESULTS);
 
-        name = decodeHtmlEntities(String(name).trim());
-        size = String(size).trim();
-        seeds = typeof seeds === "number" && !isNaN(seeds) ? seeds : 0;
-        leechers =
-            typeof leechers === "number" && !isNaN(leechers) ? leechers : 0;
+    for (let i = 0; i < cappedItems.length; i++) {
+        const item = cappedItems[i];
+        if (!item || typeof item !== "object") continue;
 
-        if (!name || !pageUrlRaw) {
-            Kiyomi.logDebug(
-                "Snowfl: Skipping item at index " +
-                i +
-                " due to missing name or url."
-            );
-            continue;
+        let name = decodeHtmlEntities(String(item.name || "").trim());
+        const site = item.site ? String(item.site).trim() : "";
+        if (!name) continue;
+
+        if (site) {
+            name = name + " [" + site + "]";
         }
 
-        const hasMagnet = typeof torrent.magnet === "string" && torrent.magnet;
-        const magnet = hasMagnet ? torrent.magnet : null;
+        let magnetUrl = item.magnet || "";
+        const itemUrl = item.url || "";
 
-        let infoUrl;
-        if (pageUrlRaw.startsWith("http")) {
-            infoUrl = pageUrlRaw;
-        } else {
-            infoUrl = SNOWFL_BASE + pageUrlRaw;
-        }
-
-        let magnetUrl = null;
-        let torrentDownloadUrl = null;
-
-        if (magnet && magnet.indexOf("magnet:?") === 0) {
-            magnetUrl = magnet;
-        } else {
-            // Fallback: treat pageUrl as direct torrent download if it looks like one,
-            // else just keep it as infoUrl.
-            if (pageUrlRaw.endsWith(".torrent")) {
-                torrentDownloadUrl = infoUrl;
+        // Resolve magnet link if missing on item
+        if (!magnetUrl && itemUrl && site) {
+            const resolveUrl = base + "/" + token + "/" + encodeURIComponent(site) + "/" + encodeURIComponent(itemUrl);
+            const resolvedText = Kiyomi.httpGet(resolveUrl, headers);
+            if (resolvedText) {
+                try {
+                    const resolvedJson = JSON.parse(resolvedText);
+                    magnetUrl = resolvedJson.url || "";
+                } catch (e) {
+                    // Ignore resolution failures per item
+                }
             }
         }
 
-        const hash = magnetUrl ? extractInfoHashFromMagnet(magnetUrl) : undefined;
+        let hash = null;
+        if (magnetUrl) {
+            const hashMatch = magnetUrl.match(/xt=urn:btih:([a-zA-Z0-9]+)/i);
+            if (hashMatch) hash = hashMatch[1];
+        }
 
-        out.push({
+        if (!magnetUrl && !itemUrl) continue;
+
+        const sizeStr = item.size || "0";
+        const sizeBytes = (typeof Kiyomi.humanSizeToBytes === "function")
+            ? (Number(Kiyomi.humanSizeToBytes(sizeStr)) || 0)
+            : 0;
+
+        const seeds = parseInt(item.seeder || item.seeds || "0", 10) || 0;
+        const peers = parseInt(item.leecher || item.peers || "0", 10) || 0;
+        const publishDate = ageToPubDate(item.age);
+
+        results.push({
             title: name,
             magnetUrl: magnetUrl || undefined,
-            torrentDownloadUrl: torrentDownloadUrl || undefined,
-            size: size,          // human-readable or numeric string; can convert on Kotlin side if desired
+            torrentDownloadUrl: (!magnetUrl && itemUrl.endsWith(".torrent")) ? itemUrl : undefined,
+            hash: hash,
+            size: sizeBytes,
             seeds: seeds,
-            peers: leechers,
-            infoUrl: infoUrl,
-            publishDate: "",     // Snowfl JSON doesn’t provide explicit date in original plugin
-            category_name: "All",
-            hash: hash
+            peers: peers,
+            infoUrl: itemUrl.startsWith("http") ? itemUrl : (base + "/" + itemUrl.replace(/^\/+/, "")),
+            publishDate: publishDate
         });
     }
 
-    Kiyomi.logDebug("Snowfl: Parsed " + out.length + " items from JSON response.");
-    return out;
-}
-
-
-// ===== Main entrypoint =====
-
-/**
- * Main entry for Kiyomi.
- *
- * @param {string} query
- * @param {string} category
- * @returns {Array<Object>}
- */
-function search(query, category) {
-    const displayCategory = resolveCategory(category);
-
-    Kiyomi.logDebug(
-        "Snowfl: Starting search. Query='" +
-        query +
-        "', category='" +
-        displayCategory +
-        "'"
-    );
-
-    const trimmedQuery = String(query || "").trim();
-    if (!trimmedQuery) {
-        Kiyomi.logDebug("Snowfl: Blank query, returning empty result.");
-        return [];
-    }
-
-    if (typeof Kiyomi !== "object" || typeof Kiyomi.httpGet !== "function") {
-        Kiyomi.logError("Snowfl: Kiyomi.httpGet is not available.");
-        return [];
-    }
-
-    // Headers – let OkHttp handle Accept-Encoding.
-    const headersObject = {
-        "User-Agent":
-            "Mozilla/5.0 (Linux; Android 16; Kiyomi) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36",
-        Accept: "application/json, text/plain, */*",
-        "Accept-Language": "en-US,en;q=0.5",
-        DNT: "1"
-    };
-    const headersString = JSON.stringify(headersObject);
-
-    // 1. Get token
-    const token = retrieveSnowflToken(headersString);
-    if (!token) {
-        Kiyomi.logError("Snowfl: Cannot proceed without token.");
-        return [];
-    }
-
-    // 2. Build query URL
-    const encodedQuery = encodeURIComponent(trimmedQuery);
-    const searchUrl = buildSnowflSearchUrl(token, encodedQuery);
-
-    Kiyomi.logDebug("Snowfl: Search URL: " + searchUrl);
-
-    // 3. Fetch JSON
-    let jsonText;
-    try {
-        jsonText = Kiyomi.httpGet(searchUrl, headersString);
-    } catch (e) {
-        Kiyomi.logError(
-            "Snowfl: HTTP error for URL " +
-            searchUrl +
-            " – " +
-            (e && e.message ? e.message : String(e))
-        );
-        return [];
-    }
-
-    // 4. Parse JSON
-    let items = parseSnowflResults(jsonText);
-
-    // 5. Hard cap on results
-    if (items.length > SNOWFL_CONFIG.MAX_RESULTS) {
-        items = items.slice(0, SNOWFL_CONFIG.MAX_RESULTS);
-    }
-
-    Kiyomi.logDebug(
-        "Snowfl: Finished search. Total results returned: " + items.length
-    );
-
-    return items;
+    return results;
 }

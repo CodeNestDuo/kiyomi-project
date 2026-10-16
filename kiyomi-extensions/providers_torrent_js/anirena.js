@@ -1,165 +1,135 @@
 // ==KiyomiExtension==
-// @id           anirena-js
-// @name         Anirena (Simple RSS)
-// @version      1.0.0
-// @author       Kiyomi Project
-// @lang         all
-// @icon         https://www.anirena.com/favicon.ico
-// @site         https://www.anirena.com
-// @package      anirena.com
-// @type         rss-xml
-// @nsfw         false
-// @secure       true
-// @private      false
-// @requiresKey  false
-// @description  Simple search RSS scraping for Anirena.
+// @id           anirena-js
+// @name         Anirena
+// @version      1.1.0
+// @author       Kiyomi Community
+// @lang         all
+// @icon         https://www.anirena.com/favicon.ico
+// @site         https://www.anirena.com
+// @mirrors      https://www.anirena.com
+// @package      anirena.com
+// @type         torrent-rss
+// @nsfw         false
+// @secure       true
+// @private      false
+// @requiresKey  false
+// @description  Provides simple RSS search results primarily for anime content.
 // @primaryCategory anime
 // ==/KiyomiExtension==
 
+const DEFAULT_MIRRORS = [
+    "https://www.anirena.com"
+];
 
-// ===== Runtime metadata =====
-const EXTENSION_INFO = {
-    id: "anirena-js",
-    displayName: "Anirena",
-    siteUrl: "https://www.anirena.com",
-    iconUrl: "https://www.anirena.com/favicon.ico",
-    type: "RSS_XML",
-    isAdult: false,
-    isSecure: true,
-    cautionReason: "",
-    isPrivate: false,
-    isApiKeyRequired: false,
-    version: "1.0.0"
-};
-
-// Only includes "All" since category filtering is not supported by the endpoint.
-// The value is ignored, but the key is needed for the UI.
-const CATEGORY_MAP = {
-    "All": ""
-};
-
-// Search endpoint template: query is appended directly to 's='.
-const SEARCH_URL_TEMPLATE =
-    "https://www.anirena.com/rss.php?s={query}";
-
-
-// ---------- helpers ----------
-
-/**
- * Helper: extract text content between <tag>...</tag> inside a snippet of XML.
- * Handles potential namespaces like <td:tag>.
- */
 function extractTag(xml, tagName) {
-    // Escaping special characters for the regex
-    const escapedTagName = tagName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-    // Match <optional:tagname>content</optional:tagname>
-    // Allows for optional namespaces (like <td:tag>)
-    const re = new RegExp("<(td?:)?(?:" + escapedTagName + ")>([\\s\\S]*?)</\\1?" + escapedTagName + ">", "i");
+    const escaped = tagName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp("<(?:[a-z0-9_-]+:)?" + escaped + ">([\\s\\S]*?)</(?:[a-z0-9_-]+:)?" + escaped + ">", "i");
     const m = xml.match(re);
-    return m ? m[2].trim() : "";
+    return m ? m[1].trim() : "";
 }
 
-/**
- * Helper: Extracts numeric data (seeds, leechers, size) from the description string.
- * This is specific to Anirena's <description> tag structure.
- */
 function extractFromDescription(description, pattern) {
     const m = description.match(pattern);
     return m ? m[1].trim() : "0";
 }
 
+function resolveQuery(queryOrContext) {
+    if (typeof queryOrContext === "object" && queryOrContext !== null) {
+        if (queryOrContext.query && queryOrContext.query.trim().length > 0) {
+            return queryOrContext.query.trim();
+        }
 
-// ---------- main entry for Kiyomi ----------
+        const title = (queryOrContext.titles && queryOrContext.titles[0]) || "";
+        const season = queryOrContext.seasonNumber || 1;
+        const ep = queryOrContext.episodeNumber ? String(queryOrContext.episodeNumber).padStart(2, "0") : "";
+
+        let built = title;
+        if (season > 1) {
+            built += " S" + String(season).padStart(2, "0");
+        }
+        if (queryOrContext.mediaType !== "batch" && ep) {
+            built += " " + ep;
+        }
+
+        return built.trim();
+    }
+
+    return String(queryOrContext || "").trim();
+}
 
 /**
- * Main entry point for Kiyomi.
- *
- * @param {string} query
- * @param {string} category  – Ignored for filtering, but needed for the function signature.
- * @returns {Array<Object>}
+ * Main search entry point.
  */
-function search(query, category) {
-    // The category value is ignored as per instructions, only the query is used.
-    const searchParam = encodeURIComponent(query);
-
-    // 1. Build RSS URL
-    let url = SEARCH_URL_TEMPLATE
-        .replace("{query}", searchParam);
-
-    Kiyomi.logDebug("Anirena: Requesting URL: " + url);
-
-    // 2. Fetch RSS XML via Kotlin bridge
+function search(queryOrContext, category, customBaseUrl) {
     if (typeof Kiyomi !== "object" || typeof Kiyomi.httpGet !== "function") {
-        Kiyomi.logDebug("Anirena: Kiyomi bridge functions are missing.");
         return [];
     }
 
-    const rssXml = Kiyomi.httpGet(url);
-    if (!rssXml) {
-        Kiyomi.logDebug("Anirena: HTTP fetch failed or returned empty content.");
-        return [];
+    const searchQuery = resolveQuery(queryOrContext);
+    if (!searchQuery) return [];
+
+    const candidateBases = (customBaseUrl && customBaseUrl.trim().length > 0)
+        ? [customBaseUrl.trim().replace(/\/+$/, "")]
+        : DEFAULT_MIRRORS;
+
+    let rssXml = "";
+
+    for (let i = 0; i < candidateBases.length; i++) {
+        const base = candidateBases[i].replace(/\/+$/, "");
+        const url = base + "/rss.php?s=" + encodeURIComponent(searchQuery);
+
+        const response = Kiyomi.httpGet(url, null);
+        if (response && response.indexOf("<item>") !== -1) {
+            rssXml = response;
+            break;
+        }
     }
 
-    // 3. Parse <item> blocks under <channel>
+    if (!rssXml) return [];
+
     const itemRegex = /<item>([\s\S]*?)<\/item>/gi;
     const results = [];
     let match;
-    let resultCount = 0;
 
     while ((match = itemRegex.exec(rssXml)) !== null) {
         const itemXml = match[1];
 
-        // Core RSS fields
         const title = extractTag(itemXml, "title");
-        const infoUrl = extractTag(itemXml, "link"); // Link is the details URL
-        // Magnet URL is unusually found in the <comments> tag
+        const infoUrl = extractTag(itemXml, "link");
+        // Anirena stores the magnet link in <comments>
         const magnetUrl = extractTag(itemXml, "comments");
         const pubDate = extractTag(itemXml, "pubDate");
         const description = extractTag(itemXml, "description");
 
-
-        // --- Data Extraction from <description> ---
-        // Example: 21 seeder(s), 1 leecher(s), 223 downloads, 423.23 MB - Series: ...
-
-        // 1. Seeds
-        const seedsStr = extractFromDescription(description, /(\d+)\s+seeder\(s\)/i);
-        const seeds = parseInt(seedsStr, 10) || 0;
-
-        // 2. Peers/Leechers
-        const peersStr = extractFromDescription(description, /(\d+)\s+leecher\(s\)/i);
-        const peers = parseInt(peersStr, 10) || 0;
-
-        // 3. Size (e.g., 423.23 MB)
-        const sizeRaw = extractFromDescription(description, /,\s*(\d+\.?\d*\s*[KMGT]B)/i);
-
-        // --- Validation and Final Mapping ---
-
         if (!title || !magnetUrl || !magnetUrl.startsWith("magnet:")) {
-            // Kiyomi.logDebug("Anirena: Skipping item: Missing title or magnet link.");
             continue;
         }
 
-        // Convert human readable size to bytes using the Kotlin bridge
-        const sizeBytes = Kiyomi.humanSizeToBytes(sizeRaw);
-        resultCount++;
-        Kiyomi.logDebug("Anirena: Mapped result " + resultCount + ": " + title);
+        const seedsStr = extractFromDescription(description, /(\d+)\s+seeder\(s\)/i);
+        const seeds = parseInt(seedsStr, 10) || 0;
+
+        const peersStr = extractFromDescription(description, /(\d+)\s+leecher\(s\)/i);
+        const peers = parseInt(peersStr, 10) || 0;
+
+        const sizeRaw = extractFromDescription(description, /,\s*(\d+\.?\d*\s*[KMGT]B)/i);
+        const sizeBytes = (typeof Kiyomi.humanSizeToBytes === "function")
+            ? (Number(Kiyomi.humanSizeToBytes(sizeRaw)) || 0)
+            : 0;
+
+        const hashMatch = magnetUrl.match(/xt=urn:btih:([a-zA-Z0-9]+)/i);
+        const infoHash = hashMatch ? hashMatch[1] : null;
 
         results.push({
             title: title,
             magnetUrl: magnetUrl,
-            // Assuming the title contains the hash for buildMagnetFromHash, 
-            // but since we have the full magnet URL, we don't need the hash field.
+            hash: infoHash,
             size: sizeBytes,
             seeds: seeds,
             peers: peers,
             infoUrl: infoUrl,
-            publishDate: pubDate,
-            category_name: extractTag(itemXml, "category") // Preserve original category name from feed
+            publishDate: pubDate
         });
     }
-
-    Kiyomi.logDebug("Anirena: Finished scraping. Found " + results.length + " results.");
 
     return results;
 }

@@ -1,41 +1,28 @@
 // ==KiyomiExtension==
 // @id           acgrip-js
-// @name         ACG.RIP (Chinese Anime RSS, JS)
-// @version      1.0.0
-// @author       Kiyomi Project
+// @name         ACG.RIP
+// @version      1.1.0
+// @author       Kiyomi Community
 // @lang         all
 // @icon         https://acg.rip/favicon.ico
 // @site         https://acg.rip
+// @mirrors      https://acg.rip
 // @package      acg.rip
-// @type         rss-xml
+// @type         torrent-rss
 // @nsfw         false
-// @secure       true
 // @private      false
 // @requiresKey  false
-// @description  ACG.RIP RSS integration for Kiyomi JS engine.
+// @description  Indexes Chinese and broader Asian media collections.
 // @primaryCategory anime
 // @extraCategories general
 // ==/KiyomiExtension==
 
+const DEFAULT_MIRRORS = [
+    "https://acg.rip"
+];
 
-// ===== metadata mirror (optional introspection) =====
-const EXTENSION_INFO = {
-    id: "acgrip-js",
-    displayName: "ACG.RIP (Chinese Anime RSS)",
-    siteUrl: "https://acg.rip",
-    iconUrl: "https://acg.rip/favicon.ico",
-    type: "RSS_XML",
-    isAdult: false,
-    isSecure: true,
-    cautionReason: "",
-    isPrivate: false,
-    isApiKeyRequired: false,
-    version: "1.0.0"
-};
-
-// Same as JSON categoryMap
 const CATEGORY_MAP = {
-    "All": "",                 // → https://acg.rip/.xml?term=
+    "All": "",
     "Animation": "1",
     "Japanese drama": "2",
     "Variety Show": "3",
@@ -44,62 +31,83 @@ const CATEGORY_MAP = {
     "other": "9"
 };
 
-// Same as JSON searchUrlTemplate
-const SEARCH_URL_TEMPLATE = "https://acg.rip/{category}.xml?term={query}";
-
-
-// ---------- helpers ----------
-
 function extractTag(itemXml, tagName) {
-    const re = new RegExp(`<${tagName}>([\\s\\S]*?)<\\/${tagName}>`, "i");
+    const re = new RegExp("<" + tagName + ">([\\s\\S]*?)</" + tagName + ">", "i");
     const m = itemXml.match(re);
     return m ? m[1].trim() : "";
 }
 
-function extractEnclosureUrl(itemXml) {
-    const re = /<enclosure[^>]*\surl="([^"]+)"/i;
-    const m = itemXml.match(re);
-    return m ? m[1].trim() : "";
+function extractEnclosure(itemXml) {
+    const m = itemXml.match(/<enclosure[^>]*\surl="([^"]+)"(?:\s+length="([^"]+)")?/i);
+    if (!m) return { url: "", size: 0 };
+    return {
+        url: m[1] || "",
+        size: parseInt(m[2] || "0", 10) || 0
+    };
 }
 
-/**
- * From a .torrent URL, try to extract a 40-hex infohash and build a magnet.
- * Falls back to null if nothing found.
- */
 function buildMagnetFromTorrentUrl(torrentUrl, title) {
     if (!torrentUrl) return null;
-    const m = /([A-Fa-f0-9]{40})\.torrent/.exec(torrentUrl);
+    const m = /([A-Fa-f0-9]{40})\.torrent/i.exec(torrentUrl);
     if (!m) return null;
     const hash = m[1];
-    try {
+    if (typeof Kiyomi.buildMagnetFromHash === "function") {
         return Kiyomi.buildMagnetFromHash(hash, title || "");
-    } catch (e) {
-        return null;
     }
+    return "magnet:?xt=urn:btih:" + hash + (title ? "&dn=" + encodeURIComponent(title) : "");
 }
 
+function resolveQuery(queryOrContext) {
+    if (typeof queryOrContext === "object" && queryOrContext !== null) {
+        // Prioritize Chinese/Native title if present in titles array, fallback to default query
+        const titles = queryOrContext.titles || [];
+        const preferredTitle = titles[1] || titles[0] || queryOrContext.query || "";
+        const ep = queryOrContext.episodeNumber ? String(queryOrContext.episodeNumber).padStart(2, "0") : "";
 
-// ---------- main entry for Kiyomi ----------
+        if (queryOrContext.mediaType === "batch") {
+            return preferredTitle.trim();
+        }
+
+        return (preferredTitle + " " + ep).trim();
+    }
+
+    return String(queryOrContext || "").trim();
+}
 
 /**
- * Mirrors the JSON config:
- *  - HTTP_REQUEST to https://acg.rip/{category}.xml?term={query}
- *  - MAP_RESULTS_GENERIC on <item>
- *  - Post-processor BUILD_MAGNET_FROM_URL → JS version using torrent URL
- *
- * @param {string} query
- * @param {string} category
- * @returns {Array<Object>}
+ * Main search entry point.
  */
-function search(query, category) {
-    const catId = CATEGORY_MAP[category] ?? CATEGORY_MAP["All"];
+function search(queryOrContext, category, customBaseUrl) {
+    if (typeof Kiyomi !== "object" || typeof Kiyomi.httpGet !== "function") {
+        return [];
+    }
 
-    // Build URL
-    let url = SEARCH_URL_TEMPLATE
-        .replace("{category}", catId)
-        .replace("{query}", encodeURIComponent(query || ""));
+    const searchQuery = resolveQuery(queryOrContext);
+    if (!searchQuery) return [];
 
-    const rssXml = Kiyomi.httpGet(url,null);
+    let catId = CATEGORY_MAP[category] || CATEGORY_MAP["All"];
+    if (typeof queryOrContext === "object" && queryOrContext !== null && queryOrContext.mediaType === "batch") {
+        catId = "5"; // ACG.RIP Collection category
+    }
+
+    const candidateBases = (customBaseUrl && customBaseUrl.trim().length > 0)
+        ? [customBaseUrl.trim().replace(/\/+$/, "")]
+        : DEFAULT_MIRRORS;
+
+    let rssXml = "";
+
+    for (let i = 0; i < candidateBases.length; i++) {
+        const base = candidateBases[i].replace(/\/+$/, "");
+        const categoryPath = catId ? ("/" + catId + ".xml") : "/.xml";
+        const url = base + categoryPath + "?term=" + encodeURIComponent(searchQuery);
+
+        const response = Kiyomi.httpGet(url, null);
+        if (response && response.indexOf("<item>") !== -1) {
+            rssXml = response;
+            break;
+        }
+    }
+
     if (!rssXml) return [];
 
     const itemsRegex = /<item>([\s\S]*?)<\/item>/gi;
@@ -113,23 +121,29 @@ function search(query, category) {
         if (!title) continue;
 
         const infoUrl = extractTag(itemXml, "guid");
-        const torrentDownloadUrl = extractEnclosureUrl(itemXml);
+        const pubDate = extractTag(itemXml, "pubDate");
+        const enclosure = extractEnclosure(itemXml);
 
-        // JS equivalent of BUILD_MAGNET_FROM_URL
-        let magnetUrl = buildMagnetFromTorrentUrl(torrentDownloadUrl, title);
-        if (!magnetUrl) {
-            // fallback – some clients can handle direct .torrent URL
-            magnetUrl = torrentDownloadUrl || "";
+        const magnetUrl = buildMagnetFromTorrentUrl(enclosure.url, title) || enclosure.url;
+
+        let hash = null;
+        const hashMatch = /([A-Fa-f0-9]{40})/i.exec(enclosure.url) || /xt=urn:btih:([a-zA-Z0-9]+)/i.exec(magnetUrl);
+        if (hashMatch) {
+            hash = hashMatch[1];
         }
 
         results.push({
             title: title,
-            torrentDownloadUrl: torrentDownloadUrl,
             magnetUrl: magnetUrl,
-            infoUrl: infoUrl
+            torrentDownloadUrl: enclosure.url,
+            hash: hash,
+            size: enclosure.size,
+            seeds: 0,
+            peers: 0,
+            infoUrl: infoUrl,
+            publishDate: pubDate
         });
     }
 
     return results;
 }
-

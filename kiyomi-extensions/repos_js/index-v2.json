@@ -1,7 +1,7 @@
 {
-  "indexVersion": 2.1,
+  "indexVersion": 2.2,
   "dateGenerated": "2025-12-06T12:00:00Z",
-  "lastTweaked": "2025-12-28T09:00:00Z",
+  "lastTweaked": "2026-10-16T11:00:00Z",
   "name": "Kiyomi Unified Master Index",
   "description": "The official master index. Consolidated repository for Torrents (P2P), Streaming (VOD), and IPTV (Live TV).",
   "author": "Kiyomi Core Team",
@@ -14,13 +14,15 @@
       "name": "The Pirate Bay",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/thepiratebay.js",
-      "version": 1.0,
+      "version": 1.1,
       "author": "Kiyomi Community",
       "iconUrl": "https://torrindex.net/images/tpb.jpg",
-      "description": "The Pirate Bay (TPB) is a free searchable online index of movies, music, video games, and software.",
+      "description": "The Pirate Bay via apibay.org JSON API, sanitized for dummy entries and tracking hashes.",
       "isAdult": true,
       "isSecure": false,
       "cautionReason": "Search results are often unverified and may contain malicious files.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -28,12 +30,14 @@
       "name": "Nyaa",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/nyaa.js",
-      "version": 1.0,
+      "version": 1.1,
       "author": "Kiyomi Community",
       "iconUrl": "https://nyaa.land/static/favicon.png",
-      "description": "Nyaa is a BitTorrent community focused on Eastern Asian media including anime, manga, music, and more.",
+      "description": "Primary source for Eastern Asian media, often featuring raw or fan-subbed content.",
       "isAdult": false,
       "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "ja, en"
     },
     {
@@ -41,23 +45,132 @@
       "name": "Anime Tosho",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/animetosho.js",
-      "version": 1.0,
+      "version": 1.1,
       "author": "Kiyomi Community",
       "iconUrl": "https://animetosho.org/inc/favicon.ico",
       "description": "Automated service mirroring major anime torrents; provides structured Torznab data.",
-      "isPrivate": true,
-      "isApiKeyRequired": true,
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
+    },
+    {
+      "id": "seadex-js",
+      "name": "SeaDex",
+      "type": "TORRENT",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/seadex.js",
+      "version": 1.1,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://releases.moe/favicon.ico",
+      "description": "Curated index of the best available anime releases, encodes, and dual-audio batches.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "language": "en, ja"
+    },
+    {
+      "id": "sneedex-js",
+      "name": "Sneedex",
+      "type": "TORRENT",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/sneedex.js",
+      "version": 1.1,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://sneedex.moe/favicon.ico",
+      "description": "Community-maintained index of curated best anime releases, encodes, and dual-audio tracks.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "language": "en, ja"
+    },
+    {
+      "id": "subsplease-js",
+      "name": "SubsPlease",
+      "type": "TORRENT",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/subsplease.js",
+      "version": 1.1,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://subsplease.org/favicon.ico",
+      "description": "Direct source for fast, high-quality weekly anime simulcasts in 1080p, 720p, and SD.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "language": "en"
+    },
+    {
+      "id": "yameii-js",
+      "name": "Yameii (Dubs)",
+      "type": "TORRENT",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/yameii.js",
+      "version": 1.1,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://nyaa.land/static/favicon.png",
+      "description": "English dub uploads from Yameii on nyaa.si. Single-uploader source, highly consistent quality.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "language": "en"
+    },
+    {
+      "id": "toonshub-js",
+      "name": "ToonsHub",
+      "type": "TORRENT",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/toonshub.js",
+      "version": 1.1,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://nyaa.land/static/favicon.png",
+      "description": "ToonsHub releases on nyaa.si. Title-prefix filter for the [ToonsHub] group with wide airing coverage.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "language": "en, hi"
+    },
+    {
+      "id": "shanaproject-js",
+      "name": "Shana Project",
+      "type": "TORRENT",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/shanaproject.js",
+      "version": 1.1,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://www.shanaproject.com/favicon.ico",
+      "description": "Automated anime torrent aggregator indexing trusted sub groups with clear episode metadata.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "language": "en, ja"
+    },
+    {
+      "id": "bangumimoe-js",
+      "name": "Bangumi.moe",
+      "type": "TORRENT",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/bangumi_moe.js",
+      "version": 1.1,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://bangumi.moe/favicon.ico",
+      "description": "Open Asian and Chinese anime fansub aggregation platform with high-speed indexing.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "language": "zh, ja"
     },
     {
       "id": "nekobt-js",
       "name": "NekoBT",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/nekobt.js",
-      "version": 1.0,
+      "version": 1.1,
       "author": "Kiyomi Community",
       "iconUrl": "https://nekobt.to/cdn/pfp/null/64",
       "description": "Specialized private anime indexer providing high-quality torrents via a Torznab API.",
+      "isAdult": false,
+      "isSecure": true,
       "isPrivate": true,
       "isApiKeyRequired": true,
       "language": "multi"
@@ -67,24 +180,44 @@
       "name": "ACG.RIP",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/acgrip.js",
-      "version": 1.0,
+      "version": 1.1,
       "author": "Kiyomi Community",
       "iconUrl": "https://acg.rip/favicon.ico",
       "description": "Indexes Chinese and broader Asian media collections.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "zh, ja, en"
+    },
+    {
+      "id": "eztv-js",
+      "name": "EZTV",
+      "type": "TORRENT",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/eztv.js",
+      "version": 1.1,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://eztvx.to/favicon.ico",
+      "description": "Specialized television tracker offering scene releases and season packs.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "language": "en"
     },
     {
       "id": "knaben-js",
       "name": "Knaben",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/knaben.js",
-      "version": 1.0,
+      "version": 1.1,
       "author": "Kiyomi Community",
       "iconUrl": "https://knaben.org/favicon.ico",
       "description": "Modern, fast search API that offers structured results.",
       "isAdult": true,
-      "isPrivate": true,
-      "isApiKeyRequired": true,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -92,11 +225,14 @@
       "name": "Sukebei Nyaa",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/sukebei_nyaa.js",
-      "version": 1.0,
+      "version": 1.1,
       "author": "Kiyomi Community",
       "iconUrl": "https://sukebei.nyaa.si/static/favicon.png",
-      "description": "Adults-only sister site of Nyaa focused on NSFW Asian media.",
+      "description": "Adults-only sister site of Nyaa, focused on 18+ Japanese/Asian media.",
       "isAdult": true,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "ja, en"
     },
     {
@@ -104,10 +240,14 @@
       "name": "TorrentsCSV",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/torrentscsv.js",
-      "version": 1.0,
+      "version": 1.1,
       "author": "Kiyomi Community",
       "iconUrl": "https://torrents-csv.com/favicon.ico",
       "description": "Collaborative git repository consisting of a searchable CSV file.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -115,12 +255,15 @@
       "name": "LimeTorrents",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/limetorrents.js",
-      "version": 1.0,
-      "iconUrl": "https://www.limetorrents.fun/favicon.ico",
-      "description": "General Torrents indexer with mostly verified public torrents.",
-      "isAdult": true,
+      "version": 1.1,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://www.limetorrents.lol/favicon.ico",
+      "description": "LimeTorrents search via RSS with reliable magnet hash extraction.",
+      "isAdult": false,
       "isSecure": false,
-      "cautionReason": "Potentially harmful/mislabelled torrents.",
+      "cautionReason": "Unverified public indexer. Contains potentially harmful or mislabelled torrents.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -128,11 +271,14 @@
       "name": "UIndex",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/uindex.js",
-      "version": 1.0,
+      "version": 1.1,
       "author": "Kiyomi Community",
       "iconUrl": "https://uindex.org/favicon.ico",
-      "description": "BitTorrent tracker specializing in Asian drama and regional content.",
-      "isSecure": false,
+      "description": "Indexes torrents with magnet URLs across Anime, Movies, TV, and Games.",
+      "isAdult": true,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -140,9 +286,14 @@
       "name": "Anirena",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/anirena.js",
-      "version": 1.0,
+      "version": 1.1,
+      "author": "Kiyomi Community",
       "iconUrl": "https://www.anirena.com/favicon.ico",
-      "description": "Provides simple search results primarily for anime content.",
+      "description": "Provides simple RSS search results primarily for anime content.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -150,9 +301,14 @@
       "name": "AnimeTime",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/animetime.js",
-      "version": 1.0,
+      "version": 1.1,
+      "author": "Kiyomi Community",
       "iconUrl": "https://animetime.cc/build/assets/logo-256-Bb6iPaHP.webp",
-      "description": "RSS feed focusing on dual-audio anime releases.",
+      "description": "RSS feed focusing on dual-audio, multi-subbed anime releases.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -160,10 +316,15 @@
       "name": "TokyoTosho",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/tokyotosho.js",
-      "version": 1.0,
+      "version": 1.1,
+      "author": "Kiyomi Community",
       "iconUrl": "https://www.tokyotosho.info/favicon.ico",
-      "description": "General Eastern media index, including Anime and Manga.",
+      "description": "General Eastern media index, including Anime, Manga, and non-video media.",
       "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "Non-video content (e.g., games, software, archives) may contain malware.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "ja, en"
     },
     {
@@ -171,10 +332,15 @@
       "name": "BTDigg",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/btdig.js",
-      "version": 1.0,
+      "version": 1.1,
+      "author": "Kiyomi Community",
       "iconUrl": "https://www.btdig.com/favicon.ico",
-      "description": "Global search engine using DHT network metadata.",
+      "description": "Global search engine utilizing the DHT network; excellent for locating older, large, or rare archives.",
+      "isAdult": true,
       "isSecure": true,
+      "cautionReason": "Search results are often unverified and may contain malicious files.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "multi"
     },
     {
@@ -182,10 +348,14 @@
       "name": "BitSearch.to",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/bitsearch.js",
-      "version": 1.0,
-      "iconUrl": "https://bitsearch.to/favicon.ico",
-      "description": "Fast torrent search engine with a modern API.",
+      "version": 1.1,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://bitsearch.to/icons/favicon-bitsearch.ico",
+      "description": "Fast DHT crawler indexing torrents across all categories via public JSON API.",
       "isAdult": true,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -193,10 +363,14 @@
       "name": "CloudTorrents",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/cloudtorrents.js",
-      "version": 1.0,
+      "version": 1.1,
+      "author": "Kiyomi Community",
       "iconUrl": "https://cloudtorrents.com/assets/apple-touch-icon.png",
-      "description": "Modern API-based indexer offering fast search results.",
+      "description": "Modern API-based indexer; useful for locating structured results when main Anime trackers fail.",
       "isAdult": true,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -204,9 +378,14 @@
       "name": "YTS (YIFY)",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/yts.js",
-      "version": 1.0,
+      "version": 1.1,
+      "author": "Kiyomi Community",
       "iconUrl": "https://yts.mx/assets/images/website/favicon-32x32.png",
-      "description": "High-quality movie torrents with rich metadata.",
+      "description": "YTS public JSON API indexer for high-quality movie releases with 720p/1080p/4K tagging.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -214,11 +393,14 @@
       "name": "FileMood",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/filemood.js",
-      "version": 1.0,
+      "version": 1.1,
+      "author": "Kiyomi Community",
       "iconUrl": "https://filemood.com/favicon.ico",
-      "description": "General indexer specializing in wide file search.",
-      "isAdult": true,
-      "isSecure": false,
+      "description": "Scrapes FileMood torrent search engine with offset-based pagination and status metrics.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -226,10 +408,14 @@
       "name": "TorrentDownload",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/torrentdownload.js",
-      "version": 1.0,
-      "iconUrl": "https://www.torrentdownload.info/favicon.ico",
-      "description": "Public indexer for TV shows, movies, and music.",
+      "version": 1.1,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://torrentdownload.info/favicon.ico",
+      "description": "Indexes torrents across all categories directly via torrentdownload.info search.",
       "isAdult": true,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -237,9 +423,14 @@
       "name": "Mikan Project",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/mikanproject.js",
-      "version": 1.0,
+      "version": 1.1,
+      "author": "Kiyomi Community",
       "iconUrl": "https://mikanani.me/favicon.ico",
-      "description": "Dedicated indexer for Japanese animation releases.",
+      "description": "Dedicated indexer for Japanese animation, known for fast release indexing.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "ja, zh, en"
     },
     {
@@ -247,12 +438,18 @@
       "name": "Snowfl",
       "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/snowfl.js",
-      "version": 1.0,
+      "version": 1.1,
+      "author": "Kiyomi Community",
       "iconUrl": "https://snowfl.com/favicon.ico",
-      "description": "General meta-search engine providing consolidated results.",
+      "description": "General meta-search engine providing consolidated results across multiple networks.",
       "isAdult": true,
+      "isSecure": true,
+      "cautionReason": "External meta-search results can be unverified.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
+
     /* --- VOD (Video-on-demand) STREAMING COLLECTION --- */
     {
       "id": "allanime-js",
@@ -261,8 +458,11 @@
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_streaming_js/allanime.js",
       "iconUrl": "https://allmanga.to/favicon.ico",
       "version": 1.0,
-      "description": "Fats and smooth streaming for anime content. Very large library, self-hosted content.",
+      "description": "Fast and smooth streaming for anime content. Very large library, self-hosted content.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -274,6 +474,9 @@
       "version": 1.0,
       "description": "Fast anime streaming with multiple mirror support. Good track-record & consistent servers.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -283,8 +486,11 @@
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_streaming_js/kawaiifu.js",
       "iconUrl": "https://kawaiifu.com/wp-content/uploads/2018/05/Kawaiifu_favicon.png",
       "version": 1.0,
-      "description": "Excellent source for older anime titles. Known for high-quality encodes and providing uncensored/DVD versions of specific series.",
+      "description": "Excellent source for older anime titles. Known for high-quality encodes and providing uncensored/DVD versions.",
       "isAdult": true,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en, ja"
     },
     {
@@ -294,8 +500,11 @@
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_streaming_js/animepahe.js",
       "iconUrl": "https://animepahe.si/favicon.ico",
       "version": 1.1,
-      "description": "High-quality, lightweight anime streaming with fan-sub and dub releases. Long track-record and they're Russian! (so no DMCA takedowns)",
+      "description": "High-quality, lightweight anime streaming with fan-sub and dub releases.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -307,6 +516,9 @@
       "version": 1.0,
       "description": "Specialized in Asian dramas, movies, and variety shows.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "ko, zh, ja, en"
     },
     {
@@ -314,10 +526,12 @@
       "name": "HahoMoe",
       "type": "STREAMING",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_streaming_js/hahomoe.js",
-      "iconUrl": "https://haho.moe/favicon.ico",
       "version": 1.0,
-      "description": "Hentai AHO Streaming — Fast and Free Hentai Anime Streaming. Provides original video / DVD quality in Censor / Sub / Raw versions",
+      "description": "Hentai AHO Streaming — Fast and Free Hentai Anime Streaming.",
       "isAdult": true,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "ja, en"
     },
     {
@@ -329,6 +543,9 @@
       "version": 1.8,
       "description": "Mirror service for Netflix content. Fast streaming with persistent session bypass.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "multi"
     },
     {
@@ -340,6 +557,9 @@
       "version": 1.6,
       "description": "Disney+ content mirror. High-speed servers with localized content support.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "multi"
     },
     {
@@ -351,8 +571,12 @@
       "version": 1.6,
       "description": "Mirror for Hotstar/Disney library. Primarily focused on local variations and backups.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "multi"
     },
+
     /* --- IPTV COLLECTION --- */
     {
       "id": "iptv-org",
@@ -362,6 +586,9 @@
       "version": 1.0,
       "description": "Large open-source IPTV playlist featuring legal TV channels worldwide.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "multi"
     },
     {
@@ -372,6 +599,9 @@
       "version": 1.0,
       "description": "Samsung TV Plus: Free ad-supported live news, movies, and entertainment.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -382,6 +612,9 @@
       "version": 1.0,
       "description": "Amazon Fire TV free live channels lineup.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -392,6 +625,9 @@
       "version": 1.0,
       "description": "Community-maintained global free-to-air TV channels.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "multi"
     },
     {
@@ -402,6 +638,9 @@
       "version": 1.0,
       "description": "Xumo free streaming: news, sports, movies, and lifestyle.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -412,6 +651,9 @@
       "version": 1.0,
       "description": "Regional news, weather updates, and community programming.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -422,6 +664,9 @@
       "version": 1.0,
       "description": "LG Channels Watch Free ad-supported TV content.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -432,6 +677,9 @@
       "version": 1.0,
       "description": "KODI-optimized TV playlist for NZ & AU Freeview.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -442,6 +690,9 @@
       "version": 1.0,
       "description": "Xiaomi and Mi TV free international and lifestyle programming.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "multi"
     },
     {
@@ -452,6 +703,9 @@
       "version": 1.0,
       "description": "DistroTV: free movies, TV shows, and live entertainment.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -462,6 +716,9 @@
       "version": 1.0,
       "description": "Redbox live TV: free movies, news, and pop-culture.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -472,6 +729,9 @@
       "version": 1.0,
       "description": "Vizio WatchFree ad-supported live TV and on-demand.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -482,6 +742,9 @@
       "version": 1.0,
       "description": "Tablo TV streaming channels: free over-the-air style content.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -492,6 +755,9 @@
       "version": 1.0,
       "description": "Roku Channel lineup: live TV, movies, and curated streams.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     },
     {
@@ -502,6 +768,9 @@
       "version": 1.0,
       "description": "Live webcam streams from landmarks and nature spots worldwide.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "multi"
     },
     {
@@ -512,6 +781,9 @@
       "version": 1.0,
       "description": "Diverse IPTV playlist with international TV categories.",
       "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "multi"
     },
     {
@@ -522,6 +794,9 @@
       "version": 1.0,
       "description": "Explicit content intended for mature audiences only.",
       "isAdult": true,
+      "isSecure": false,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
       "language": "en"
     }
   ]

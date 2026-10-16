@@ -1,39 +1,27 @@
 // ==KiyomiExtension==
 // @id           sukebei_nyaa-js
-// @name         Sukebei Nyaa (Adult, JS)
-// @version      1.0.0
-// @author       Kiyomi Project
+// @name         Sukebei Nyaa
+// @version      1.1.0
+// @author       Kiyomi Community
 // @lang         all
 // @icon         https://sukebei.nyaa.si/static/favicon.png
 // @site         https://sukebei.nyaa.si
+// @mirrors      https://sukebei.nyaa.si,https://sukebei.nyaa.net
 // @package      sukebei.nyaa.si
-// @type         rss-xml
+// @type         torrent-rss
 // @nsfw         true
-// @secure       true
 // @private      false
 // @requiresKey  false
-// @description  Sukebei Nyaa adult indexer via Kiyomi JS engine.
+// @description  Adults-only sister site of Nyaa, focused on 18+ Japanese/Asian media.
 // @primaryCategory hentai
 // @extraCategories anime, movie, tv, xxx
 // ==/KiyomiExtension==
 
+const DEFAULT_MIRRORS = [
+    "https://sukebei.nyaa.si",
+    "https://sukebei.nyaa.net"
+];
 
-// ===== Runtime metadata (optional, for future use) =====
-const EXTENSION_INFO = {
-    id: "sukebei_nyaa-js",
-    displayName: "Sukebei Nyaa (Adult, JS)",
-    siteUrl: "https://sukebei.nyaa.si",
-    iconUrl: "https://sukebei.nyaa.si/static/favicon.png",
-    type: "RSS_XML",
-    isAdult: true,
-    isSecure: true,
-    cautionReason: "",
-    isPrivate: false,
-    isApiKeyRequired: false,
-    version: "1.0.0"
-};
-
-// Same as your JSON categoryMap
 const CATEGORY_MAP = {
     "All": "0_0",
     "Anime": "1_1",
@@ -47,52 +35,67 @@ const CATEGORY_MAP = {
     "Other Art": "1_0"
 };
 
-// Same as searchUrlTemplate in JSON
-const SEARCH_URL_TEMPLATE =
-    "https://sukebei.nyaa.si/?page=rss&c={category}&f=0&q={query}";
-
-
-// ---------- Helpers ----------
-
-/**
- * Extracts text inside <tagName>...</tagName> from a snippet of XML.
- */
 function extractTag(xml, tagName) {
-    const pattern = "<" + tagName + ">([\\s\\S]*?)</" + tagName + ">";
-    const re = new RegExp(pattern, "i");
-    const m = xml.match(re);
+    const m = xml.match(new RegExp("<" + tagName + ">([\\s\\S]*?)</" + tagName + ">", "i"));
     return m ? m[1].trim() : "";
 }
 
+function resolveQuery(queryOrContext) {
+    if (typeof queryOrContext === "object" && queryOrContext !== null) {
+        if (queryOrContext.query && queryOrContext.query.trim().length > 0) {
+            return queryOrContext.query.trim();
+        }
+
+        const title = (queryOrContext.titles && queryOrContext.titles[0]) || "";
+        const season = queryOrContext.seasonNumber || 1;
+        const ep = queryOrContext.episodeNumber ? String(queryOrContext.episodeNumber).padStart(2, "0") : "";
+
+        let built = title;
+        if (season > 1) {
+            built += " S" + String(season).padStart(2, "0");
+        }
+        if (queryOrContext.mediaType !== "batch" && ep) {
+            built += " " + ep;
+        }
+
+        return built.trim();
+    }
+
+    return String(queryOrContext || "").trim();
+}
+
 /**
- * Main entry for Kiyomi.
- * Mirrors your JSON:
- *   - HTTP_REQUEST → Kiyomi.httpGet(URL,HEADERS)
- *   - MAP_RESULTS_GENERIC over channel > item
- *   - postProcessors: BUILD_MAGNET_FROM_HASH + HUMAN_SIZE_TO_BYTES
- *
- * @param {string} query
- * @param {string} category  – "All", "Anime", "Doujinshi", ...
- * @returns {Array<Object>}  – Mapped to TorrentDescription
+ * Main search entry point.
  */
-function search(query, category) {
-    const catId = CATEGORY_MAP[category] || CATEGORY_MAP["All"];
-
-    // 1. Build search URL
-    let url = SEARCH_URL_TEMPLATE
-        .replace("{category}", encodeURIComponent(catId))
-        .replace("{query}", encodeURIComponent(query || ""));
-
-    // 2. Fetch RSS XML via Kotlin bridge
+function search(queryOrContext, category, customBaseUrl) {
     if (typeof Kiyomi !== "object" || typeof Kiyomi.httpGet !== "function") {
         return [];
     }
 
-    const rssXml = Kiyomi.httpGet(url,null);
+    const searchQuery = resolveQuery(queryOrContext);
+    if (!searchQuery) return [];
+
+    const catId = CATEGORY_MAP[category] || CATEGORY_MAP["Anime"] || "0_0";
+
+    const candidateBases = (customBaseUrl && customBaseUrl.trim().length > 0)
+        ? [customBaseUrl.trim().replace(/\/+$/, "")]
+        : DEFAULT_MIRRORS;
+
+    let rssXml = "";
+
+    for (let i = 0; i < candidateBases.length; i++) {
+        const base = candidateBases[i].replace(/\/+$/, "");
+        const searchUrl = `${base}/?page=rss&c=${encodeURIComponent(catId)}&f=0&q=${encodeURIComponent(searchQuery)}`;
+
+        const response = Kiyomi.httpGet(searchUrl, null);
+        if (response && response.indexOf("<item>") !== -1) {
+            rssXml = response;
+            break;
+        }
+    }
+
     if (!rssXml) return [];
 
-    // 3. Parse <item> inside <channel>
-    // IMPORTANT: single backslashes in regex literal
     const itemRegex = /<item>([\s\S]*?)<\/item>/gi;
     const results = [];
     let match;
@@ -100,42 +103,34 @@ function search(query, category) {
     while ((match = itemRegex.exec(rssXml)) !== null) {
         const itemXml = match[1];
 
-        // Core RSS fields
         const title = extractTag(itemXml, "title");
         const infoUrl = extractTag(itemXml, "guid");
         const pubDate = extractTag(itemXml, "pubDate");
 
         if (!title) continue;
 
-        // enclosure url → torrentDownloadUrl
         const enclosureMatch = itemXml.match(/<enclosure[^>]*url="([^"]+)"[^>]*>/i);
         const torrentDownloadUrl = enclosureMatch ? enclosureMatch[1] : "";
 
-        // nyaa: tags – we just use the raw tag names in the regex helper
         const infoHash = extractTag(itemXml, "nyaa:infoHash");
         const sizeHuman = extractTag(itemXml, "nyaa:size");
         const seedsStr = extractTag(itemXml, "nyaa:seeders");
         const peersStr = extractTag(itemXml, "nyaa:leechers");
 
-        if (!infoHash) continue; // hash is required to build magnet
+        if (!infoHash) continue;
 
-        // --- Post-processors equivalent ---
-
-        // HUMAN_SIZE_TO_BYTES
         const sizeBytesStr = typeof Kiyomi.humanSizeToBytes === "function"
             ? Kiyomi.humanSizeToBytes(sizeHuman)
             : null;
-        const sizeBytes = sizeBytesStr ? Number(sizeBytesStr) : 0;
+        const sizeBytes = sizeBytesStr ? (Number(sizeBytesStr) || 0) : 0;
 
-        // BUILD_MAGNET_FROM_HASH
         const magnetUrl = typeof Kiyomi.buildMagnetFromHash === "function"
             ? Kiyomi.buildMagnetFromHash(infoHash, title)
-            : "";
+            : `magnet:?xt=urn:btih:${infoHash}&dn=${encodeURIComponent(title)}`;
 
         const seeds = parseInt(seedsStr, 10) || 0;
         const peers = parseInt(peersStr, 10) || 0;
 
-        // Final mapping → TorrentDescription-compatible object
         results.push({
             title: title,
             magnetUrl: magnetUrl,
@@ -151,4 +146,3 @@ function search(query, category) {
 
     return results;
 }
-
