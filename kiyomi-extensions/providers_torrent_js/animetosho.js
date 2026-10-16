@@ -1,42 +1,28 @@
 // ==KiyomiExtension==
 // @id           animetosho-js
 // @name         Anime Tosho
-// @version      1.1.1
+// @version      2.4.0
 // @author       Kiyomi Community
 // @lang         all
-// @icon         https://animetosho.org/inc/favicon.ico
-// @site         https://animetosho.org
-// @mirrors      https://feed.animetosho.org,https://animetosho.org
-// @package      animetosho.org
+// @icon         https://animetosho.net/inc/favicon.ico
+// @site         https://animetosho.net
+// @mirrors      https://feed.animetosho.net
+// @package      animetosho.net
 // @type         torrent-rss
 // @nsfw         false
 // @private      false
 // @requiresKey  false
-// @description  Automated service mirroring major anime torrents; provides structured Torznab data.
+// @description  Anime Tosho provider using strictly documented JSON API parameters.
 // @primaryCategory anime
 // ==/KiyomiExtension==
 
 const DEFAULT_MIRRORS = [
-    "https://feed.animetosho.org"
+    "https://feed.animetosho.net"
 ];
 
-function extractTag(itemXml, tagName) {
-    const re = new RegExp("<" + tagName + ">([\\s\\S]*?)</" + tagName + ">", "i");
-    const m = itemXml.match(re);
-    return m ? m[1].trim() : "";
-}
-
-function extractEnclosureUrl(itemXml) {
-    const m = itemXml.match(/<enclosure[^>]*\surl="([^"]+)"/i);
-    return m ? m[1].trim() : "";
-}
-
-function extractTorznabAttr(itemXml, name) {
-    const re = new RegExp('<torznab:attr[^>]*\\bname="' + name + '"[^>]*\\bvalue="([^"]*)"', "i");
-    const m = itemXml.match(re);
-    return m ? m[1].trim() : "";
-}
-
+/**
+ * Resolves search terms from a query string or context object.
+ */
 function resolveSearchQuery(queryOrContext) {
     if (typeof queryOrContext !== "object" || queryOrContext === null) {
         return String(queryOrContext || "").trim();
@@ -54,24 +40,40 @@ function resolveSearchQuery(queryOrContext) {
 }
 
 /**
- * Builds the query URL parameters from a string or TorrentQueryContext.
+ * Builds query parameters strictly using documented endpoints:
+ * - Basic: q=...
+ * - Advanced: qx=1&q=...
+ * - AniDB Filter: qx=1&aids=... (plus optional q=...)
  */
 function buildApiQuery(queryOrContext) {
-    if (typeof queryOrContext === "object" && queryOrContext !== null) {
-        // High accuracy: Use AniDB Episode ID if context resolved it
-        if (queryOrContext.anidbEid) {
-            return "eid=" + encodeURIComponent(queryOrContext.anidbEid);
-        }
-        // AniDB Anime ID
-        if (queryOrContext.anidbAid && queryOrContext.mediaType === "batch") {
-            return "aid=" + encodeURIComponent(queryOrContext.anidbAid);
-        }
+    const params = [];
+    let isAdvanced = false;
 
-        const resolved = resolveSearchQuery(queryOrContext);
-        return "q=" + encodeURIComponent(resolved);
+    let aid = null;
+    let queryStr = "";
+
+    if (typeof queryOrContext === "object" && queryOrContext !== null) {
+        aid = queryOrContext.anidbAid || queryOrContext.aid || queryOrContext.aids || null;
+        queryStr = resolveSearchQuery(queryOrContext);
+    } else {
+        queryStr = String(queryOrContext || "").trim();
     }
 
-    return "q=" + encodeURIComponent(String(queryOrContext || "").trim());
+    if (aid) {
+        isAdvanced = true;
+        // Supports single ID or comma-separated list
+        params.push("aids=" + encodeURIComponent(Array.isArray(aid) ? aid.join(",") : aid));
+    }
+
+    if (queryStr) {
+        params.push("q=" + encodeURIComponent(queryStr));
+    }
+
+    if (isAdvanced) {
+        params.unshift("qx=1");
+    }
+
+    return params.join("&");
 }
 
 /**
@@ -87,62 +89,45 @@ function search(queryOrContext, category, customBaseUrl) {
         ? [customBaseUrl.trim().replace(/\/+$/, "")]
         : DEFAULT_MIRRORS;
 
-    let rssXml = "";
+    let jsonResponse = null;
 
     for (let i = 0; i < candidateBases.length; i++) {
         const base = candidateBases[i].replace(/\/+$/, "");
-        const searchUrl = base + "/api?" + queryParams;
+        const searchUrl = base + "/json?" + queryParams;
 
-        const response = Kiyomi.httpGet(searchUrl, null);
-        if (response && response.indexOf("<item>") !== -1) {
-            rssXml = response;
-            break;
+        try {
+            const rawResponse = Kiyomi.httpGet(searchUrl, null);
+            if (rawResponse && typeof rawResponse === "string" && rawResponse.trim().indexOf("[") === 0) {
+                jsonResponse = JSON.parse(rawResponse);
+                break;
+            }
+        } catch (e) {
+            // Mirror failed or down, move to next
         }
     }
 
-    if (!rssXml) return [];
+    if (!Array.isArray(jsonResponse)) {
+        return [];
+    }
 
-    const itemsRegex = /<item>([\s\S]*?)<\/item>/gi;
-    const results = [];
-    let match;
+    return jsonResponse.map(function(item) {
+        let magnetUrl = item.magnet_uri || "";
+        const hash = item.info_hash || null;
 
-    while ((match = itemsRegex.exec(rssXml)) !== null) {
-        const itemXml = match[1];
-
-        const title = extractTag(itemXml, "title");
-        if (!title) continue;
-
-        const infoUrl = extractTag(itemXml, "guid");
-        const torrentDownloadUrl = extractEnclosureUrl(itemXml);
-        const magnetAttr = extractTorznabAttr(itemXml, "magneturl");
-        const hash = extractTorznabAttr(itemXml, "infohash");
-
-        const sizeStr = extractTorznabAttr(itemXml, "size");
-        const seedsStr = extractTorznabAttr(itemXml, "seeders");
-        const peersStr = extractTorznabAttr(itemXml, "leechers");
-        const publishDate = extractTag(itemXml, "pubDate");
-
-        const size = sizeStr ? (parseInt(sizeStr, 10) || 0) : 0;
-        const seeds = seedsStr ? (parseInt(seedsStr, 10) || 0) : 0;
-        const peers = peersStr ? (parseInt(peersStr, 10) || 0) : 0;
-
-        let magnetUrl = magnetAttr || "";
         if (!magnetUrl && hash && typeof Kiyomi.buildMagnetFromHash === "function") {
-            magnetUrl = Kiyomi.buildMagnetFromHash(hash, title);
+            magnetUrl = Kiyomi.buildMagnetFromHash(hash, item.title);
         }
 
-        results.push({
-            title: title,
+        return {
+            title: item.title || item.torrent_name || "",
             magnetUrl: magnetUrl,
-            torrentDownloadUrl: torrentDownloadUrl,
-            hash: hash || null,
-            size: size,
-            seeds: seeds,
-            peers: peers,
-            infoUrl: infoUrl,
-            publishDate: publishDate
-        });
-    }
-
-    return results;
+            torrentDownloadUrl: item.torrent_url || null,
+            hash: hash,
+            size: item.total_size || 0,
+            seeds: item.seeders || 0,
+            peers: item.leechers || 0,
+            infoUrl: item.link || null,
+            publishDate: item.timestamp ? new Date(item.timestamp * 1000).toUTCString() : null
+        };
+    });
 }
