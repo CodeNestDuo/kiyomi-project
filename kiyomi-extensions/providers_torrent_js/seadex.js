@@ -1,7 +1,7 @@
 // ==KiyomiExtension==
 // @id           seadex-js
 // @name         SeaDex
-// @version      1.2.0
+// @version      1.3.0
 // @author       Kiyomi Community
 // @lang         all
 // @icon         https://seadex.moe/favicon.ico
@@ -19,6 +19,55 @@
 const DEFAULT_MIRRORS = [
     "https://seadex.moe"
 ];
+
+const TRACKERS = [
+    "udp://tracker.opentrackr.org:1337/announce",
+    "udp://open.stealth.si:80/announce",
+    "udp://tracker.torrent.eu.org:451/announce",
+    "udp://exodus.desync.com:6969/announce",
+    "udp://tracker.coppersurfer.tk:6969/announce",
+    "udp://tracker.openbittorrent.com:6969/announce",
+    "http://nyaa.tracker.wf:7777/announce"
+];
+
+function totalSize(files) {
+    if (!Array.isArray(files)) return 0;
+    let s = 0;
+    for (let i = 0; i < files.length; i++) {
+        const len = Number(files[i] && files[i].length);
+        if (Number.isFinite(len)) s += len;
+    }
+    return s;
+}
+
+function firstFilename(files) {
+    if (!Array.isArray(files) || !files.length) return "";
+    const f = files.find(x => x && x.name);
+    return f ? f.name : "";
+}
+
+function cleanReleaseTitle(filename) {
+    if (!filename) return "";
+    return filename
+        .replace(/\s*-?\s*S\d{1,2}E\d{1,3}(?:v\d)?\b/gi, "")
+        .replace(/\s+-\s+\d{1,4}(?:v\d)?\b/g, "")
+        .replace(/\.(mkv|mp4|avi|m2ts|webm)$/i, "")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function isBatchRelease(files) {
+    if (!Array.isArray(files)) return false;
+    const videoFiles = files.filter(f => f && f.name && /\.(mkv|mp4|avi|m2ts|webm)$/i.test(f.name));
+    if (videoFiles.length > 1) return true;
+    return totalSize(files) > 10 * 1024 * 1024 * 1024; // >10GB
+}
+
+function buildMagnet(hash, name) {
+    const trackerParams = TRACKERS.map(t => "tr=" + encodeURIComponent(t)).join("&");
+    const dn = name ? "&dn=" + encodeURIComponent(name) : "";
+    return `magnet:?xt=urn:btih:${String(hash).toLowerCase()}${dn}&${trackerParams}`;
+}
 
 function resolveSearchQuery(queryOrContext) {
     if (typeof queryOrContext !== "object" || queryOrContext === null) {
@@ -81,39 +130,50 @@ function search(queryOrContext, category, customBaseUrl) {
 
     const items = data.items || [];
     const results = [];
+    const seenHashes = {};
 
     for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        const expand = item.expand || {};
+        const entry = items[i];
+        const expand = entry.expand || {};
         const trsList = expand.trs || [];
 
         for (let j = 0; j < trsList.length; j++) {
             const tr = trsList[j];
-            const rawFiles = tr.files || [];
-            
-            // Format title
-            const releaseTitle = tr.releaseTitle || tr.name || item.title || "SeaDex Release";
-            const infoHash = tr.infoHash || "";
-            let magnet = tr.magnet || "";
+            if (!tr) continue;
 
-            if (!magnet && infoHash && typeof Kiyomi.buildMagnetFromHash === "function") {
-                magnet = Kiyomi.buildMagnetFromHash(infoHash, releaseTitle);
-            }
+            const hash = String(tr.infoHash || "").toLowerCase();
+            if (!hash || seenHashes[hash]) continue;
+            seenHashes[hash] = true;
 
-            if (!magnet && !infoHash) continue;
+            const files = tr.files || [];
+            const cleanName = cleanReleaseTitle(firstFilename(files));
+            const group = tr.releaseGroup ? `[${tr.releaseGroup}]` : "";
+            const baseTitle = cleanName || tr.releaseTitle || entry.title || "Release";
 
-            const isDualAudio = tr.dualAudio === true;
-            const res = tr.resolution || "1080p";
+            // Build enriched tags so AnimeParser and RelevanceEngine extract them directly
+            const isBest = tr.isBest ? "[Best Release]" : "";
+            const isBatch = isBatchRelease(files) ? "[Batch]" : "";
+            const dualAudio = tr.dualAudio ? "[Dual Audio]" : "";
+            const resolution = tr.resolution ? `[${tr.resolution}]` : "";
+
+            const displayTitle = [group, baseTitle, resolution, isBest, dualAudio, isBatch]
+                .filter(Boolean)
+                .join(" ")
+                .replace(/\s+/g, " ")
+                .trim();
+
+            const magnet = tr.magnet || buildMagnet(hash, cleanName || displayTitle);
+            const calculatedSize = totalSize(files) || Number(tr.size || 0);
 
             results.push({
-                title: `[SeaDex] ${releaseTitle} (${res})${isDualAudio ? " [Dual-Audio]" : ""}`,
+                title: displayTitle,
                 magnetUrl: magnet,
-                hash: infoHash || null,
-                size: Number(tr.size || 0),
+                hash: hash,
+                size: calculatedSize,
                 seeds: Number(tr.seeders || 0),
                 peers: Number(tr.leechers || 0),
-                infoUrl: `${base}/?id=${encodeURIComponent(item.id || "")}`,
-                publishDate: tr.created || item.created || ""
+                infoUrl: `${base}/?id=${encodeURIComponent(entry.id || "")}`,
+                publishDate: tr.created || entry.created || ""
             });
         }
     }
