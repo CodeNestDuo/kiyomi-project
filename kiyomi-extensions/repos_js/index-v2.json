@@ -23,7 +23,8 @@
       "cautionReason": "Search results are often unverified and may contain malicious files.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "api"
     },
     {
       "id": "nyaa-js",
@@ -36,15 +37,19 @@
       "description": "Primary source for Eastern Asian media, often featuring raw or fan-subbed content.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "ja, en"
+      "language": "ja, en",
+      "backendType": "rss"
     },
     {
       "id": "animetosho-js",
       "name": "Anime Tosho",
-      "author": "Kiyomi Community",
+      "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/animetosho.js",
+      "version": 2.0,
+      "author": "Kiyomi Community",
       "iconUrl": "https://animetosho.net/inc/favicon.ico",
       "description": "Automated mirror service for anime torrents using native JSON endpoints with aids and qx search support.",
       "isAdult": false,
@@ -52,14 +57,16 @@
       "cautionReason": "Feed/API servers reported offline; requires active mirror or local proxy fallback.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 2,
+      "language": "ja, en",
       "backendType": "torrent-rss"
     },
     {
       "id": "tsukihime-js",
       "name": "TsukiHime",
-      "author": "Kiyomi Community",
+      "type": "TORRENT",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/tsukihime.js",
+      "version": 1.0,
+      "author": "Kiyomi Community",
       "iconUrl": "https://tsukihime.org/favicon.ico",
       "description": "Modern anime indexer and release tracker built with a native v1 REST API.",
       "isAdult": false,
@@ -67,7 +74,7 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "version": 1,
+      "language": "ja, en",
       "backendType": "torrent-rss"
     },
     {
@@ -81,9 +88,11 @@
       "description": "Curated index of the best available anime releases, encodes, and dual-audio batches.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en, ja"
+      "language": "en, ja",
+      "backendType": "api"
     },
     {
       "id": "torrentio-js",
@@ -96,9 +105,11 @@
       "description": "Multi-source torrent streaming aggregator for anime, movies, and TV series, with configurable filtering and support for multilingual and adult content.",
       "isAdult": true,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "multi"
+      "language": "multi",
+      "backendType": "api"
     },
     {
       "id": "subsplease-js",
@@ -111,9 +122,11 @@
       "description": "Direct source for fast, high-quality weekly anime simulcasts in 1080p, 720p, and SD.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "api"
     },
     {
       "id": "yameii-js",
@@ -126,9 +139,11 @@
       "description": "English dub uploads from Yameii on nyaa.si. Single-uploader source, highly consistent quality.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "rss"
     },
     {
       "id": "toonshub-js",
@@ -141,9 +156,11 @@
       "description": "ToonsHub releases on nyaa.si. Title-prefix filter for the [ToonsHub] group with wide airing coverage.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en, hi"
+      "language": "en, hi",
+      "backendType": "rss"
     },
     {
       "id": "anilibria-js",
@@ -156,9 +173,11 @@
       "description": "Official AniLibria v1 JSON API provider for Russian dubbed and subbed anime releases.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "ru, en"
+      "language": "ru, en",
+      "backendType": "api"
     },
     {
       "id": "bangumimoe-js",
@@ -171,9 +190,11 @@
       "description": "Open Asian and Chinese anime fansub aggregation platform with high-speed indexing.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "zh, ja"
+      "language": "zh, ja",
+      "backendType": "api"
     },
     {
       "id": "nekobt-js",
@@ -186,9 +207,11 @@
       "description": "Specialized private anime indexer providing high-quality torrents via a Torznab API.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": true,
       "isApiKeyRequired": true,
-      "language": "multi"
+      "language": "multi",
+      "backendType": "torznab/rss"
     },
     {
       "id": "acgrip-js",
@@ -201,9 +224,11 @@
       "description": "Indexes Chinese and broader Asian media collections.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "zh, ja, en"
+      "language": "zh, ja, en",
+      "backendType": "rss"
     },
     {
       "id": "eztv-js",
@@ -216,9 +241,11 @@
       "description": "Specialized television tracker offering scene releases and season packs.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "api"
     },
     {
       "id": "knaben-js",
@@ -231,9 +258,11 @@
       "description": "Modern, fast search API that offers structured results.",
       "isAdult": true,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "api"
     },
     {
       "id": "sukebei_nyaa-js",
@@ -246,9 +275,11 @@
       "description": "Adults-only sister site of Nyaa, focused on 18+ Japanese/Asian media.",
       "isAdult": true,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "ja, en"
+      "language": "ja, en",
+      "backendType": "rss"
     },
     {
       "id": "torrentscsv-js",
@@ -261,9 +292,11 @@
       "description": "Collaborative git repository consisting of a searchable CSV file.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "api"
     },
     {
       "id": "limetorrents-js",
@@ -279,7 +312,8 @@
       "cautionReason": "Unverified public indexer. Contains potentially harmful or mislabelled torrents.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "rss"
     },
     {
       "id": "uindex-js",
@@ -292,9 +326,11 @@
       "description": "Indexes torrents with magnet URLs across Anime, Movies, TV, and Games.",
       "isAdult": true,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "scrape"
     },
     {
       "id": "anirena-js",
@@ -307,9 +343,11 @@
       "description": "Provides simple RSS search results primarily for anime content.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "rss"
     },
     {
       "id": "animetime-js",
@@ -322,9 +360,11 @@
       "description": "RSS feed focusing on dual-audio, multi-subbed anime releases.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "rss"
     },
     {
       "id": "tokyotosho-js",
@@ -340,7 +380,8 @@
       "cautionReason": "Non-video content (e.g., games, software, archives) may contain malware.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "ja, en"
+      "language": "ja, en",
+      "backendType": "rss"
     },
     {
       "id": "btdig-js",
@@ -356,7 +397,8 @@
       "cautionReason": "Search results are often unverified and may contain malicious files.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "multi"
+      "language": "multi",
+      "backendType": "scrape"
     },
     {
       "id": "bitsearch-js",
@@ -369,9 +411,11 @@
       "description": "Fast DHT crawler indexing torrents across all categories via public JSON API.",
       "isAdult": true,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "api"
     },
     {
       "id": "cloudtorrents-js",
@@ -384,9 +428,11 @@
       "description": "Modern API-based indexer; useful for locating structured results when main Anime trackers fail.",
       "isAdult": true,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "api"
     },
     {
       "id": "yts-js",
@@ -399,9 +445,11 @@
       "description": "YTS public JSON API indexer for high-quality movie releases with 720p/1080p/4K tagging.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "api"
     },
     {
       "id": "filemood-js",
@@ -414,9 +462,11 @@
       "description": "Scrapes FileMood torrent search engine with offset-based pagination and status metrics.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "scrape"
     },
     {
       "id": "torrentdownload-js",
@@ -429,9 +479,11 @@
       "description": "Indexes torrents across all categories directly via torrentdownload.info search.",
       "isAdult": true,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "scrape"
     },
     {
       "id": "mikanproject-js",
@@ -444,9 +496,11 @@
       "description": "Dedicated indexer for Japanese animation, known for fast release indexing.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "ja, zh, en"
+      "language": "ja, zh, en",
+      "backendType": "rss"
     },
     {
       "id": "snowfl-js",
@@ -462,7 +516,8 @@
       "cautionReason": "External meta-search results can be unverified.",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en"
+      "language": "en",
+      "backendType": "api"
     },
 
     /* --- VOD (Video-on-demand) STREAMING COLLECTION --- */
@@ -541,6 +596,7 @@
       "name": "HahoMoe",
       "type": "STREAMING",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_streaming_js/hahomoe.js",
+      "iconUrl": "https://hahomoe.com/favicon.ico",
       "version": 1.0,
       "description": "Hentai AHO Streaming — Fast and Free Hentai Anime Streaming.",
       "isAdult": true,

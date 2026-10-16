@@ -11,6 +11,7 @@
     {
       "id": "nyaa-js",
       "name": "Nyaa",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/nyaa.js",
       "iconUrl": "https://nyaa.land/static/favicon.png",
@@ -20,12 +21,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "ja, en",
       "version": 1,
       "backendType": "rss"
     },
     {
       "id": "animetosho-js",
       "name": "Anime Tosho",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/animetosho.js",
       "iconUrl": "https://animetosho.net/inc/favicon.ico",
@@ -35,12 +38,14 @@
       "cautionReason": "Feed/API servers reported offline; requires active mirror or local proxy fallback.",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "ja, en",
       "version": 2,
       "backendType": "torrent-rss"
     },
     {
       "id": "tsukihime-js",
       "name": "TsukiHime",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/tsukihime.js",
       "iconUrl": "https://tsukihime.org/favicon.ico",
@@ -50,12 +55,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "ja, en",
       "version": 1,
       "backendType": "torrent-rss"
     },
     {
       "id": "seadex-js",
       "name": "SeaDex",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/seadex.js",
       "iconUrl": "https://releases.moe/favicon.ico",
@@ -65,6 +72,7 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en, ja",
       "version": 1,
       "backendType": "api"
     },
@@ -72,20 +80,23 @@
       "id": "torrentio-js",
       "name": "Torrentio",
       "type": "TORRENT",
-      "configUrl": "https://torrentio.strem.fun",
-      "version": 1.0,
       "author": "Torrentio",
+      "configUrl": "https://torrentio.strem.fun",
       "iconUrl": "https://torrentio.strem.fun/images/logo_v1.png",
       "description": "Multi-source torrent streaming aggregator for anime, movies, and TV series, with configurable filtering and support for multilingual and adult content.",
       "isAdult": true,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "multi"
+      "language": "multi",
+      "version": 1.0,
+      "backendType": "api"
     },
     {
       "id": "subsplease-js",
       "name": "SubsPlease",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/subsplease.js",
       "iconUrl": "https://subsplease.org/favicon.ico",
@@ -95,12 +106,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en",
       "version": 1,
       "backendType": "api"
     },
     {
       "id": "yameii-js",
       "name": "Yameii (Dubs)",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/yameii.js",
       "iconUrl": "https://nyaa.land/static/favicon.png",
@@ -110,12 +123,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en",
       "version": 1,
       "backendType": "rss"
     },
     {
       "id": "toonshub-js",
       "name": "ToonsHub",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/toonshub.js",
       "iconUrl": "https://nyaa.land/static/favicon.png",
@@ -125,6 +140,7 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en, hi",
       "version": 1,
       "backendType": "rss"
     },
@@ -132,20 +148,23 @@
       "id": "anilibria-js",
       "name": "AniLibria",
       "type": "TORRENT",
-      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/anilibria.js",
-      "version": 1.1,
       "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/anilibria.js",
       "iconUrl": "https://www.anilibria.top/favicon.ico",
       "description": "Official AniLibria v1 JSON API provider for Russian dubbed and subbed anime releases.",
       "isAdult": false,
       "isSecure": true,
+      "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "ru, en"
+      "language": "ru, en",
+      "version": 1.1,
+      "backendType": "api"
     },
     {
       "id": "bangumimoe-js",
       "name": "Bangumi.moe",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/bangumi_moe.js",
       "iconUrl": "https://bangumi.moe/favicon.ico",
@@ -155,12 +174,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "zh, ja",
       "version": 1,
       "backendType": "api"
     },
     {
       "id": "acgrip-js",
       "name": "ACG.RIP",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/acgrip.js",
       "iconUrl": "https://acg.rip/favicon.ico",
@@ -170,12 +191,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "zh, ja, en",
       "version": 1,
       "backendType": "rss"
     },
     {
       "id": "tokyotosho-js",
       "name": "TokyoTosho",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/tokyotosho.js",
       "iconUrl": "https://www.tokyotosho.info/favicon.ico",
@@ -185,12 +208,14 @@
       "cautionReason": "Non-video content (e.g., games, software, archives) may contain malware.",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "ja, en",
       "version": 1,
       "backendType": "rss"
     },
     {
       "id": "mikanproject-js",
       "name": "Mikan Project",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/mikanproject.js",
       "iconUrl": "https://mikanani.me/favicon.ico",
@@ -200,12 +225,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "ja, zh, en",
       "version": 1,
       "backendType": "rss"
     },
     {
       "id": "animetime-js",
       "name": "AnimeTime",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/animetime.js",
       "iconUrl": "https://web.archive.org/web/20260403123534im_/https://www.animetime.cc/build/assets/logo-CngoYO8Z.webp",
@@ -215,12 +242,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en",
       "version": 1,
       "backendType": "rss"
     },
     {
       "id": "anirena-js",
       "name": "Anirena",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/anirena.js",
       "iconUrl": "https://www.anirena.com/content/images/favicon.ico",
@@ -230,12 +259,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en",
       "version": 1,
       "backendType": "rss"
     },
     {
       "id": "nekobt-js",
       "name": "NekoBT",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/nekobt.js",
       "iconUrl": "https://nekobt.to/cdn/pfp/null/64",
@@ -245,12 +276,14 @@
       "cautionReason": "",
       "isPrivate": true,
       "isApiKeyRequired": true,
+      "language": "multi",
       "version": 1,
       "backendType": "torznab/rss"
     },
     {
       "id": "sukebei_nyaa-js",
       "name": "Sukebei Nyaa",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/sukebei_nyaa.js",
       "iconUrl": "https://sukebei.nyaa.si/static/favicon.png",
@@ -260,12 +293,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "ja, en",
       "version": 1,
       "backendType": "rss"
     },
     {
       "id": "eztv-js",
       "name": "EZTV",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/eztv.js",
       "iconUrl": "https://eztvx.to/favicon.ico",
@@ -275,12 +310,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en",
       "version": 1,
       "backendType": "api"
     },
     {
       "id": "knaben-js",
       "name": "Knaben",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/knaben.js",
       "iconUrl": "https://knaben.org/favicon.ico",
@@ -290,12 +327,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en",
       "version": 1,
       "backendType": "api"
     },
     {
       "id": "btdig-js",
       "name": "BTDigg",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/btdig.js",
       "iconUrl": "https://www.btdig.com/favicon.ico",
@@ -305,12 +344,14 @@
       "cautionReason": "Search results are often unverified and may contain malicious files.",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "multi",
       "version": 1,
       "backendType": "scrape"
     },
     {
       "id": "cloudtorrents-js",
       "name": "CloudTorrents",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/cloudtorrents.js",
       "iconUrl": "https://cloudtorrents.com/assets/apple-touch-icon.png",
@@ -320,12 +361,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en",
       "version": 1,
       "backendType": "api"
     },
     {
       "id": "snowfl-js",
       "name": "Snowfl",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/snowfl.js",
       "iconUrl": "https://snowfl.com/favicon.ico",
@@ -335,12 +378,14 @@
       "cautionReason": "External meta-search results can be unverified.",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en",
       "version": 1,
       "backendType": "api"
     },
     {
       "id": "uindex-js",
       "name": "UIndex",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/uindex.js",
       "iconUrl": "https://uindex.org/favicon.ico",
@@ -350,12 +395,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en",
       "version": 1,
       "backendType": "scrape"
     },
     {
       "id": "torrentdownload-js",
       "name": "TorrentDownload",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/torrentdownload.js",
       "iconUrl": "https://torrentdownload.info/favicon.ico",
@@ -365,12 +412,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en",
       "version": 1,
       "backendType": "scrape"
     },
     {
       "id": "bitsearch-js",
       "name": "BitSearch",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/bitsearch.js",
       "iconUrl": "https://bitsearch.to/icons/favicon-bitsearch.ico",
@@ -380,12 +429,14 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en",
       "version": 1,
       "backendType": "api"
     },
     {
       "id": "filemood-js",
       "name": "FileMood",
+      "type": "TORRENT",
       "author": "Kiyomi Community",
       "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/filemood.js",
       "iconUrl": "https://filemood.com/favicon.ico",
@@ -395,6 +446,7 @@
       "cautionReason": "",
       "isPrivate": false,
       "isApiKeyRequired": false,
+      "language": "en",
       "version": 1,
       "backendType": "scrape"
     }
