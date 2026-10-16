@@ -1,7 +1,7 @@
 // ==KiyomiExtension==
 // @id           animetosho-js
 // @name         Anime Tosho
-// @version      1.1.0
+// @version      1.1.1
 // @author       Kiyomi Community
 // @lang         all
 // @icon         https://animetosho.org/inc/favicon.ico
@@ -37,6 +37,22 @@ function extractTorznabAttr(itemXml, name) {
     return m ? m[1].trim() : "";
 }
 
+function resolveSearchQuery(queryOrContext) {
+    if (typeof queryOrContext !== "object" || queryOrContext === null) {
+        return String(queryOrContext || "").trim();
+    }
+    if (queryOrContext.query && queryOrContext.query.trim().length > 0) {
+        return queryOrContext.query.trim();
+    }
+    const candidateTitles = Array.isArray(queryOrContext.titles) ? queryOrContext.titles : [];
+    const primaryTitle = candidateTitles[0] || queryOrContext.title || "";
+    if (queryOrContext.mediaType === "batch") {
+        return primaryTitle.trim();
+    }
+    const ep = queryOrContext.episodeNumber ? String(queryOrContext.episodeNumber).padStart(2, "0") : "";
+    return `${primaryTitle} ${ep}`.trim();
+}
+
 /**
  * Builds the query URL parameters from a string or TorrentQueryContext.
  */
@@ -51,15 +67,8 @@ function buildApiQuery(queryOrContext) {
             return "aid=" + encodeURIComponent(queryOrContext.anidbAid);
         }
 
-        if (queryOrContext.query && queryOrContext.query.trim().length > 0) {
-            return "q=" + encodeURIComponent(queryOrContext.query.trim());
-        }
-
-        const title = (queryOrContext.titles && queryOrContext.titles[0]) || "";
-        const ep = queryOrContext.episodeNumber ? String(queryOrContext.episodeNumber).padStart(2, "0") : "";
-        const full = (queryOrContext.mediaType === "batch") ? title : (title + " " + ep).trim();
-
-        return "q=" + encodeURIComponent(full);
+        const resolved = resolveSearchQuery(queryOrContext);
+        return "q=" + encodeURIComponent(resolved);
     }
 
     return "q=" + encodeURIComponent(String(queryOrContext || "").trim());

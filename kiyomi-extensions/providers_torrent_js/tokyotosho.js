@@ -1,7 +1,7 @@
 // ==KiyomiExtension==
 // @id           tokyotosho-js
 // @name         TokyoTosho
-// @version      1.1.0
+// @version      1.1.1
 // @author       Kiyomi Community
 // @lang         all
 // @icon         https://www.tokyotosho.info/favicon.ico
@@ -55,38 +55,26 @@ function extractCdataValue(cdata, key) {
     return m ? m[1].trim() : null;
 }
 
-/**
- * Resolves optimal search parameters from string query or TorrentQueryContext.
- */
-function resolveQueryAndCategory(queryOrContext, defaultCategory) {
-    if (typeof queryOrContext === "object" && queryOrContext !== null) {
-        let cat = defaultCategory;
-        if (queryOrContext.mediaType === "batch") {
-            cat = "Batch";
-        }
-
-        // If queryContext has a manual/edited query, use it
-        if (queryOrContext.query && queryOrContext.query.trim().length > 0) {
-            return { query: queryOrContext.query.trim(), category: cat };
-        }
-
-        // Auto-compose from titles + season + episode
-        const title = (queryOrContext.titles && queryOrContext.titles[0]) || "";
-        const season = queryOrContext.seasonNumber || 1;
-        const ep = queryOrContext.episodeNumber ? String(queryOrContext.episodeNumber).padStart(2, "0") : "";
-
-        let built = title;
-        if (season > 1) {
-            built += " S" + String(season).padStart(2, "0");
-        }
-        if (queryOrContext.mediaType !== "batch" && ep) {
-            built += " " + ep;
-        }
-
-        return { query: built.trim(), category: cat };
+function resolveSearchQuery(queryOrContext) {
+    if (typeof queryOrContext !== "object" || queryOrContext === null) {
+        return String(queryOrContext || "").trim();
     }
-
-    return { query: String(queryOrContext || "").trim(), category: defaultCategory };
+    if (queryOrContext.query && queryOrContext.query.trim().length > 0) {
+        return queryOrContext.query.trim();
+    }
+    const candidateTitles = Array.isArray(queryOrContext.titles) ? queryOrContext.titles : [];
+    const primaryTitle = candidateTitles[0] || queryOrContext.title || "";
+    
+    let built = primaryTitle;
+    const season = queryOrContext.seasonNumber || 1;
+    if (season > 1) {
+        built += " S" + String(season).padStart(2, "0");
+    }
+    if (queryOrContext.mediaType !== "batch") {
+        const ep = queryOrContext.episodeNumber ? String(queryOrContext.episodeNumber).padStart(2, "0") : "";
+        if (ep) built += " " + ep;
+    }
+    return built.trim();
 }
 
 /**
@@ -97,8 +85,13 @@ function search(queryOrContext, category, customBaseUrl) {
         return [];
     }
 
-    const resolved = resolveQueryAndCategory(queryOrContext, category || "Anime");
-    const catId = CATEGORY_MAP[resolved.category] || CATEGORY_MAP["Anime"] || "0";
+    let cat = category || "Anime";
+    if (typeof queryOrContext === "object" && queryOrContext !== null && queryOrContext.mediaType === "batch") {
+        cat = "Batch";
+    }
+
+    const searchQuery = resolveSearchQuery(queryOrContext);
+    const catId = CATEGORY_MAP[cat] || CATEGORY_MAP["Anime"] || "0";
 
     const candidateBases = (customBaseUrl && customBaseUrl.trim().length > 0)
         ? [customBaseUrl.trim().replace(/\/+$/, "")]
@@ -112,7 +105,7 @@ function search(queryOrContext, category, customBaseUrl) {
         if (catId !== "0") {
             searchUrl += "filter=" + encodeURIComponent(catId) + "&";
         }
-        searchUrl += "terms=" + encodeURIComponent(resolved.query) + "&reversepolarity=1";
+        searchUrl += "terms=" + encodeURIComponent(searchQuery) + "&reversepolarity=1";
 
         const response = Kiyomi.httpGet(searchUrl, null);
         if (response && response.indexOf("<item>") !== -1) {

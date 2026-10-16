@@ -1,7 +1,7 @@
 // ==KiyomiExtension==
 // @id           nyaa-js
 // @name         Nyaa
-// @version      1.1.0
+// @version      1.1.1
 // @author       Kiyomi Community
 // @lang         all
 // @icon         https://nyaa.land/static/favicon.png
@@ -36,6 +36,22 @@ function extractTag(xml, tagName) {
     return m ? m[1].trim() : "";
 }
 
+function resolveSearchQuery(queryOrContext) {
+    if (typeof queryOrContext !== "object" || queryOrContext === null) {
+        return String(queryOrContext || "").trim();
+    }
+    if (queryOrContext.query && queryOrContext.query.trim().length > 0) {
+        return queryOrContext.query.trim();
+    }
+    const candidateTitles = Array.isArray(queryOrContext.titles) ? queryOrContext.titles : [];
+    const primaryTitle = candidateTitles[0] || queryOrContext.title || "";
+    if (queryOrContext.mediaType === "batch") {
+        return primaryTitle.trim();
+    }
+    const ep = queryOrContext.episodeNumber ? String(queryOrContext.episodeNumber).padStart(2, "0") : "";
+    return `${primaryTitle} ${ep}`.trim();
+}
+
 /**
  * Executes a search against Nyaa.
  * @param {string|Object} queryOrContext - string query or TorrentQueryContext
@@ -47,20 +63,10 @@ function search(queryOrContext, category, customBaseUrl) {
         return [];
     }
 
-    // 1. Resolve structured context vs raw string query
-    let rawQuery = "";
-    if (typeof queryOrContext === "object" && queryOrContext !== null) {
-        const title = queryOrContext.query || queryOrContext.title || "";
-        const ep = queryOrContext.episodeNumber ? String(queryOrContext.episodeNumber).padStart(2, "0") : "";
-        rawQuery = `${title} ${ep}`.trim();
-    } else {
-        rawQuery = String(queryOrContext || "").trim();
-    }
-
+    const rawQuery = resolveSearchQuery(queryOrContext);
     const categoryId = CATEGORY_MAP[category] || CATEGORY_MAP["Anime"] || "0_0";
     const encodedQuery = encodeURIComponent(rawQuery);
 
-    // 2. Select mirrors (custom base override takes priority)
     const candidateBases = (customBaseUrl && customBaseUrl.trim().length > 0)
         ? [customBaseUrl.trim().replace(/\/+$/, "")]
         : DEFAULT_MIRRORS;
@@ -79,7 +85,6 @@ function search(queryOrContext, category, customBaseUrl) {
 
     if (!rssXml) return [];
 
-    // 3. Parse <item> elements
     const itemsRegex = /<item>([\s\S]*?)<\/item>/gi;
     const results = [];
     let match;
