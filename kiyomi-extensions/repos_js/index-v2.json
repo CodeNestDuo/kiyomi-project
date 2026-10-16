@@ -98,7 +98,7 @@
       "id": "torrentio-js",
       "name": "Torrentio",
       "type": "TORRENT",
-      "configUrl": "https://torrentio.strem.fun",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/torrentio.js",
       "version": 1.0,
       "author": "Torrentio",
       "iconUrl": "https://torrentio.strem.fun/images/logo_v1.png",

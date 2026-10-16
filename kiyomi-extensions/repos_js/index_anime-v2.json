@@ -81,7 +81,7 @@
       "name": "Torrentio",
       "type": "TORRENT",
       "author": "Torrentio",
-      "configUrl": "https://torrentio.strem.fun",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/torrentio.js",
       "iconUrl": "https://torrentio.strem.fun/images/logo_v1.png",
       "description": "Multi-source torrent streaming aggregator for anime, movies, and TV series, with configurable filtering and support for multilingual and adult content.",
       "isAdult": true,
