@@ -131,19 +131,19 @@
       "language": "en, hi"
     },
     {
-      "id": "shanaproject-js",
-      "name": "Shana Project",
+      "id": "anilibria-js",
+      "name": "AniLibria",
       "type": "TORRENT",
-      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/shanaproject.js",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/anilibria.js",
       "version": 1.1,
       "author": "Kiyomi Community",
-      "iconUrl": "https://www.shanaproject.com/favicon.ico",
-      "description": "Automated anime torrent aggregator indexing trusted sub groups with clear episode metadata.",
+      "iconUrl": "https://www.anilibria.top/favicon.ico",
+      "description": "Official AniLibria v1 JSON API provider for Russian dubbed and subbed anime releases.",
       "isAdult": false,
       "isSecure": true,
       "isPrivate": false,
       "isApiKeyRequired": false,
-      "language": "en, ja"
+      "language": "ru, en"
     },
     {
       "id": "bangumimoe-js",
