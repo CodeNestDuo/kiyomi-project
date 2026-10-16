@@ -40,38 +40,36 @@
       "isApiKeyRequired": false,
       "language": "ja, en"
     },
-    [
-      {
-        "id": "animetosho-js",
-        "name": "Anime Tosho",
-        "author": "Kiyomi Community",
-        "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/animetosho.js",
-        "iconUrl": "https://animetosho.net/inc/favicon.ico",
-        "description": "Automated mirror service for anime torrents using native JSON endpoints with aids and qx search support.",
-        "isAdult": false,
-        "isSecure": true,
-        "cautionReason": "Feed/API servers reported offline; requires active mirror or local proxy fallback.",
-        "isPrivate": false,
-        "isApiKeyRequired": false,
-        "version": 2,
-        "backendType": "torrent-rss"
-      },
-      {
-        "id": "tsukihime-js",
-        "name": "TsukiHime",
-        "author": "Kiyomi Community",
-        "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/tsukihime.js",
-        "iconUrl": "https://tsukihime.org/favicon.ico",
-        "description": "Modern anime indexer and release tracker built with a native v1 REST API.",
-        "isAdult": false,
-        "isSecure": true,
-        "cautionReason": "",
-        "isPrivate": false,
-        "isApiKeyRequired": false,
-        "version": 1,
-        "backendType": "torrent-rss"
-      }
-    ],
+    {
+      "id": "animetosho-js",
+      "name": "Anime Tosho",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/animetosho.js",
+      "iconUrl": "https://animetosho.net/inc/favicon.ico",
+      "description": "Automated mirror service for anime torrents using native JSON endpoints with aids and qx search support.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "Feed/API servers reported offline; requires active mirror or local proxy fallback.",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 2,
+      "backendType": "torrent-rss"
+    },
+    {
+      "id": "tsukihime-js",
+      "name": "TsukiHime",
+      "author": "Kiyomi Community",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_torrent_js/tsukihime.js",
+      "iconUrl": "https://tsukihime.org/favicon.ico",
+      "description": "Modern anime indexer and release tracker built with a native v1 REST API.",
+      "isAdult": false,
+      "isSecure": true,
+      "cautionReason": "",
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "version": 1,
+      "backendType": "torrent-rss"
+    },
     {
       "id": "seadex-js",
       "name": "SeaDex",
