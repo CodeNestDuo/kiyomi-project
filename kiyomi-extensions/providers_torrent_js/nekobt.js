@@ -6,6 +6,7 @@
 // @lang         all
 // @icon         https://nekobt.to/cdn/pfp/null/64
 // @site         https://nekobt.to
+// @mirrors      https://nekobt.to
 // @package      nekobt.to
 // @type         torznab-rss
 // @nsfw         false

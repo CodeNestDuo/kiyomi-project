@@ -4,7 +4,7 @@
 // @version      2.4.0
 // @author       Kiyomi Community
 // @lang         all
-// @icon         https://animetosho.net/inc/favicon.ico
+// @icon         https://animetosho.net/favicon.ico
 // @site         https://animetosho.net
 // @mirrors      https://feed.animetosho.net
 // @package      animetosho.net

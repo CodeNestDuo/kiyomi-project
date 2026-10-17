@@ -1,0 +1,57 @@
+{
+  "indexVersion": 2.2,
+  "dateGenerated": "2026-10-18T00:00:00Z",
+  "lastTweaked": "2026-10-18T00:00:00Z",
+  "name": "Kiyomi Trackers Index",
+  "description": "The official repository for anime & manga metadata providers and sync tracking extensions (OAuth & Credentials).",
+  "author": "Kiyomi Core Team",
+  "iconUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/icons/app_logo_icon.jpg",
+  "headerImageUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/images/master_index_bg.webp",
+  "providers": [
+    {
+      "id": "anilist-tracker",
+      "name": "AniList",
+      "type": "TRACKER",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_tracking_js/anilist_tracker.js",
+      "version": 1.0,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://kiyomi-project.pages.dev/icons/anilist_logo.svg",
+      "description": "AniList anime and manga tracking service supporting OAuth Authorization Code authentication, point scales, and synchronized progress updates.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "language": "all"
+    },
+    {
+      "id": "kitsu-tracker",
+      "name": "Kitsu",
+      "type": "TRACKER",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_tracking_js/kitsu_tracker.js",
+      "version": 1.0,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://kitsu.io/favicon.ico",
+      "description": "Kitsu community anime tracker utilizing JSON:API endpoints with username and password credential authentication.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "language": "all"
+    },
+    {
+      "id": "mal-tracker",
+      "name": "MyAnimeList",
+      "type": "TRACKER",
+      "configUrl": "https://kiyomi-project.pages.dev/kiyomi-extensions/providers_tracking_js/mal_tracker.js",
+      "version": 1.0,
+      "author": "Kiyomi Community",
+      "iconUrl": "https://kiyomi-project.pages.dev/icons/myanimelist_logo.png",
+      "description": "MyAnimeList official API tracking integration using PKCE OAuth authorization flow and status synchronization.",
+      "isAdult": false,
+      "isSecure": true,
+      "isPrivate": false,
+      "isApiKeyRequired": false,
+      "language": "all"
+    }
+  ]
+}
