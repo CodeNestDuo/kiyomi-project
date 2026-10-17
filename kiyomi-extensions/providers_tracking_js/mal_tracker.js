@@ -5,15 +5,23 @@
 var id = "mal";
 
 /** ===== CONFIG ===== */
+
 var CONFIG = {
-  clientId: "7d5a689cb882bc47b18205b8bfb1e7d0",
-  clientSecret: "0d4530f4ff29e7ec792bd89a5edccf8deb31b70d185c9340a86dece4c10d630e",
+  get clientId() {
+    return (typeof Kiyomi !== 'undefined' && Kiyomi.getSecret) 
+      ? Kiyomi.getSecret("mal", "clientId") 
+      : "7d5a689cb882bc47b18205b8bfb1e7d0";
+  },
+  get clientSecret() {
+    return (typeof Kiyomi !== 'undefined' && Kiyomi.getSecret) 
+      ? Kiyomi.getSecret("mal", "clientSecret") 
+      : "0d4530f4ff29e7ec792bd89a5edccf8deb31b70d185c9340a86dece4c10d630e";
+  },
   authBase: "https://myanimelist.net/v1/oauth2/authorize",
   tokenUrl: "https://myanimelist.net/v1/oauth2/token",
   apiBase: "https://api.myanimelist.net/v2",
   scopes: "write:users"
 };
-
 /** ---------- KV (namespaced) ---------- */
 function _kvKey(k) { return id + ":" + k; }
 function _kvGet(k) { return (Kiyomi && Kiyomi.kvGet) ? (Kiyomi.kvGet(_kvKey(k)) || "") : ""; }

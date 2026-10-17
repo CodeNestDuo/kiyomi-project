@@ -6,12 +6,19 @@ var id = "kitsu";
 
 /** ===== CONFIG ===== */
 var CONFIG = {
-  clientId: "dd031b32d2f56c990b1425efe6c42ad847e7fe3ab46bf1299f05ecd856bdb7dd",
-  clientSecret: "54d7307928f63414defd96399fc31ba847961ceaecef3a5fd93144e960c0e151",
+  get clientId() {
+    return (typeof Kiyomi !== 'undefined' && Kiyomi.getSecret) 
+      ? Kiyomi.getSecret("kitsu", "clientId") 
+      : "dd031b32d2f56c990b1425efe6c42ad847e7fe3ab46bf1299f05ecd856bdb7dd";
+  },
+  get clientSecret() {
+    return (typeof Kiyomi !== 'undefined' && Kiyomi.getSecret) 
+      ? Kiyomi.getSecret("kitsu", "clientSecret") 
+      : "54d7307928f63414defd96399fc31ba847961ceaecef3a5fd93144e960c0e151";
+  },
   tokenUrl: "https://kitsu.io/api/oauth/token",
   apiBase: "https://kitsu.io/api/edge"
 };
-
 /** ---------- KV Storage Helpers ---------- */
 function _kvKey(k) { return id + ":" + k; }
 function _kvGet(k) { return (Kiyomi && Kiyomi.kvGet) ? (Kiyomi.kvGet(_kvKey(k)) || "") : ""; }

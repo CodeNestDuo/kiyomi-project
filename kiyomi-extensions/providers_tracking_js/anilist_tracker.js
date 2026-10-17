@@ -13,15 +13,23 @@
 
 var id = "anilist";
 
+/** ===== CONFIG ===== */
 var CONFIG = {
-  clientId: "35770",
-  clientSecret: "jtZRpz5LW0Zvq1LyG0YmUYenGlvCjWLcCsF5Atxi",
+  get clientId() {
+    return (typeof Kiyomi !== 'undefined' && Kiyomi.getSecret) 
+      ? Kiyomi.getSecret("anilist", "clientId") 
+      : "35770";
+  },
+  get clientSecret() {
+    return (typeof Kiyomi !== 'undefined' && Kiyomi.getSecret) 
+      ? Kiyomi.getSecret("anilist", "clientSecret") 
+      : "jtZRpz5LW0Zvq1LyG0YmUYenGlvCjWLcCsF5Atxi";
+  },
   authBase: "https://anilist.co/api/v2/oauth/authorize",
   tokenUrl: "https://anilist.co/api/v2/oauth/token",
   apiBase: "https://graphql.anilist.co",
-  scopes: "" // optional
+  scopes: ""
 };
-
 /** ---------- KV (namespaced) ---------- */
 function _kvKey(k) { return id + ":" + k; }
 function _kvGet(k) { return (Kiyomi && Kiyomi.kvGet) ? (Kiyomi.kvGet(_kvKey(k)) || "") : ""; }
